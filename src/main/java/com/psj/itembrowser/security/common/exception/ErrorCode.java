@@ -54,6 +54,9 @@ public enum ErrorCode {
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),
 	FILE_STORE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_002", "File Delete Exception"),
 
+	// Address
+	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_001", "Not Found Address"),
+
 	//Token
 	ACCESS_TOKEN_NOT_GENERATED(HttpStatus.UNAUTHORIZED, "TOKEN_001",
 		"Fail to generate Access Token"),
@@ -73,4 +76,4 @@ public enum ErrorCode {
 	private final HttpStatus status;
 	private final String code;
 	private final String message;
-}
+	}
