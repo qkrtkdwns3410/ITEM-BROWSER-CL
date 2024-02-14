@@ -56,7 +56,6 @@ public enum ErrorCode {
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),
 	FILE_STORE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_002", "File Delete Exception"),
 
-
 	// Address
 	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_001", "Not Found Address"),
 
@@ -73,7 +72,10 @@ public enum ErrorCode {
 	ADMIN_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_002", "Admin is not authorized"),
 	CUSTOMER_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_003", "Customer is not authorized"),
 	PRINCIPAL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH_004", "Principal is not found"),
-	INVALID_MEMBER_ROLE(HttpStatus.UNAUTHORIZED, "AUTH_005", "Invalid Member Role");
+	INVALID_MEMBER_ROLE(HttpStatus.UNAUTHORIZED, "AUTH_005", "Invalid Member Role"),
+
+	//Payment
+	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment");
 
 	private final HttpStatus status;
 	private final String code;
