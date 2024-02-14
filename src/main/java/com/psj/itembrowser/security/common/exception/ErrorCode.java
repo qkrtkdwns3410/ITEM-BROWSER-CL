@@ -32,6 +32,7 @@ public enum ErrorCode {
 	ORDER_NOT_CANCELABLE(HttpStatus.BAD_REQUEST, "ORDER_004", "Order is not cancelable"),
 	ORDER_IS_NOT_MATCH_CURRENT_MEMBER(HttpStatus.BAD_REQUEST, "ORDER_005",
 		"Order is not match current member"),
+	ORDER_PRODUCTS_EMPTY(HttpStatus.BAD_REQUEST, "ORDER_006", "Order Products is empty"),
 
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),
@@ -54,6 +55,7 @@ public enum ErrorCode {
 	// FileStore
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),
 	FILE_STORE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_002", "File Delete Exception"),
+
 
 	// Address
 	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_001", "Not Found Address"),
