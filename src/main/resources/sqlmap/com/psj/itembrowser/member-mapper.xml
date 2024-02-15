@@ -109,6 +109,5 @@
         <include refid="memberColumns"/>
         from member
         where member_no = #{memberNo}
-        limit 1
     </select>
 </mapper>
