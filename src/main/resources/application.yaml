@@ -67,7 +67,6 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
-        retryer: full
 
 juso:
   url: https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do
