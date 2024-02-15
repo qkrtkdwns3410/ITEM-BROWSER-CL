@@ -44,7 +44,7 @@ import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoRespons
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderInsertServiceTest {
+class OrderInsertServiceTest {
 
 	@Mock
 	private OrderPersistence orderPersistence;
@@ -155,8 +155,7 @@ public class OrderInsertServiceTest {
 		// given
 		given(member.isActivated()).willReturn(true);
 
-		given(orderCreateRequestDTO.getProducts()).willReturn(
-			List.of(mock(OrdersProductRelationResponseDTO.class)));
+		given(orderCreateRequestDTO.getProducts()).willReturn(Collections.emptyList());
 
 		given(orderCalculationService.calculateOrderDetails(any(OrderCreateRequestDTO.class),
 			any(Member.class))).willReturn(mock(OrderCalculationResult.class));
@@ -169,11 +168,10 @@ public class OrderInsertServiceTest {
 		OrderResponseDTO actual = orderService.createOrder(member, orderCreateRequestDTO);
 
 		// then
-		assertThat(actual).isNotNull();
-		assertThat(actual).isInstanceOf(OrderResponseDTO.class);
+		assertThat(actual).isNotNull().isExactlyInstanceOf(OrderResponseDTO.class);
 		assertThat(actual.getOrdererNumber()).isEqualTo(expectedOrder.getOrdererNumber());
 		assertThat(actual.getShippingInfoId()).isEqualTo(expectedOrder.getShippingInfoId());
-		assertThat(actual.getOrdersProductRelations().size()).isEqualTo(expectedOrder.getProducts().size());
+		assertThat(actual.getOrdersProductRelations()).hasSize(expectedOrder.getProducts().size());
 		assertThat(actual.getCreatedDate()).isEqualTo(expectedOrder.getCreatedDate());
 		assertThat(actual.getUpdatedDate()).isEqualTo(expectedOrder.getUpdatedDate());
 		assertThat(actual.getDeletedDate()).isEqualTo(expectedOrder.getDeletedDate());

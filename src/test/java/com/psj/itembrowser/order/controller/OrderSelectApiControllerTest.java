@@ -58,7 +58,7 @@ import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(OrderApiController.class)
 @AutoConfigureRestDocs
-public class OrderSelectApiControllerTest {
+class OrderSelectApiControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -215,6 +215,7 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("member.addressSub").description("상세주소"),
 						fieldWithPath("member.zipCode").description("우편번호"),
 						fieldWithPath("member.gender").description("성별"),
+						fieldWithPath("member.memberShipType").description("회원의 멤버십 유형"),
 						fieldWithPath("member.role").description("역할"),
 						fieldWithPath("member.status").description("상태"),
 						fieldWithPath("member.birthday").description("생년월일"),
@@ -229,7 +230,9 @@ public class OrderSelectApiControllerTest {
 							"상품 수량"),
 						fieldWithPath("ordersProductRelations[].createdDate").description("생성 일자"),
 						fieldWithPath("ordersProductRelations[].updatedDate").description("수정 일자"),
-						fieldWithPath("ordersProductRelations[].deletedDate").description("삭제 일자")
+						fieldWithPath("ordersProductRelations[].deletedDate").description("삭제 일자"),
+						subsectionWithPath("ordersProductRelations[].productResponseDTO").description(
+							"상품에 대한 응답 데이터")
 					)
 					.build()
 				)
@@ -293,6 +296,7 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("member.gender").description("성별"),
 						fieldWithPath("member.role").description("역할"),
 						fieldWithPath("member.status").description("상태"),
+						fieldWithPath("member.memberShipType").description("회원의 멤버십 유형"),
 						fieldWithPath("member.birthday").description("생년월일"),
 						fieldWithPath("member.lastLoginDate").description("마지막 로그인 일자"),
 						fieldWithPath("member.createdDate").optional().description("생성 일자"),
@@ -305,7 +309,9 @@ public class OrderSelectApiControllerTest {
 							"상품 수량"),
 						fieldWithPath("ordersProductRelations[].createdDate").description("생성 일자"),
 						fieldWithPath("ordersProductRelations[].updatedDate").description("수정 일자"),
-						fieldWithPath("ordersProductRelations[].deletedDate").description("삭제 일자")
+						fieldWithPath("ordersProductRelations[].deletedDate").description("삭제 일자"),
+						subsectionWithPath("ordersProductRelations[].productResponseDTO").description(
+							"상품에 대한 응답 데이터")
 					)
 					.build()
 				)
@@ -459,6 +465,7 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("list[].member.addressMain").description("주소"),
 						fieldWithPath("list[].member.addressSub").description("상세주소"),
 						fieldWithPath("list[].member.zipCode").description("우편번호"),
+						fieldWithPath("list[].member.memberShipType").description("회원의 멤버십 유형"),
 						fieldWithPath("list[].member.gender").description("성별"),
 						fieldWithPath("list[].member.role").description("역할"),
 						fieldWithPath("list[].member.status").description("상태"),
@@ -474,6 +481,8 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("list[].ordersProductRelations[].createdDate").description("생성 일자"),
 						fieldWithPath("list[].ordersProductRelations[].updatedDate").description("수정 일자"),
 						fieldWithPath("list[].ordersProductRelations[].deletedDate").description("삭제 일자"),
+						subsectionWithPath("list[].ordersProductRelations[].productResponseDTO").description(
+							"상품에 대한 응답 데이터"),
 						fieldWithPath("pageNum").description("현재 페이지 번호"),
 						fieldWithPath("pageSize").description("페이지 크기"),
 						fieldWithPath("size").description("현재 페이지 크기"),
@@ -619,6 +628,7 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("list[].member.gender").description("성별"),
 						fieldWithPath("list[].member.role").description("역할"),
 						fieldWithPath("list[].member.status").description("상태"),
+						fieldWithPath("list[].member.memberShipType").description("회원의 멤버십 유형"),
 						fieldWithPath("list[].member.birthday").description("생년월일"),
 						fieldWithPath("list[].member.lastLoginDate").description("마지막 로그인 일자"),
 						fieldWithPath("list[].member.createdDate").optional().description("생성 일자"),
@@ -631,6 +641,8 @@ public class OrderSelectApiControllerTest {
 						fieldWithPath("list[].ordersProductRelations[].createdDate").description("생성 일자"),
 						fieldWithPath("list[].ordersProductRelations[].updatedDate").description("수정 일자"),
 						fieldWithPath("list[].ordersProductRelations[].deletedDate").description("삭제 일자"),
+						subsectionWithPath("list[].ordersProductRelations[].productResponseDTO").description(
+							"상품에 대한 응답 데이터"),
 						fieldWithPath("pageNum").description("현재 페이지 번호"),
 						fieldWithPath("pageSize").description("페이지 크기"),
 						fieldWithPath("size").description("현재 페이지 크기"),
