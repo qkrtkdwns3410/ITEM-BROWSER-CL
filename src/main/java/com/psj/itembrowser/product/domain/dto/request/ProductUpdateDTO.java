@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
-import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 
 import lombok.AllArgsConstructor;
@@ -71,25 +70,4 @@ public class ProductUpdateDTO {
 
 	// List of image IDs to delete
 	private List<Long> deleteImageIds;
-
-	public Product toProduct(Long productId) {
-		return Product.builder().id(productId)
-			.name(this.name)
-			.category(this.category)
-			.detail(this.detail)
-			.status(this.status)
-			.quantity(this.quantity)
-			.unitPrice(this.unitPrice)
-			.sellerId(this.sellerId)
-			.sellStartDatetime(this.sellStartDatetime)
-			.sellEndDatetime(this.sellEndDatetime)
-			.displayName(this.displayName)
-			.brand(this.brand)
-			.deliveryFeeType(this.deliveryFeeType)
-			.deliveryMethod(this.deliveryMethod)
-			.deliveryDefaultFee(this.deliveryDefaultFee)
-			.freeShipOverAmount(this.freeShipOverAmount)
-			.returnCenterCode(this.returnCenterCode)
-			.build();
-	}
 }

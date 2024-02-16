@@ -74,6 +74,9 @@ public class ShippingInfo {
 	private LocalDateTime deletedDate;
 
 	public static ShippingInfo from(ShippingInfoResponseDTO shippingInfoResponseDTO) {
+		if (shippingInfoResponseDTO == null) {
+			return null;
+		}
 		ShippingInfo shippingInfo = new ShippingInfo();
 
 		shippingInfo.id = shippingInfoResponseDTO.getId();

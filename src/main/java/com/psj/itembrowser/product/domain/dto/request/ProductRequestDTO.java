@@ -13,7 +13,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
-import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 
 import lombok.AllArgsConstructor;
@@ -74,24 +73,4 @@ public class ProductRequestDTO {
 	private String returnCenterCode;
 
 	private List<MultipartFile> multipartFiles;
-
-	public Product toProduct() {
-		return Product.builder().name(this.name)
-			.category(this.category)
-			.detail(this.detail)
-			.status(this.status)
-			.quantity(this.quantity)
-			.unitPrice(this.unitPrice)
-			.sellerId(this.sellerId)
-			.sellStartDatetime(this.sellStartDatetime)
-			.sellEndDatetime(this.sellEndDatetime)
-			.displayName(this.displayName)
-			.brand(this.brand)
-			.deliveryFeeType(this.deliveryFeeType)
-			.deliveryMethod(this.deliveryMethod)
-			.deliveryDefaultFee(this.deliveryDefaultFee)
-			.freeShipOverAmount(this.freeShipOverAmount)
-			.returnCenterCode(this.returnCenterCode)
-			.build();
-	}
 }
