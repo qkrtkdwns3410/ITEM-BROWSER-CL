@@ -2,38 +2,61 @@ package com.psj.itembrowser.cart.domain.vo;
 
 import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
-import com.psj.itembrowser.product.domain.vo.Product;
-import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.product.domain.vo.ProductEntity;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-/**
- * packageName    : com.psj.itembrowser.cart.domain.vo fileName       : CartProductRelation author :
- * ipeac date           : 2023-10-22 description    :
- * =========================================================== DATE              AUTHOR NOTE
- * ----------------------------------------------------------- 2023-10-22        ipeac       최초 생성
- */
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "cart_product_relation")
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"cartId", "productId"}, callSuper = false)
-@ToString
-public class CartProductRelation extends BaseDateTimeEntity {
-
+public class CartProductRelationEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "cart_id")
 	private Long cartId;
+
+	@Column(name = "product_id")
 	private Long productId;
+
+	@Column(name = "product_quantity")
 	private Long productQuantity;
 
-	private Cart cart;
-	private Product product;
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
+
+	@Column(name = "updated_date")
+	private LocalDateTime updatedDate;
+
+	@Column(name = "deleted_date")
+	private LocalDateTime deletedDate;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRODUCT_ID", insertable = false, updatable = false)
+	private ProductEntity product;
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "CART_ID", insertable = false, updatable = false)
+	private CartEntity cartEntity;
 
 	public static CartProductRelation create(CartProductRelationResponseDTO dto) {
 		CartProductRelation cartProductRelation = new CartProductRelation();
