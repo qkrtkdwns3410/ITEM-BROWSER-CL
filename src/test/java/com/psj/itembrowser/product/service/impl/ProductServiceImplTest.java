@@ -3,7 +3,7 @@ package com.psj.itembrowser.product.service.impl;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
@@ -43,37 +45,43 @@ class ProductServiceImplTest {
 		@Test
 		@DisplayName("상품 생성 성공 테스트")
 		void createProductSuccess() throws Exception {
-			// given
-			ProductRequestDTO dto = mock(ProductRequestDTO.class);
-			Product product = mock(Product.class);
-			when(Product.from(dto)).thenReturn(product);
+			try (MockedStatic<Product> productMockedStatic = mockStatic(Product.class)) {
+				// given
+				ProductRequestDTO dto = mock(ProductRequestDTO.class);
+				Product product = mock(Product.class);
 
-			// when
-			productService.createProduct(dto);
+				productMockedStatic.when(() -> Product.from(dto)).thenReturn(product);
+				// when
+				productService.createProduct(dto);
 
-			// then
-			verify(productPersistence, times(1)).createProduct(product);
-			verify(fileService, times(1)).createProductImages(any(List.class), any(Long.class));
+				// then
+				verify(productPersistence, times(1)).createProduct(product);
+				verify(fileService, times(1)).createProductImages(any(List.class), any(Long.class));
+			}
 		}
 
 		@Test
 		@DisplayName("상품 생성 판매 날짜 유효성 검증 실패")
 		void createProductFailDueToInvalidSellDates() {
-			// given
-			ProductRequestDTO dto = mock(ProductRequestDTO.class);
-			LocalDateTime sellStartDatetime = LocalDateTime.now().plusDays(2);
-			LocalDateTime sellEndDatetime = LocalDateTime.now().plusDays(1);
-			Product product = Product.builder().sellStartDatetime(sellStartDatetime)
-				.sellEndDatetime(sellEndDatetime).build();
+			try (MockedStatic<Product> productMockedStatic = mockStatic(Product.class)) {
+				// given
+				ProductRequestDTO dto = mock(ProductRequestDTO.class);
+				LocalDateTime sellStartDatetime = LocalDateTime.now().plusDays(2);
+				LocalDateTime sellEndDatetime = LocalDateTime.now().plusDays(1);
 
-			when(Product.from(dto)).thenReturn(product);
+				Product product = new Product();
+				ReflectionTestUtils.setField(product, "sellStartDatetime", sellStartDatetime);
+				ReflectionTestUtils.setField(product, "sellEndDatetime", sellEndDatetime);
 
-			// when & then
-			assertThrows(IllegalArgumentException.class, () -> productService.createProduct(dto),
-				"The sell start datetime must not be before the sell end datetime.");
+				productMockedStatic.when(() -> Product.from(dto)).thenReturn(product);
 
-			verify(productPersistence, never()).createProduct(product);
-			verify(fileService, never()).createProductImages(anyList(), anyLong());
+				// when & then
+				assertThrows(IllegalArgumentException.class, () -> productService.createProduct(dto),
+					"The sell start datetime must not be before the sell end datetime.");
+
+				verify(productPersistence, never()).createProduct(product);
+				verify(fileService, never()).createProductImages(anyList(), anyLong());
+			}
 		}
 	}
 
@@ -84,22 +92,26 @@ class ProductServiceImplTest {
 		@DisplayName("상품 업데이트 성공")
 		void updateProductSuccess() {
 			// given
-			ProductUpdateDTO productUpdateDTO = mock(ProductUpdateDTO.class);
-			Long productId = 1L;
-			Product product = mock(Product.class);
+			try (MockedStatic<Product> productMockedStatic = mockStatic(Product.class)) {
+				Product product = mock(Product.class);
+				ProductUpdateDTO productUpdateDTO = new ProductUpdateDTO();
+				Long productId = 1L;
 
-			when(Product.from(productUpdateDTO)).thenReturn(product);
-			doNothing().when(product).validateSellDates();
-			doNothing().when(productPersistence).updateProduct(product);
-			doNothing().when(fileService).updateProductImages(productUpdateDTO, productId);
+				productMockedStatic.when(() -> Product.from(productUpdateDTO)).thenReturn(product);
 
-			// when
-			productService.updateProduct(productUpdateDTO, productId);
+				doNothing().when(product).validateSellDates();
+				doNothing().when(productPersistence).updateProduct(product);
+				doNothing().when(fileService).updateProductImages(productUpdateDTO, productId);
 
-			// then
-			verify(productPersistence, times(1)).findProductStatusForUpdate(productId);
-			verify(productPersistence, times(1)).updateProduct(product);
-			verify(fileService, times(1)).updateProductImages(productUpdateDTO, productId);
+				// when
+				productService.updateProduct(productUpdateDTO, productId);
+
+				// then
+				verify(productPersistence, times(1)).findProductStatusForUpdate(productId);
+				verify(productPersistence, times(1)).updateProduct(product);
+				verify(fileService, times(1)).updateProductImages(productUpdateDTO, productId);
+
+			}
 		}
 
 		@Test
@@ -135,8 +147,7 @@ class ProductServiceImplTest {
 
 			verify(productPersistence, never()).findProductStatusForUpdate(productId);
 			verify(productPersistence, never()).updateProduct(any(Product.class));
-			verify(fileService, never()).updateProductImages(any(ProductUpdateDTO.class),
-				anyLong());
+			verify(fileService, never()).updateProductImages(any(ProductUpdateDTO.class), anyLong());
 		}
 	}
 
