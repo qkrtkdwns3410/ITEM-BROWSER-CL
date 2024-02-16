@@ -1,16 +1,11 @@
 package com.psj.itembrowser.order.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.mock;
 
-import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.order.domain.vo.Order;
-import com.psj.itembrowser.order.domain.vo.OrderStatus;
-import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
-import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -25,7 +20,6 @@ import com.github.pagehelper.page.PageMethod;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
-import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
@@ -48,10 +42,10 @@ public class OrderSelectMapperTest {
 	void When_SelectOrder_Expect_Order1() {
 		// given as @Sql
 		long expectedId = 1L;
-		Order expectedOrder = Order.createOrder(
+		Order expectedOrder = Order.of(
 			expectedId,
 			1L,
-			OrderStatus.ACCEPT,
+			Order.OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -104,10 +98,10 @@ public class OrderSelectMapperTest {
 	void When_selectOrderWithNotDeleted_Expect_ReturnOrder() {
 		// given as @Sql
 		long orderIdThatMustSuccess = 1L;
-		Order expectedOrder = Order.createOrder(
+		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			OrderStatus.ACCEPT,
+			Order.OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -147,10 +141,10 @@ public class OrderSelectMapperTest {
 	void When_SelectOrderWithNoCondition_Expect_ReturnOrder() {
 		// given as @Sql
 		long orderIdThatMustSuccess = 1L;
-		Order expectedOrder = Order.createOrder(
+		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			OrderStatus.ACCEPT,
+			Order.OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -192,10 +186,10 @@ public class OrderSelectMapperTest {
 		int pageNum = 0;
 		int pageSize = 10;
 
-		Order expectedOrder = Order.createOrder(
+		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			OrderStatus.ACCEPT,
+			Order.OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),

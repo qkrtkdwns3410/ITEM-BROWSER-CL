@@ -51,7 +51,9 @@ public class Member extends BaseDateTimeEntity {
 	/**
 	 * 회원 상태. ACTIVE -> 활성화, READY -> 대기, DISABLED -> 비활성화
 	 */
-	private Status status;
+	private Status status = Status.ACTIVE;
+
+	private MemberShipType memberShipType = MemberShipType.REGULAR;
 
 	/**
 	 * 주소
@@ -103,6 +105,10 @@ public class Member extends BaseDateTimeEntity {
 		return this.role == role;
 	}
 
+	public boolean isActivated() {
+		return this.status == Status.ACTIVE;
+	}
+
 	@Getter
 	public enum Role {
 		ROLE_CUSTOMER("일반 구매자"),
@@ -149,6 +155,27 @@ public class Member extends BaseDateTimeEntity {
 		Gender(String description) {
 			this.description = description;
 			this.name = this.name();
+		}
+	}
+
+	@Getter
+	public enum MemberShipType {
+		REGULAR("일반 회원", 0),
+		WOW("와우 회원", 10);
+
+		private final String name;
+		private final String description;
+		private final int discountRate;
+
+		MemberShipType(String description, int discountRate) {
+			this.name = this.name();
+			this.description = description;
+			this.discountRate = discountRate;
+		}
+
+		@Override
+		public String toString() {
+			return this.name();
 		}
 	}
 }

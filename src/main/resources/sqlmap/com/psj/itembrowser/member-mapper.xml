@@ -68,7 +68,6 @@
         <include refid="memberColumns"/>
         from member
         where email = #{email}
-        limit 1
     </select>
 
     <insert id="insertMember" parameterType="com.psj.itembrowser.member.domain.dto.request.MemberSignUpRequestDTO">

@@ -21,7 +21,6 @@ import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberNo;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.order.domain.vo.Order;
-import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.product.domain.vo.Product;
@@ -55,29 +54,38 @@ public class OrderSelectPersistenceTest {
 			Name.create("홍", "길동"),
 			"010-1234-1234",
 			Member.Gender.MEN,
-			Member.Role.ROLE_CUSTOMER, Member.Status.ACTIVE, Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
+			Member.Role.ROLE_CUSTOMER,
+			Member.Status.ACTIVE,
+			Member.MemberShipType.REGULAR,
+			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
 
-		ShippingInfo expectedShppingInfo = new ShippingInfo(1L, "test@test.com", "홍길동", "test", "test", "010-1235-1234",
+		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
+			"test@test.com",
+			"홍길동",
+			"test",
+			"test",
+			"010-1235-1234",
+			"01111",
 			"010-1234-1234", "test",
 			LocalDateTime.now(),
 			null,
 			null);
 
-		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.create(1L, 1L, 1, LocalDateTime.now(),
+		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1, LocalDateTime.now(),
 			null,
 			null,
 			new Product());
 
-		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.create(2L, 1L, 1, LocalDateTime.now(),
+		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1, LocalDateTime.now(),
 			null,
 			null, new Product());
 
-		this.expectedOrder = Order.createOrder(
+		this.expectedOrder = Order.of(
 			1L,
 			1L,
-			OrderStatus.ACCEPT,
+			Order.OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),

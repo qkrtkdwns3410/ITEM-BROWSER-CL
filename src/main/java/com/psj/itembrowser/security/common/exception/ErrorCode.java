@@ -32,6 +32,7 @@ public enum ErrorCode {
 	ORDER_NOT_CANCELABLE(HttpStatus.BAD_REQUEST, "ORDER_004", "Order is not cancelable"),
 	ORDER_IS_NOT_MATCH_CURRENT_MEMBER(HttpStatus.BAD_REQUEST, "ORDER_005",
 		"Order is not match current member"),
+	ORDER_PRODUCTS_EMPTY(HttpStatus.BAD_REQUEST, "ORDER_006", "Order Products is empty"),
 
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),
@@ -40,6 +41,7 @@ public enum ErrorCode {
 	// Member
 	NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "MEMBER_001", "Not Found Member"),
 	MEMBER_INSERT_FAIL(HttpStatus.BAD_REQUEST, "MEMBER_002", "Fail to insert Member"),
+	NOT_ACTIVATED_MEMBER(HttpStatus.UNAUTHORIZED, "MEMBER_003", "Not Activated Member"),
 
 	// Product
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_001", "Not Found Product"),
@@ -48,10 +50,14 @@ public enum ErrorCode {
 	PRODUCT_DELETE_FAIL(HttpStatus.BAD_REQUEST, "PRODUCT_004", "Fail to delete to product"),
 	PRODUCT_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "PRODUCT_005", "Validation Error"),
 	PRODUCT_IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "PRODUCT_006", "Not Found Product IMAGE"),
+	PRODUCT_QUANTITY_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "PRODUCT_007", "Product Quantity is not enough"),
 
 	// FileStore
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),
 	FILE_STORE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_002", "File Delete Exception"),
+
+	// Address
+	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_001", "Not Found Address"),
 
 	//Token
 	ACCESS_TOKEN_NOT_GENERATED(HttpStatus.UNAUTHORIZED, "TOKEN_001",
@@ -67,7 +73,9 @@ public enum ErrorCode {
 	CUSTOMER_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_003", "Customer is not authorized"),
 	PRINCIPAL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH_004", "Principal is not found"),
 	INVALID_MEMBER_ROLE(HttpStatus.UNAUTHORIZED, "AUTH_005", "Invalid Member Role"),
-	;
+
+	//Payment
+	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment");
 
 	private final HttpStatus status;
 	private final String code;

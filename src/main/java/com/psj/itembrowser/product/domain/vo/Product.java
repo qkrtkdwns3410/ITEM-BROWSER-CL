@@ -2,9 +2,13 @@ package com.psj.itembrowser.product.domain.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
+import javax.validation.constraints.Positive;
 
 import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
-import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
+import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
+import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
@@ -121,10 +125,7 @@ public class Product extends BaseDateTimeEntity {
 	}
 
 	// 상품 재고를 줄이는 메서드
-	public void decreaseStock(int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
-		}
+	public void decreaseStock(@Positive int quantity) {
 		int restStock = this.quantity - quantity;
 		if (restStock < 0) {
 			throw new IllegalStateException("need more stock");
@@ -146,6 +147,14 @@ public class Product extends BaseDateTimeEntity {
 			throw new IllegalArgumentException("quantity can not be less than 0");
 		}
 		return this.quantity >= quantity;
+	}
+
+	public double calculateTotalPrice() {
+		return this.unitPrice * this.quantity;
+	}
+
+	public double calculateDiscount(int quantity, int discountRate) {
+		return (this.unitPrice * quantity) * ((double)discountRate / 100);
 	}
 
 	public ProductResponseDTO toProductResponseDTO() {
@@ -171,11 +180,89 @@ public class Product extends BaseDateTimeEntity {
 			.build();
 	}
 
-	public ProductQuantityUpdateRequestDTO toProductQuantityUpdateRequestDTO() {
-		return ProductQuantityUpdateRequestDTO
-			.builder()
-			.id(this.id)
-			.quantity(this.quantity)
-			.build();
+	public static Product from(ProductResponseDTO productResponseDTO) {
+		if (productResponseDTO == null) {
+			return null;
+		}
+
+		Product product = new Product();
+
+		product.id = productResponseDTO.getId();
+		product.name = productResponseDTO.getName();
+		product.category = productResponseDTO.getCategory();
+		product.detail = productResponseDTO.getDetail();
+		product.status = productResponseDTO.getStatus();
+		product.quantity = productResponseDTO.getQuantity();
+		product.unitPrice = productResponseDTO.getUnitPrice();
+		product.sellerId = productResponseDTO.getSellerId();
+		product.sellStartDatetime = productResponseDTO.getSellStartDatetime();
+		product.sellEndDatetime = productResponseDTO.getSellEndDatetime();
+		product.displayName = productResponseDTO.getDisplayName();
+		product.brand = productResponseDTO.getBrand();
+		product.deliveryMethod = productResponseDTO.getDeliveryMethod();
+		product.deliveryDefaultFee = productResponseDTO.getDeliveryDefaultFee();
+		product.freeShipOverAmount = productResponseDTO.getFreeShipOverAmount();
+		product.returnCenterCode = productResponseDTO.getReturnCenterCode();
+
+		if (Objects.nonNull(productResponseDTO.getProductImages()) && !productResponseDTO.getProductImages().isEmpty()) {
+			product.productImages = productResponseDTO.getProductImages();
+		}
+
+		return product;
+	}
+
+	public static Product from(ProductRequestDTO productRequestDTO) {
+		if (productRequestDTO == null) {
+			return null;
+		}
+
+		Product product = new Product();
+
+		product.name = productRequestDTO.getName();
+		product.category = productRequestDTO.getCategory();
+		product.detail = productRequestDTO.getDetail();
+		product.status = productRequestDTO.getStatus();
+		product.quantity = productRequestDTO.getQuantity();
+		product.unitPrice = productRequestDTO.getUnitPrice();
+		product.sellerId = productRequestDTO.getSellerId();
+		product.sellStartDatetime = productRequestDTO.getSellStartDatetime();
+		product.sellEndDatetime = productRequestDTO.getSellEndDatetime();
+		product.displayName = productRequestDTO.getDisplayName();
+		product.brand = productRequestDTO.getBrand();
+		product.deliveryFeeType = productRequestDTO.getDeliveryFeeType();
+		product.deliveryMethod = productRequestDTO.getDeliveryMethod();
+		product.deliveryDefaultFee = productRequestDTO.getDeliveryDefaultFee();
+		product.freeShipOverAmount = productRequestDTO.getFreeShipOverAmount();
+		product.returnCenterCode = productRequestDTO.getReturnCenterCode();
+
+		return product;
+	}
+
+	public static Product from(ProductUpdateDTO productUpdateDTO) {
+		if (productUpdateDTO == null) {
+			return null;
+		}
+
+		Product product = new Product();
+
+		product.id = productUpdateDTO.getId();
+		product.name = productUpdateDTO.getName();
+		product.category = productUpdateDTO.getCategory();
+		product.detail = productUpdateDTO.getDetail();
+		product.status = productUpdateDTO.getStatus();
+		product.quantity = productUpdateDTO.getQuantity();
+		product.unitPrice = productUpdateDTO.getUnitPrice();
+		product.sellerId = productUpdateDTO.getSellerId();
+		product.sellStartDatetime = productUpdateDTO.getSellStartDatetime();
+		product.sellEndDatetime = productUpdateDTO.getSellEndDatetime();
+		product.displayName = productUpdateDTO.getDisplayName();
+		product.brand = productUpdateDTO.getBrand();
+		product.deliveryFeeType = productUpdateDTO.getDeliveryFeeType();
+		product.deliveryMethod = productUpdateDTO.getDeliveryMethod();
+		product.deliveryDefaultFee = productUpdateDTO.getDeliveryDefaultFee();
+		product.freeShipOverAmount = productUpdateDTO.getFreeShipOverAmount();
+		product.returnCenterCode = productUpdateDTO.getReturnCenterCode();
+
+		return product;
 	}
 }

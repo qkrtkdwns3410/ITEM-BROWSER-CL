@@ -60,6 +60,18 @@ pagehelper:
 file:
   upload-dir: ./src/main/resources/static/uploads/
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+
+juso:
+  url: https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do
+  confmKey: classpath:juso.key
+
 aws:
   s3:
     access-key: AKIAZI2LCIURF7KVYVO3

@@ -34,5 +34,7 @@ public interface ProductService {
 
 	void updateProduct(ProductUpdateDTO productUpdateDTO, Long id);
 
-    void deleteProduct(Long productId);
+	void decreaseStock(Product quantity);
+
+	void deleteProduct(Long productId);
 }
