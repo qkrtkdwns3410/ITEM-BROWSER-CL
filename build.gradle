@@ -29,6 +29,33 @@ repositories {
     mavenCentral()
 }
 
+// QueryDSL 메타 모델을 생성하기 위한 설정
+def querydslDir = 'src/main/generated'
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+tasks.register('generateQueryDSL', JavaCompile) {
+    source = sourceSets.main.java
+    classpath = configurations.querydsl
+    options.annotationProcessorPath = configurations.querydsl
+    destinationDir = file(querydslDir)
+}
+
+compileJava {
+    dependsOn tasks.named('generateQueryDSL')
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean {
+    delete querydslDir
+}
+
 dependencies {
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
 
@@ -41,14 +68,25 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:2.1.0'
 
+    // Spring Boot Starter for JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-apt'
+
     implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'org.yaml:snakeyaml:2.0' // yaml 파싱을 위한 라이브러리
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
     compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'javax.annotation:javax.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 
     //logback
     implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
@@ -59,10 +97,10 @@ dependencies {
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
     testImplementation 'org.mockito:mockito-inline:4.5.1'
     // TODO GITHUB PAGE HELPER LIBRARY -> REMOVE AFTER JPA IMPLEMENTATION
-    testImplementation("com.epages:restdocs-api-spec-mockmvc:0.15.3")
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.15.3'
 
     // AWS S3
-    implementation("com.amazonaws:aws-java-sdk-s3:1.12.174")
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.174'
 }
 
 // properties file load...
@@ -113,12 +151,12 @@ tasks.register('copyOasToSwagger', Copy) {
         def openapi3File = file("$buildDir/api-spec/openapi3.yaml")
 
         // JWT 인증을 위한 securitySchemes와 security 요소를 정의합니다.
-        def securitySchemesContent = "  securitySchemes:\n" +         \
-                                             "    APIKey:\n" +         \
-                                             "      type: apiKey\n" +         \
-                                             "      name: Authorization\n" +         \
-                                             "      in: header\n" +        \
-                                             "security:\n" +
+        def securitySchemesContent = "  securitySchemes:\n" +           \
+                                               "    APIKey:\n" +           \
+                                               "      type: apiKey\n" +           \
+                                               "      name: Authorization\n" +           \
+                                               "      in: header\n" +          \
+                                               "security:\n" +
                 "  - APIKey: []  # Apply the security scheme here"
 
         // openapi3.yaml 파일에 내용을 추가합니다.
