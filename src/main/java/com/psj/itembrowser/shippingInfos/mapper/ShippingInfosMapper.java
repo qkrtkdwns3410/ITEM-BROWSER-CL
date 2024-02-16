@@ -28,7 +28,6 @@ public interface ShippingInfosMapper {
 	@Select("SELECT * " +
 		"FROM SHIPPING_INFOS " +
 		"WHERE ID = #{id} " +
-		"AND DELETED_DATE  IS NULL " +
-		"LIMIT 1")
+		"AND DELETED_DATE  IS NULL")
 	ShippingInfo findShippingInfoById(@Param("id") Long id);
 }

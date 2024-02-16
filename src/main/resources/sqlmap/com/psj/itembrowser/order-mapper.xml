@@ -57,7 +57,6 @@
         <where>
             O.id = #{id}
         </where>
-        Limit 1;
     </select>
 
     <select id="selectOrderWithNotDeleted" resultMap="orderResultMap" parameterType="long">
@@ -68,7 +67,6 @@
             O.id = #{id}
               AND O.DELETED_DATE IS NULL
         </where>
-        LIMIT 1;
     </select>
 
     <select id="selectOrdersWithPaginationAndNoCondition" resultMap="orderResultMap"
