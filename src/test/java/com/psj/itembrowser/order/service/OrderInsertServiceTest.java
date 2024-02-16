@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
@@ -40,6 +41,9 @@ import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.AuthenticationService;
+import com.psj.itembrowser.security.common.exception.BadRequestException;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoResponseDTO;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
@@ -78,6 +82,8 @@ class OrderInsertServiceTest {
 	private OrdersProductRelation ordersProductRelation;
 	private Order expectedOrder;
 	private Product product;
+
+	private ShippingInfo shippingInfo;
 
 	@BeforeEach
 	void setUp() {
@@ -147,34 +153,132 @@ class OrderInsertServiceTest {
 			mock(ShippingInfo.class),
 			mock(OrderCalculationResult.class)
 		);
+
+		shippingInfo = new ShippingInfo(
+			1L,
+			"qkrtkdwns3410",
+			"박상준",
+			"서울시 강남구 역삼동",
+			"김밥천국 101동",
+			"01111",
+			"010-1234-5678",
+			"010-1234-5678",
+			"배송요청사항",
+			LocalDateTime.now(),
+			LocalDateTime.now(),
+			null
+		);
 	}
 
 	@Test
 	@DisplayName("주문 생성 - 모든 하위 서비스가 정상적으로 동작하는 경우 - 주문 생성 성공")
 	void When_CreateOrder_AllConditionAreMet_Then_ReturnOrderResponseDTO() {
 		// given
-		given(member.isActivated()).willReturn(true);
+		try (
+			MockedStatic<ShippingInfo> shippingInfoMockedStatic = mockStatic(ShippingInfo.class);
+			MockedStatic<Order> orderMockedStatic = mockStatic(Order.class);
+			MockedStatic<OrderResponseDTO> orderResponseDTOMockedStatic = mockStatic(OrderResponseDTO.class);
+		) {
 
-		given(orderCreateRequestDTO.getProducts()).willReturn(Collections.emptyList());
+			OrderResponseDTO expected = mock(OrderResponseDTO.class);
+			given(expected.getOrdererNumber()).willReturn(1L);
+			given(expected.getShippingInfoId()).willReturn(1L);
+			given(expected.getOrdersProductRelations()).willReturn(List.of(mock(OrdersProductRelationResponseDTO.class)));
 
-		given(orderCalculationService.calculateOrderDetails(any(OrderCreateRequestDTO.class),
-			any(Member.class))).willReturn(mock(OrderCalculationResult.class));
+			Order mock = mock(Order.class);
+			given(mock.getId()).willReturn(1L);
 
-		given(orderPersistence.getOrderWithNoCondition(anyLong())).willReturn(expectedOrder);
+			OrderCreateRequestDTO mockedOrderCreateRequestDTO = mock(OrderCreateRequestDTO.class);
 
-		given(OrderResponseDTO.of(expectedOrder)).willReturn(mock(OrderResponseDTO.class));
+			ShippingInfoResponseDTO mockedShippingInfoResponseDTO = mock(ShippingInfoResponseDTO.class);
 
-		// when
-		OrderResponseDTO actual = orderService.createOrder(member, orderCreateRequestDTO);
+			shippingInfoMockedStatic.when(() -> ShippingInfo.from(mockedShippingInfoResponseDTO)).thenReturn(shippingInfo);
 
-		// then
-		assertThat(actual).isNotNull().isExactlyInstanceOf(OrderResponseDTO.class);
-		assertThat(actual.getOrdererNumber()).isEqualTo(expectedOrder.getOrdererNumber());
-		assertThat(actual.getShippingInfoId()).isEqualTo(expectedOrder.getShippingInfoId());
-		assertThat(actual.getOrdersProductRelations()).hasSize(expectedOrder.getProducts().size());
-		assertThat(actual.getCreatedDate()).isEqualTo(expectedOrder.getCreatedDate());
-		assertThat(actual.getUpdatedDate()).isEqualTo(expectedOrder.getUpdatedDate());
-		assertThat(actual.getDeletedDate()).isEqualTo(expectedOrder.getDeletedDate());
+			given(mockedOrderCreateRequestDTO.getProducts()).willReturn(Collections.emptyList());
+
+			orderMockedStatic.when(() -> Order.of(any(OrderCreateRequestDTO.class), any(OrderCalculationResult.class))).thenReturn(mock);
+
+			given(orderCalculationService.calculateOrderDetails(any(OrderCreateRequestDTO.class),
+				any(Member.class))).willReturn(mock(OrderCalculationResult.class));
+
+			given(orderPersistence.getOrderWithNoCondition(mock.getId())).willReturn(expectedOrder);
+
+			orderResponseDTOMockedStatic.when(() -> OrderResponseDTO.of(expectedOrder)).thenReturn(expected);
+
+			// when
+			OrderResponseDTO actual = orderService.createOrder(member, mockedOrderCreateRequestDTO);
+
+			// then
+			assertThat(actual).isNotNull().isExactlyInstanceOf(OrderResponseDTO.class);
+			assertThat(actual.getOrdererNumber()).isEqualTo(expectedOrder.getOrdererNumber());
+			assertThat(actual.getShippingInfoId()).isEqualTo(expectedOrder.getShippingInfoId());
+			assertThat(actual.getOrdersProductRelations()).hasSize(expectedOrder.getProducts().size());
+		}
 	}
 
+	@Test
+	@DisplayName("주문 생성 - 멤버가 비활성화인 경우 NotAuthorizedException 발생")
+	void When_CreateOrder_MemberIsNotActivated_Then_ThrowNotAuthorizedException() {
+		// given
+		Member member = mock(Member.class);
+		given(member.isActivated()).willReturn(false);
+
+		//when -  then
+		assertThatThrownBy(() -> orderService.createOrder(member, orderCreateRequestDTO))
+			.isInstanceOf(NotAuthorizedException.class)
+			.hasMessage("Not Activated Member");
+	}
+
+	@Test
+	@DisplayName("주문 생성 - 주문 상품에 대한 재고가 부족한 경우 - validateProduct 메서드에서 BadRequestException 발생")
+	void When_CreateOrder_ProductStockIsNotEnough_Then_ThrowBadRequestException() {
+		// given
+		doThrow(new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH))
+			.when(productValidationHelper).validateProduct(anyList());
+
+		// when - then
+		assertThatThrownBy(() -> orderService.createOrder(member, orderCreateRequestDTO))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage("Product Quantity is not enough");
+	}
+
+	@Test
+	@DisplayName("주문 생성 - 배송지가 존재하지 않는 경우 - validateAddress 메서드에서 BadRequestException 발생")
+	void When_CreateOrder_ShippingInfoIsNotExist_Then_ThrowBadRequestException() {
+		// given
+		doThrow(new BadRequestException(ErrorCode.ADDRESS_NOT_FOUND))
+			.when(shippingInfoValidationService)
+			.validateAddress(any(ShippingInfo.class));
+
+		// when - then
+		assertThatThrownBy(() -> orderService.createOrder(member, orderCreateRequestDTO))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage("Not Found Address");
+
+		verify(productValidationHelper).validateProduct(anyList());
+	}
+
+	@Test
+	@DisplayName("주문 생성 - insert 된 주문을 조회하여 반환시, 조회된 주문이 null인 경우 - NotFoundException")
+	void When_CreateOrder_OrderIsNotExist_Then_ThrowNotFoundException() {
+		// given
+		try (
+			MockedStatic<Order> orderMockedStatic = mockStatic(Order.class);
+		) {
+			Order mock = mock(Order.class);
+			given(mock.getId()).willReturn(1L);
+
+			orderMockedStatic.when(() -> Order.of(any(OrderCreateRequestDTO.class), any(OrderCalculationResult.class))).thenReturn(mock);
+
+			given(orderCalculationService.calculateOrderDetails(any(OrderCreateRequestDTO.class),
+				any(Member.class))).willReturn(mock(OrderCalculationResult.class));
+
+			given(orderPersistence.getOrderWithNoCondition(anyLong())).willThrow(new BadRequestException(ErrorCode.ORDER_NOT_FOUND));
+
+			// when - then
+			assertThatThrownBy(() -> orderService.createOrder(member, orderCreateRequestDTO))
+				.isInstanceOf(BadRequestException.class)
+				.hasMessage("Not Found Order");
+		}
+	}
 }
