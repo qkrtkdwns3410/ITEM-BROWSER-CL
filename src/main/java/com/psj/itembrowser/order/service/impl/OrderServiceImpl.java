@@ -116,8 +116,7 @@ public class OrderServiceImpl implements OrderService {
 		productValidationHelper.validateProduct(orderProducts);
 
 		//주문 상품에 대한 가격, 수량, 할인, 배송비 등을 계산한다.
-		OrderCalculationResult orderCalculationResult = orderCalculationService.calculateOrderDetails(
-			orderCreateRequestDTO, member);
+		OrderCalculationResult orderCalculationResult = orderCalculationService.calculateOrderDetails(orderCreateRequestDTO, member);
 
 		//주문자의 배송지에 대한 검증 수행한다. -> 존재하는 배송지인지 확인한다.
 		ShippingInfo shippingInfo = ShippingInfo.from(orderCreateRequestDTO.getShippingInfo());
