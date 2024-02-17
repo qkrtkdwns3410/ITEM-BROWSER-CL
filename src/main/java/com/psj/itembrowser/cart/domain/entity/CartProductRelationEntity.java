@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
-import com.psj.itembrowser.cart.domain.vo.CartProductRelationMockDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 
@@ -80,14 +79,6 @@ public class CartProductRelationEntity {
 
 	public CartProductUpdateRequestDTO toCartProductUpdateRequestDTO() {
 		return new CartProductUpdateRequestDTO(
-			this.cartId,
-			this.productId,
-			this.productQuantity
-		);
-	}
-
-	public CartProductRelationMockDTO toCartProductRelationSimpleDTO() {
-		return new CartProductRelationMockDTO(
 			this.cartId,
 			this.productId,
 			this.productQuantity

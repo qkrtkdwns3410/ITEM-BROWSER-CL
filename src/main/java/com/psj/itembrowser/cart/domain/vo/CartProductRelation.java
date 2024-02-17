@@ -61,12 +61,4 @@ public class CartProductRelation extends BaseDateTimeEntity {
 			this.productQuantity
 		);
 	}
-
-	public CartProductRelationMockDTO toCartProductRelationSimpleDTO() {
-		return new CartProductRelationMockDTO(
-			this.cartId,
-			this.productId,
-			this.productQuantity
-		);
-	}
 }
