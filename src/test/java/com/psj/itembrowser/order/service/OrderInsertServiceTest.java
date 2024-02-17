@@ -20,14 +20,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
+import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberNo;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
-import com.psj.itembrowser.order.controller.OrderCreateRequestDTO;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
+import com.psj.itembrowser.order.domain.vo.PaymentStatus;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
@@ -91,10 +97,10 @@ class OrderInsertServiceTest {
 			Credentials.create("qkrtkdwns3410@gmail.com", "1234"),
 			Name.create("박", "상준"),
 			"010-1234-5678",
-			Member.Gender.MEN,
-			Member.Role.ROLE_CUSTOMER,
-			Member.Status.ACTIVE,
-			Member.MemberShipType.REGULAR,
+			Gender.MEN,
+			Role.ROLE_CUSTOMER,
+			Status.ACTIVE,
+			MemberShipType.REGULAR,
 			Address.create("서울시 강남구 역삼동", "김밥천국 101동", "01111"),
 			LocalDate.of(1993, 10, 10), LocalDateTime.now());
 
@@ -141,8 +147,8 @@ class OrderInsertServiceTest {
 		expectedOrder = new Order(
 			1L,
 			1L,
-			Order.OrderStatus.PENDING,
-			Order.PaymentStatus.COMPLETE,
+			OrderStatus.PENDING,
+			PaymentStatus.COMPLETE,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),

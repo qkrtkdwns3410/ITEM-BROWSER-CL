@@ -1,4 +1,4 @@
-package com.psj.itembrowser.cart.domain.vo;
+package com.psj.itembrowser.cart.domain.entity;
 
 import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 
@@ -17,7 +17,8 @@ import javax.persistence.Table;
 
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
-import com.psj.itembrowser.product.domain.vo.ProductEntity;
+import com.psj.itembrowser.cart.domain.vo.CartProductRelationMockDTO;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 
 import lombok.AllArgsConstructor;
@@ -58,8 +59,8 @@ public class CartProductRelationEntity {
 	@JoinColumn(name = "CART_ID", insertable = false, updatable = false)
 	private CartEntity cartEntity;
 
-	public static CartProductRelation create(CartProductRelationResponseDTO dto) {
-		CartProductRelation cartProductRelation = new CartProductRelation();
+	public static CartProductRelationEntity create(CartProductRelationResponseDTO dto) {
+		CartProductRelationEntity cartProductRelation = new CartProductRelationEntity();
 
 		cartProductRelation.cartId = dto.getCartId();
 		cartProductRelation.productId = dto.getProductId();

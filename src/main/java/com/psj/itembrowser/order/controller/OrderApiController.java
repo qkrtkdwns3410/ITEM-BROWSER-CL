@@ -22,6 +22,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.github.pagehelper.PageInfo;
 import com.psj.itembrowser.member.annotation.CurrentUser;
 import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.service.OrderService;
@@ -97,7 +99,7 @@ public class OrderApiController {
 	}
 
 	private OrderResponseDTO getOrderResponseBasedOnRole(Member member, Long orderId) {
-		if (member.hasRole(Member.Role.ROLE_ADMIN)) {
+		if (member.hasRole(Role.ROLE_ADMIN)) {
 			return orderService.getOrderWithNoCondition(orderId);
 		} else {
 			return orderService.getOrderWithNotDeleted(orderId);
@@ -107,7 +109,7 @@ public class OrderApiController {
 	private PageInfo<OrderResponseDTO> getOrdersResponseBasedOnRole(Member member, OrderPageRequestDTO pageRequestDTO) {
 		PageInfo<OrderResponseDTO> orderResponseDTOPageInfo;
 
-		if (member.hasRole(Member.Role.ROLE_ADMIN)) {
+		if (member.hasRole(Role.ROLE_ADMIN)) {
 			orderResponseDTOPageInfo = orderService.getOrdersWithPaginationAndNoCondition(member, pageRequestDTO);
 		} else {
 			orderResponseDTOPageInfo = orderService.getOrdersWithPaginationAndNotDeleted(member, pageRequestDTO);

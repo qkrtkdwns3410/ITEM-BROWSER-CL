@@ -17,10 +17,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
+import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberNo;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.product.domain.vo.Product;
@@ -53,10 +58,10 @@ public class OrderSelectPersistenceTest {
 		Member expectedMember = new Member(MemberNo.create(1L), Credentials.create("test@test.com", "test"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
-			Member.Gender.MEN,
-			Member.Role.ROLE_CUSTOMER,
-			Member.Status.ACTIVE,
-			Member.MemberShipType.REGULAR,
+			Gender.MEN,
+			Role.ROLE_CUSTOMER,
+			Status.ACTIVE,
+			MemberShipType.REGULAR,
 			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
@@ -85,7 +90,7 @@ public class OrderSelectPersistenceTest {
 		this.expectedOrder = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),

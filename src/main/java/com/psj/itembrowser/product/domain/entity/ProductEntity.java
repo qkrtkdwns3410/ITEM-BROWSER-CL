@@ -1,10 +1,14 @@
-package com.psj.itembrowser.product.domain.vo;
+package com.psj.itembrowser.product.domain.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,24 +16,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Positive;
 
-import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
+import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
-import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTOForEntity;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
+import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
+import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "product")
 @Getter
-@ToString
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProductEntity extends BaseDateTimeEntity {
 
@@ -43,87 +49,106 @@ public class ProductEntity extends BaseDateTimeEntity {
 	/**
 	 * 상품명
 	 */
+	@Column(name = "name", length = 500)
 	private String name;
 
 	/**
 	 * 상품카테고리. CATEGORY 테이블 참조
 	 */
+	@Column(name = "category")
 	private Integer category;
 
 	/**
 	 * 상품설명
 	 */
+	@Column(name = "DETAIL", length = 45)
 	private String detail;
 
 	/**
 	 * 상품상태. 심사중/임시저장/승인대기/승인완료/부분승인/완료/승인반려/상품삭제
 	 */
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", length = 200)
 	private ProductStatus status;
 
 	/**
 	 * 재고
 	 */
+	@Column(name = "quantity")
 	private Integer quantity;
 
 	/**
 	 * 가격
 	 */
+	@Column(name = "unit_price")
 	private Integer unitPrice;
 
 	/**
 	 * 판매자ID
 	 */
+	@Column(name = "seller_id", length = 45)
 	private String sellerId;
 
 	/**
 	 * 판매시작일시
 	 */
+	@Column(name = "sell_start_datetime")
 	private LocalDateTime sellStartDatetime;
 
 	/**
 	 * 판매종료일시
 	 */
+	@Column(name = "sell_end_datetime")
 	private LocalDateTime sellEndDatetime;
 
 	/**
 	 * 노출상품명. 실제노출되는 상품명
 	 */
+	@Column(name = "display_name", length = 500)
 	private String displayName;
 
 	/**
 	 * 브랜드
 	 */
+	@Column(name = "brand", length = 300)
 	private String brand;
 
 	/**
 	 * 배송비종류. DELIVERY_FEE_TYPE 테이블 참조
 	 */
+	@Enumerated(EnumType.STRING)
+	@Column(name = "delivery_fee_type")
 	private DeliveryFeeType deliveryFeeType;
 
 	/**
 	 * 배송방법. DELIVERY_METHOD 테이블 참조
 	 */
+	@Column(name = "delivery_method", length = 45)
 	private String deliveryMethod;
 
 	/**
 	 * 기본배송비. 기본 배송
 	 */
+	@Column(name = "delivery_default_fee")
 	private Integer deliveryDefaultFee;
 
 	/**
 	 * 무료배송금액. 무료 배송 기준 금액
 	 */
+	@Column(name = "free_ship_over_amount")
 	private Integer freeShipOverAmount;
 
 	/**
 	 * 반품지 센터 코드. CENTER 테이블 참조
 	 */
+	@Column(name = "return_center_code", length = 255)
 	private String returnCenterCode;
 
-	@OneToMany(mappedBy = "productEntity")
-	private List<CartProductRelation> cartProductRelations;
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	private List<CartProductRelationEntity> cartProductRelations;
 
-	private List<ProductImage> productImages;
+	@OneToMany(mappedBy = "productEntity", fetch = FetchType.LAZY)
+	private List<ProductImageEntity> productImages;
 
 	public void validateSellDates() {
 		if (this.sellStartDatetime != null && this.sellEndDatetime != null
@@ -166,30 +191,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 		return (this.unitPrice * quantity) * ((double)discountRate / 100);
 	}
 
-	public ProductResponseDTO toProductResponseDTO() {
-		return ProductResponseDTO
-			.builder()
-			.id(this.id)
-			.name(this.name)
-			.category(this.category)
-			.detail(this.detail)
-			.status(this.status)
-			.quantity(this.quantity)
-			.unitPrice(this.unitPrice)
-			.sellerId(this.sellerId)
-			.sellStartDatetime(this.sellStartDatetime)
-			.sellEndDatetime(this.sellEndDatetime)
-			.displayName(this.displayName)
-			.brand(this.brand)
-			.deliveryMethod(this.deliveryMethod)
-			.deliveryDefaultFee(this.deliveryDefaultFee)
-			.freeShipOverAmount(this.freeShipOverAmount)
-			.returnCenterCode(this.returnCenterCode)
-			.productImages(this.productImages)
-			.build();
-	}
-
-	public static ProductEntity from(ProductResponseDTO productResponseDTO) {
+	public static ProductEntity from(ProductResponseDTOForEntity productResponseDTO) {
 		if (productResponseDTO == null) {
 			return null;
 		}

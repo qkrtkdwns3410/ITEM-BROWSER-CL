@@ -20,6 +20,7 @@ import com.github.pagehelper.page.PageMethod;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
@@ -45,7 +46,7 @@ public class OrderSelectMapperTest {
 		Order expectedOrder = Order.of(
 			expectedId,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -101,7 +102,7 @@ public class OrderSelectMapperTest {
 		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -144,7 +145,7 @@ public class OrderSelectMapperTest {
 		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -189,7 +190,7 @@ public class OrderSelectMapperTest {
 		Order expectedOrder = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),

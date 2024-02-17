@@ -2,7 +2,6 @@ package com.psj.itembrowser.order.mapper;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.vo.Product;
 
@@ -44,7 +44,7 @@ public class OrderDeleteMapperTest {
         long orderIdThatMustSuccess = 1L;
         OrderDeleteRequestDTO requestDTO = OrderDeleteRequestDTO.builder()
             .id(orderIdThatMustSuccess)
-            .orderStatus(Order.OrderStatus.CANCELED)
+            .orderStatus(OrderStatus.CANCELED)
             .build();
 
         // when - then
@@ -58,7 +58,7 @@ public class OrderDeleteMapperTest {
         long orderIdThatMustSuccess = 1L;
         OrderDeleteRequestDTO orderDeleteRequestDTO = OrderDeleteRequestDTO.builder()
             .id(orderIdThatMustSuccess)
-            .orderStatus(Order.OrderStatus.CANCELED)
+            .orderStatus(OrderStatus.CANCELED)
             .build();
 
         // when

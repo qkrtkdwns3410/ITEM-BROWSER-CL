@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * DTO for {@link com.psj.itembrowser.product.domain.vo.ProductImageEntity}
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

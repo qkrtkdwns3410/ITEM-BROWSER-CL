@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.service.impl.OrderServiceImpl;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
@@ -39,7 +40,7 @@ public class OrderDeleteServiceTest {
 		// given as @Mock
 		long orderIdThatMustSuccess = 1L;
 		Order mockOrder = mock(Order.class);
-		ReflectionTestUtils.setField(mockOrder, "orderStatus", Order.OrderStatus.INSTRUCT);
+		ReflectionTestUtils.setField(mockOrder, "orderStatus", OrderStatus.INSTRUCT);
 
 		given(orderPersistence.findOrderStatusForUpdate(orderIdThatMustSuccess)).willReturn(mockOrder);
 
@@ -60,7 +61,7 @@ public class OrderDeleteServiceTest {
 		// given as @Mock
 		long orderIdThatMustFail = 1L;
 		Order mockOrder = mock(Order.class);
-		ReflectionTestUtils.setField(mockOrder, "orderStatus", Order.OrderStatus.INSTRUCT);
+		ReflectionTestUtils.setField(mockOrder, "orderStatus", OrderStatus.INSTRUCT);
 
 		given(orderPersistence.findOrderStatusForUpdate(orderIdThatMustFail)).willReturn(mockOrder);
 		willThrow(new DatabaseOperationException(ErrorCode.ORDER_DELETE_FAIL)).given(orderPersistence)
@@ -83,7 +84,7 @@ public class OrderDeleteServiceTest {
 		// given as @Mock
 		long orderIdThatMustFail = 1L;
 		Order mockOrder = mock(Order.class);
-		ReflectionTestUtils.setField(mockOrder, "orderStatus", Order.OrderStatus.INSTRUCT);
+		ReflectionTestUtils.setField(mockOrder, "orderStatus", OrderStatus.INSTRUCT);
 
 		given(orderPersistence.findOrderStatusForUpdate(orderIdThatMustFail)).willReturn(mockOrder);
 		doThrow(new DatabaseOperationException(ErrorCode.ORDER_RELATION_DELETE_FAIL)).when(orderPersistence)
@@ -107,12 +108,12 @@ public class OrderDeleteServiceTest {
 		// given as @Mock
 		long orderIdThatMustFail = 1L;
 		int count = 0;
-		Set<Order.OrderStatus> orderStatuses = EnumSet.of(Order.OrderStatus.INSTRUCT, Order.OrderStatus.ACCEPT);
+		Set<OrderStatus> orderStatuses = EnumSet.of(OrderStatus.INSTRUCT, OrderStatus.ACCEPT);
 
-		for (Order.OrderStatus ordeStatusCanCanceled : orderStatuses) {
+		for (OrderStatus ordeStatusCanCanceled : orderStatuses) {
 			count++;
 			Order mockOrder = mock(Order.class);
-			ReflectionTestUtils.setField(mockOrder, "orderStatus", Order.OrderStatus.INSTRUCT);
+			ReflectionTestUtils.setField(mockOrder, "orderStatus", OrderStatus.INSTRUCT);
 
 			given(orderPersistence.findOrderStatusForUpdate(orderIdThatMustFail)).willReturn(mockOrder);
 
@@ -130,12 +131,12 @@ public class OrderDeleteServiceTest {
 	void When_OrderStatusIsNotInstructAndAccept_Expect_ThrowBadRequestException() {
 		// given as @Mock
 		long orderIdThatMustFail = 1L;
-		Set<Order.OrderStatus> orderStatuses = EnumSet.allOf(Order.OrderStatus.class)
+		Set<OrderStatus> orderStatuses = EnumSet.allOf(OrderStatus.class)
 			.stream()
-			.filter(status -> status != Order.OrderStatus.INSTRUCT && status != Order.OrderStatus.ACCEPT)
+			.filter(status -> status != OrderStatus.INSTRUCT && status != OrderStatus.ACCEPT)
 			.collect(Collectors.toCollection(LinkedHashSet::new));
 
-		for (Order.OrderStatus orderStatusCanCanceled : orderStatuses) {
+		for (OrderStatus orderStatusCanCanceled : orderStatuses) {
 			Order mockOrder = mock(Order.class);
 			ReflectionTestUtils.setField(mockOrder, "orderStatus", orderStatusCanCanceled);
 

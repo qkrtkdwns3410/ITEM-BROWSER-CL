@@ -40,13 +40,17 @@ import com.psj.itembrowser.member.annotation.MockMember;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
+import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.member.domain.vo.Member.Role;
 import com.psj.itembrowser.member.domain.vo.MemberNo;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.service.OrderService;
 import com.psj.itembrowser.product.domain.vo.Product;
@@ -87,9 +91,9 @@ class OrderSelectApiControllerTest {
 			Credentials.create("mockUser3410@gamil.com", "3410"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
-			Member.Gender.MEN,
-			Member.Role.ROLE_ADMIN, Member.Status.ACTIVE,
-			Member.MemberShipType.REGULAR,
+			Gender.MEN,
+			Role.ROLE_ADMIN, Status.ACTIVE,
+			MemberShipType.REGULAR,
 			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
@@ -98,9 +102,9 @@ class OrderSelectApiControllerTest {
 			Credentials.create("mockUser3410@gmail.com", "3410"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
-			Member.Gender.MEN,
-			Member.Role.ROLE_CUSTOMER, Member.Status.ACTIVE,
-			Member.MemberShipType.REGULAR,
+			Gender.MEN,
+			Role.ROLE_CUSTOMER, Status.ACTIVE,
+			MemberShipType.REGULAR,
 			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
@@ -131,7 +135,7 @@ class OrderSelectApiControllerTest {
 		this.expectedOrderWithADMINUser = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -147,7 +151,7 @@ class OrderSelectApiControllerTest {
 		this.expectedOrderWithCUSTOMERUser = Order.of(
 			1L,
 			1L,
-			Order.OrderStatus.ACCEPT,
+			OrderStatus.ACCEPT,
 			LocalDateTime.now(),
 			1L,
 			LocalDateTime.now(),
@@ -183,7 +187,7 @@ class OrderSelectApiControllerTest {
 			.andExpect(jsonPath("$.member.memberNo").value(expectedOrderResponseDTO.getMember().getMemberNo()))
 			.andExpect(
 				jsonPath("$.member.email").value(expectedOrderResponseDTO.getMember().getEmail()))
-			.andExpect(jsonPath("$.member.role").value(Member.Role.ROLE_CUSTOMER.name()));
+			.andExpect(jsonPath("$.member.role").value(Role.ROLE_CUSTOMER.name()));
 
 		response
 			.andDo(MockMvcRestDocumentationWrapper.document(
@@ -241,7 +245,7 @@ class OrderSelectApiControllerTest {
 
 	@Test
 	@DisplayName("권한 - ADMIN 의 경우 주문 단건 조회시 200 성공과 올바른 응답값이 오는지 확인합니다.")
-	@MockMember(role = Member.Role.ROLE_ADMIN)
+	@MockMember(role = Role.ROLE_ADMIN)
 	void When_GetOrderWithAdmin_Expect_Status200() throws Exception {
 		// given
 		long orderId = 1L;
@@ -262,7 +266,7 @@ class OrderSelectApiControllerTest {
 				expectedOrderResponseDTO.getMember().getMemberNo()))
 			.andExpect(
 				jsonPath("$.member.email").value(expectedOrderResponseDTO.getMember().getEmail()))
-			.andExpect(jsonPath("$.member.role").value(Member.Role.ROLE_ADMIN.name()));
+			.andExpect(jsonPath("$.member.role").value(Role.ROLE_ADMIN.name()));
 
 		response
 			.andDo(MockMvcRestDocumentationWrapper.document(
@@ -319,7 +323,7 @@ class OrderSelectApiControllerTest {
 	}
 
 	@Test
-	@MockMember(role = Member.Role.ROLE_CUSTOMER)
+	@MockMember(role = Role.ROLE_CUSTOMER)
 	@DisplayName("권한 - CUSTOMER 인 경우, 주문 단건 조회 실패 케이스의 경우 404 반환과 올바른 응답값이 오는지 확인합니다.")
 	void When_GetOrderWithCUSTOMER_Expect_Status404() throws Exception {
 		// given
@@ -359,7 +363,7 @@ class OrderSelectApiControllerTest {
 	}
 
 	@Test
-	@MockMember(role = Member.Role.ROLE_ADMIN)
+	@MockMember(role = Role.ROLE_ADMIN)
 	@DisplayName("권한 - ADMIN 인 경우, 주문 단건 조회 실패 케이스의 경우 404 반환과 올바른 응답값이 오는지 확인합니다.")
 	void When_GetOrderWithADMIN_Expect_Status404() throws Exception {
 		// given
@@ -399,7 +403,7 @@ class OrderSelectApiControllerTest {
 
 	//다건 조회 테스트
 	@Test
-	@MockMember(role = Member.Role.ROLE_CUSTOMER)
+	@MockMember(role = Role.ROLE_CUSTOMER)
 	@DisplayName("권한 - CUSTOMER 인 경우, 삭제되지 않은 주문을 조회하는 서비스를 호출 시 200 성공을 기대합니다.")
 	void When_GetOrdersWithCustomer_Expect_Status200()
 		throws Exception {
@@ -560,7 +564,7 @@ class OrderSelectApiControllerTest {
 	}
 
 	@Test
-	@MockMember(role = Member.Role.ROLE_ADMIN)
+	@MockMember(role = Role.ROLE_ADMIN)
 	@DisplayName("권한 - ADMIN 인 경우, 삭제되지 않은 주문을 조회하는 서비스를 호출 시 200 성공을 기대합니다.")
 	void When_GetOrdersWithAdmin_Expect_Status200() throws Exception {
 		// given
@@ -663,7 +667,7 @@ class OrderSelectApiControllerTest {
 	}
 
 	@Test
-	@MockMember(role = Member.Role.ROLE_ADMIN)
+	@MockMember(role = Role.ROLE_ADMIN)
 	@DisplayName("권한 - ADMIN 인 경우, 주문 다건 조회 실패 케이스의 경우 404 반환과 올바른 응답값이 오는지 확인합니다.")
 	void When_GetOrdersWithAdmin_Pagination_SpecificYear_Expect_Status404() throws Exception {
 		// given

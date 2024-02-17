@@ -5,11 +5,11 @@
 <mapper namespace="com.psj.itembrowser.member.mapper.MemberMapper">
     <resultMap id="memberResultMap" type="com.psj.itembrowser.member.domain.vo.Member">
         <result property="phoneNumber" column="PHONE_NUMBER"/>
-        <result property="gender" column="GENDER" javaType="com.psj.itembrowser.member.domain.vo.Member$Gender"
+        <result property="gender" column="GENDER" javaType="com.psj.itembrowser.member.domain.vo.Gender"
                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-        <result property="role" column="ROLE" javaType="com.psj.itembrowser.member.domain.vo.Member$Role"
+        <result property="role" column="ROLE" javaType="com.psj.itembrowser.member.domain.vo.Role"
                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-        <result property="status" column="STATUS" javaType="com.psj.itembrowser.member.domain.vo.Member$Status"
+        <result property="status" column="STATUS" javaType="com.psj.itembrowser.member.domain.vo.Status"
                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="birthday" column="BIRTHDAY"/>
         <result property="lastLoginDate" column="LAST_LOGIN_DATE"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
     <resultMap id="memberNoResultMap" type="com.psj.itembrowser.member.domain.vo.MemberNo">
-        <id property="memberNo" column="MEMBER_NO"/>
+        <id property="no" column="MEMBER_NO"/>
     </resultMap>
 
     <resultMap id="credentialsResultMap" type="com.psj.itembrowser.member.domain.vo.Credentials">

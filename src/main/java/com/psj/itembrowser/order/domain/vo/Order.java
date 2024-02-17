@@ -2,13 +2,12 @@ package com.psj.itembrowser.order.domain.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.order.controller.OrderCreateRequestDTO;
+import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -19,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Getter
@@ -102,70 +100,4 @@ public class Order implements Cancelable {
 		this.paidDate = LocalDateTime.now();
 	}
 
-	@Getter
-	public enum PaymentStatus {
-		PENDING("PENDING"), // 결제 대기중
-
-		COMPLETE("COMPLETE"), // 결제 완료
-
-		CANCELED("CANCELED"), // 결제 취소됨
-		;
-
-		private final String name;
-		private final String value;
-
-		PaymentStatus(@NonNull String value) {
-			this.value = value;
-			this.name = name();
-		}
-
-		public static PaymentStatus of(@NonNull String value) {
-			for (PaymentStatus paymentStatus : PaymentStatus.values()) {
-				if (Objects.equals(
-					paymentStatus.getValue(), value)) {
-					return paymentStatus;
-				}
-			}
-			throw new IllegalArgumentException("결제 상태가 존재하지 않습니다.");
-		}
-
-	}
-
-	@Getter
-	public enum OrderStatus {
-		PENDING("PENDING"), // 주문 대기중
-
-		ACCEPT("ACCEPT"), // 주문 접수됨
-
-		INSTRUCT("INSTRUCT"), // 	상품 준비중
-
-		DEPARTURE("DEPARTURE"), // 배송 지시
-
-		DELIVERING("DELIVERING"), // 배송중
-
-		FINAL_DELIVERY("FINAL_DELIVERY"), // 배송 완료
-
-		NONE_TRACKING("NONE_TRACKING"), // 업체 직접 배송
-
-		CANCELED("CANCELED"), // 주문 취소됨
-		;
-
-		private final String name;
-		private final String value;
-
-		OrderStatus(@NonNull String value) {
-			this.value = value;
-			this.name = name();
-		}
-
-		public static OrderStatus of(@NonNull String value) {
-			for (OrderStatus orderStatus : OrderStatus.values()) {
-				if (Objects.equals(
-					orderStatus.getValue(), value)) {
-					return orderStatus;
-				}
-			}
-			throw new IllegalArgumentException("주문 상태가 존재하지 않습니다.");
-		}
-	}
 }

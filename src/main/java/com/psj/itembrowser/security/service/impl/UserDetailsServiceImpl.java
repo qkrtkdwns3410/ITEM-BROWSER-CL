@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
-import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.persistence.MemberPersistance;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.TokenException;
@@ -66,7 +66,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		private static final List<GrantedAuthority> AUTHORITIES =
 			Collections.unmodifiableList(
 				AuthorityUtils.createAuthorityList(
-					Arrays.stream(Member.Role.values())
+					Arrays.stream(Role.values())
 						.map(Enum::name)
 						.toArray(String[]::new)
 				)

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.order.controller.OrderCreateRequestDTO;
+import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.service.ProductService;

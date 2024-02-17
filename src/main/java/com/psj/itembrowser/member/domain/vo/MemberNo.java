@@ -1,8 +1,15 @@
 package com.psj.itembrowser.member.domain.vo;
 
+import java.io.Serializable;
+
+import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -17,18 +24,18 @@ import lombok.ToString;
  * -----------------------------------------------------------
  * 2024-01-06        ipeac       최초 생성
  */
-@Data
+@Embeddable
+@Getter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MemberNo {
-	/**
-	 * 회원번호
-	 */
-	private Long memberNo;
+public class MemberNo implements Serializable {
 
-	public static MemberNo create(Long memberNo) {
-		return new MemberNo(memberNo);
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long no;
+
+	public static MemberNo create(Long no) {
+		return new MemberNo(no);
 	}
 }

@@ -5,7 +5,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 
-import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.member.factory.MockMemberSecurityContextFactory;
 
 /**
@@ -24,8 +25,8 @@ import com.psj.itembrowser.member.factory.MockMemberSecurityContextFactory;
 public @interface MockMember {
 	String email() default "mockMember3410@gmail.com";
 
-	Member.Role role() default Member.Role.ROLE_CUSTOMER;
+	Role role() default Role.ROLE_CUSTOMER;
 
-	Member.Status status() default Member.Status.ACTIVE;
+	Status status() default Status.ACTIVE;
 
 }

@@ -1,8 +1,10 @@
 package com.psj.itembrowser.member.domain.vo;
 
+import javax.persistence.Column;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -17,23 +19,25 @@ import lombok.ToString;
  * -----------------------------------------------------------
  * 2024-01-06        ipeac       최초 생성
  */
-@Data
+@Getter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Address {
 	/**
 	 * 주소 메인
 	 */
+	@Column(name = "address_main", nullable = false, columnDefinition = "VARCHAR(255)")
 	private String addressMain;
 	/**
 	 * 주소 서브
 	 */
+	@Column(name = "address_sub", nullable = false)
 	private String addressSub;
 	/**
 	 * 우편번호
 	 */
+	@Column(name = "zip_code", nullable = false)
 	private String zipCode;
 
 	public static Address create(String addressMain, String addressSub, String zipCode) {

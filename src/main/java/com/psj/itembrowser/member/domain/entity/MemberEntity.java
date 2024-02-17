@@ -1,83 +1,108 @@
-package com.psj.itembrowser.member.domain.vo;
+package com.psj.itembrowser.member.domain.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
+import com.psj.itembrowser.member.domain.vo.Address;
+import com.psj.itembrowser.member.domain.vo.Credentials;
+import com.psj.itembrowser.member.domain.vo.Gender;
+import com.psj.itembrowser.member.domain.vo.MemberNo;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
+import com.psj.itembrowser.member.domain.vo.Name;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Entity
+@Table(name = "member")
 @Getter
 @ToString
-@EqualsAndHashCode(of = {"no", "credentials"}, callSuper = false)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member extends BaseDateTimeEntity {
+public class MemberEntity extends BaseDateTimeEntity {
 
+	@EmbeddedId
 	private MemberNo no;
 
-	/**
-	 * 인증정보
-	 */
+	@Embedded
 	private Credentials credentials;
 
 	/**
 	 * 성. 이름
 	 */
+	@Embedded
 	private Name name;
 
 	/**
 	 * 휴대폰번호
 	 */
+	@Column(name = "phone_number")
 	private String phoneNumber;
 
 	/**
 	 * 성별
 	 */
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	/**
 	 * 역할
 	 */
+	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	/**
 	 * 회원 상태. ACTIVE -> 활성화, READY -> 대기, DISABLED -> 비활성화
 	 */
+	@Enumerated(EnumType.STRING)
 	private Status status = Status.ACTIVE;
 
+	@Enumerated(EnumType.STRING)
 	private MemberShipType memberShipType = MemberShipType.REGULAR;
 
 	/**
 	 * 주소
 	 */
+	@Embedded
 	private Address address;
 
 	/**
 	 * 생년월일. 생년월일
 	 */
+	@Column(name = "birthday", columnDefinition = "TIMESTAMP")
 	private LocalDate birthday;
 
 	/**
 	 * 최종 로그인 일시
 	 */
+	@Column(name = "last_login_date", columnDefinition = "TIMESTAMP")
 	private LocalDateTime lastLoginDate;
 
-	public static Member from(MemberRequestDTO dto) {
-		Member member = new Member();
+	public static MemberEntity from(MemberRequestDTO dto) {
+		MemberEntity member = new MemberEntity();
 		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
 		return member;
 	}
 
-	public static Member from(MemberResponseDTO dto) {
-		Member member = new Member();
+	public static MemberEntity from(MemberResponseDTO dto) {
+		MemberEntity member = new MemberEntity();
 
 		member.no = new MemberNo(dto.getMemberNo());
 		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
@@ -93,7 +118,7 @@ public class Member extends BaseDateTimeEntity {
 		return member;
 	}
 
-	public boolean isSame(Member other) {
+	public boolean isSame(MemberEntity other) {
 		if (other == null) {
 			return false;
 		}

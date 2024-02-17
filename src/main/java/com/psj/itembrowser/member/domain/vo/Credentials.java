@@ -1,8 +1,11 @@
 package com.psj.itembrowser.member.domain.vo;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -17,19 +20,21 @@ import lombok.ToString;
  * -----------------------------------------------------------
  * 2024-01-06        ipeac       최초 생성
  */
-@Data
+@Embeddable
+@Getter
 @ToString
-@EqualsAndHashCode(of = {"email", "password"})
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Credentials {
 	/**
 	 * 아이디
 	 */
+	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 	/**
 	 * 비밀번호
 	 */
+	@Column(name = "password", nullable = false)
 	private String password;
 
 	public static Credentials create(String email, String password) {

@@ -10,6 +10,7 @@ import java.util.List;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class OrderResponseDTO implements Serializable {
 
 	private Long id;
 	private Long ordererNumber;
-	private Order.OrderStatus orderStatus;
+	private OrderStatus orderStatus;
 	private LocalDateTime paidDate;
 	private Long shippingInfoId;
 	private LocalDateTime createdDate;

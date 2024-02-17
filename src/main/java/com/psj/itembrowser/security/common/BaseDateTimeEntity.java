@@ -2,6 +2,8 @@ package com.psj.itembrowser.security.common;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +23,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseDateTimeEntity {
+	@Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	protected LocalDateTime createdDate;
+	@Column(name = "updated_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	protected LocalDateTime updatedDate;
+	@Column(name = "deleted_date", columnDefinition = "TIMESTAMP")
 	protected LocalDateTime deletedDate;
 }

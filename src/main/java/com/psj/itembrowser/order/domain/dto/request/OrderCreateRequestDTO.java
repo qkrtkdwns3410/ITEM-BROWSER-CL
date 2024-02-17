@@ -1,6 +1,5 @@
-package com.psj.itembrowser.order.controller;
+package com.psj.itembrowser.order.domain.dto.request;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderCreateRequestDTO implements Serializable {
+public class OrderCreateRequestDTO {
 	@NotNull
 	@Positive
 	private Long ordererNumber;

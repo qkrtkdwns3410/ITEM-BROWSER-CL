@@ -8,7 +8,11 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
 import com.psj.itembrowser.member.domain.annotation.PasswordValidation;
+import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,11 +48,11 @@ public class MemberSignUpRequestDTO {
 	@Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$")
 	private String contactPhoneNumber;
 	@NotNull
-	private Member.Gender gender;
+	private Gender gender;
 	@NotNull
-	private Member.Role role;
-	private Member.Status status;
-	private Member.MemberShipType memberShipType;
+	private Role role;
+	private Status status;
+	private MemberShipType memberShipType;
 	private String addressAddressMain;
 	private String addressAddressSub;
 	private String addressZipCode;

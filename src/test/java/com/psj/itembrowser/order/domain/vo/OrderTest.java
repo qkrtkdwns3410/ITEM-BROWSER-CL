@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.psj.itembrowser.order.domain.vo.Order.PaymentStatus;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 
 public class OrderTest {

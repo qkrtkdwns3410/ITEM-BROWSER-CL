@@ -4,7 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.vo.MemberShipType;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.member.domain.vo.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,10 +31,10 @@ public class MemberResponseDTO {
 	private String addressMain;
 	private String addressSub;
 	private String zipCode;
-	private Member.Gender gender;
-	private Member.Role role;
-	private Member.Status status;
-	private Member.MemberShipType memberShipType;
+	private Gender gender;
+	private Role role;
+	private Status status;
+	private MemberShipType memberShipType;
 	private LocalDate birthday;
 	private LocalDateTime lastLoginDate;
 	private LocalDateTime createdDate;
@@ -40,7 +44,7 @@ public class MemberResponseDTO {
 	public static MemberResponseDTO from(Member member) {
 		MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
 
-		memberResponseDTO.setMemberNo(member.getNo().getMemberNo());
+		memberResponseDTO.setMemberNo(member.getNo().getNo());
 		memberResponseDTO.setPassword(member.getCredentials().getPassword());
 		memberResponseDTO.setEmail(member.getCredentials().getEmail());
 		memberResponseDTO.setFirstName(member.getName().getFirstName());
