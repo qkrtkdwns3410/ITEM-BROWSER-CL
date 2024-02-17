@@ -22,7 +22,6 @@ import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.member.domain.vo.MemberNo;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -93,7 +92,7 @@ class OrderInsertServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		member = new Member(MemberNo.create(1L),
+		member = new Member(1L,
 			Credentials.create("qkrtkdwns3410@gmail.com", "1234"),
 			Name.create("박", "상준"),
 			"010-1234-5678",

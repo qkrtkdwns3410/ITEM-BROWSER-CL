@@ -23,7 +23,6 @@ import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.member.domain.vo.MemberNo;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -64,7 +63,7 @@ public class OrderSelectServiceTest {
 	public void setUp() {
 		validOrderId = 1L;
 		invalidOrderId = 2L;
-		Member expectedMember = new Member(MemberNo.create(1L),
+		Member expectedMember = new Member(1L,
 			Credentials.create("test@test.com", "test"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",

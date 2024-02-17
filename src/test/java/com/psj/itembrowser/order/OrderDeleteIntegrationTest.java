@@ -43,7 +43,7 @@ class OrderDeleteIntegrationTest {
 
     //TODO @sql 을 JPA 로 변경
     @Test
-    @Sql(scripts = {"classpath:drop-table.sql", "classpath:schema.sql",
+    @Sql(scripts = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
         "classpath:/sql/h2/member/insert_member.sql",
         "classpath:/sql/h2/shippinginfo/insert_shipping_info.sql",
         "classpath:sql/h2/product/insert_product.sql",

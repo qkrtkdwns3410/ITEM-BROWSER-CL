@@ -1,17 +1,11 @@
 package com.psj.itembrowser.product.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
-import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
-import com.psj.itembrowser.product.domain.vo.Product;
-import com.psj.itembrowser.product.domain.vo.ProductImage;
-import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,6 +18,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
+import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.vo.ProductImage;
+import com.psj.itembrowser.product.domain.vo.ProductStatus;
+
 /**
  * packageName    : com.psj.itembrowser.product.mapper fileName       : ProductMapperTest author :
  * ipeac date           : 2023-10-09 description    :
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureTestDatabase(replace = Replace.AUTO_CONFIGURED)
 @ActiveProfiles("test")
 @Transactional
-@Sql(value = {"classpath:drop-table.sql", "classpath:schema.sql",
+@Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
     "classpath:/sql/h2/member/insert_member.sql",
     "classpath:/sql/h2/product/insert_product.sql",
     "classpath:/sql/h2/product/insert_product_image.sql"})

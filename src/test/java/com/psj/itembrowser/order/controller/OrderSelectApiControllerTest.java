@@ -42,7 +42,6 @@ import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.member.domain.vo.MemberNo;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -87,7 +86,7 @@ class OrderSelectApiControllerTest {
 			.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
 			.build();
 
-		Member expectedAdminMember = new Member(MemberNo.create(1L),
+		Member expectedAdminMember = new Member(1L,
 			Credentials.create("mockUser3410@gamil.com", "3410"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
@@ -98,7 +97,7 @@ class OrderSelectApiControllerTest {
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
 
-		Member expectedCustomerMember = new Member(MemberNo.create(1L),
+		Member expectedCustomerMember = new Member(1L,
 			Credentials.create("mockUser3410@gmail.com", "3410"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
