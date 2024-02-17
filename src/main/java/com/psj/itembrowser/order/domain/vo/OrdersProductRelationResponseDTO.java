@@ -38,7 +38,7 @@ public class OrdersProductRelationResponseDTO {
 	LocalDateTime deletedDate;
 
 	public static OrdersProductRelationResponseDTO create(@NonNull OrdersProductRelation ordersProductRelation) {
-		ProductResponseDTO productResponseDTO = ProductResponseDTO.of(ordersProductRelation.getProduct());
+		ProductResponseDTO productResponseDTO = ProductResponseDTO.from(ordersProductRelation.getProduct());
 
 		return new OrdersProductRelationResponseDTO(
 			ordersProductRelation.getGroupId(),

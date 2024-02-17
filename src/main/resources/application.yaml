@@ -74,8 +74,8 @@ juso:
 
 aws:
   s3:
-    access-key: AKIAZI2LCIURF7KVYVO3
-    secret-key: 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
+    access-key: ##
+    secret-key: ##
     region: ${AWS_REGION}
     bucket: item-browser-bucket
 

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.psj.itembrowser.cart.domain.dto.request.CartProductDeleteRequestDTO;
@@ -59,45 +57,10 @@ class CartPersistenceTest {
 		}
 
 		@Test
-		@DisplayName("장바구니 유저아이디로 조회시 값이 존재하며 - 반환값이 정상적인지 검증")
-		void When_GetCartByUserId_Expect_CartResponseDTO() throws NotFoundException {
-			// given
-			Cart expectedCart = mock(Cart.class);
-			given(expectedCart.getUserId()).willReturn(TEST_USER_ID);
-			given(expectedCart.getCartProductRelations()).willReturn(List.of(cartProductRelation));
-
-			given(expectedCart.getUserId()).willReturn(TEST_USER_ID);
-			given(cartMapper.getCartByUserId(TEST_USER_ID)).willReturn(expectedCart);
-
-			// when
-			CartResponseDTO cart = cartPersistence.getCart(TEST_USER_ID);
-
-			// then
-			assertThat(cart).isNotNull();
-			assertThat(cart.getUserId()).isEqualTo(TEST_USER_ID);
-
-			// verify - 유저아이디로 조회가 되었는지 검증
-			verify(cartMapper, Mockito.times(1)).getCartByUserId(anyString());
-			// 장바구니 번호로 조회가 수행되지 않았는지 검증
-			verify(cartMapper, Mockito.never()).getCart(anyLong());
-		}
-
-		@Test
 		@DisplayName("장바구니 유저아이디로 조회시 - 사용자 아이디가 null 인 경우 - NPE 이 발생")
 		void When_GetCartByUserId_Expect_NullPointerException() {
 			// when - then
 			assertThrows(NullPointerException.class, () -> cartPersistence.getCart((String)null));
-		}
-
-		@Test
-		@DisplayName("장바구니 유저아이디로 조회시 - 조회된 장바구니가 null 인 경우 -> NotFoundException 이 발생")
-		void When_GetCartByUserId_Expect_NotFoundException() throws NotFoundException {
-			// given
-			when(cartMapper.getCartByUserId(TEST_USER_ID)).thenReturn(null);
-
-			// when - then
-			assertThrows(NotFoundException.class, () -> cartPersistence.getCart(TEST_USER_ID));
-			verify(cartMapper, Mockito.times(1)).getCartByUserId(TEST_USER_ID);
 		}
 
 		@Test

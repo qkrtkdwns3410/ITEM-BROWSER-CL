@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional(readOnly = true)
 	public ProductResponseDTO getProduct(Long productId) {
-		return productPersistence.findProductById(productId).toProductResponseDTO();
+		return ProductResponseDTO.from(productPersistence.findProductById(productId));
 	}
 
 	/**

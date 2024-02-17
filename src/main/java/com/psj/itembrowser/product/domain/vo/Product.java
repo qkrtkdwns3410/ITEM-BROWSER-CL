@@ -3,6 +3,7 @@ package com.psj.itembrowser.product.domain.vo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.Positive;
 
@@ -157,29 +158,6 @@ public class Product extends BaseDateTimeEntity {
 		return (this.unitPrice * quantity) * ((double)discountRate / 100);
 	}
 
-	public ProductResponseDTO toProductResponseDTO() {
-		return ProductResponseDTO
-			.builder()
-			.id(this.id)
-			.name(this.name)
-			.category(this.category)
-			.detail(this.detail)
-			.status(this.status)
-			.quantity(this.quantity)
-			.unitPrice(this.unitPrice)
-			.sellerId(this.sellerId)
-			.sellStartDatetime(this.sellStartDatetime)
-			.sellEndDatetime(this.sellEndDatetime)
-			.displayName(this.displayName)
-			.brand(this.brand)
-			.deliveryMethod(this.deliveryMethod)
-			.deliveryDefaultFee(this.deliveryDefaultFee)
-			.freeShipOverAmount(this.freeShipOverAmount)
-			.returnCenterCode(this.returnCenterCode)
-			.productImages(this.productImages)
-			.build();
-	}
-
 	public static Product from(ProductResponseDTO productResponseDTO) {
 		if (productResponseDTO == null) {
 			return null;
@@ -205,7 +183,10 @@ public class Product extends BaseDateTimeEntity {
 		product.returnCenterCode = productResponseDTO.getReturnCenterCode();
 
 		if (Objects.nonNull(productResponseDTO.getProductImages()) && !productResponseDTO.getProductImages().isEmpty()) {
-			product.productImages = productResponseDTO.getProductImages();
+			product.productImages = productResponseDTO.getProductImages()
+				.stream()
+				.map(ProductImage::from)
+				.collect(Collectors.toList());
 		}
 
 		return product;

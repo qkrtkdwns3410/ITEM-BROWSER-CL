@@ -36,11 +36,13 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public CartResponseDTO getCart(String userId) {
+		//TODO userId NPE 체크필수
 		return cartPersistence.getCart(userId);
 	}
 
 	@Override
 	public CartResponseDTO getCart(Long cartId) {
+		//TODO cartId NPE 체크필수
 		return cartPersistence.getCart(cartId);
 	}
 

@@ -3,7 +3,6 @@ package com.psj.itembrowser.cart.service.impl;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -77,14 +76,13 @@ class CartServiceImplTest {
 			given(cartProductRelation2.getProductQuantity()).willReturn(1L);
 			given(cartProductRelation2.getProduct()).willReturn(product2);
 
-			List<CartProductRelation> cartProductRelations = List.of(cartProductRelation,
-				cartProductRelation2);
+			List<CartProductRelation> cartProductRelations = List.of(cartProductRelation, cartProductRelation2);
 
 			Cart mockCart = mock(Cart.class);
 			given(mockCart.getUserId()).willReturn(EXIST_USER_ID);
 			given(mockCart.getCartProductRelations()).willReturn(cartProductRelations);
 
-			mockCartResponseDTO = CartResponseDTO.create(mockCart);
+			mockCartResponseDTO = CartResponseDTO.from(mockCart);
 		}
 
 		@Test

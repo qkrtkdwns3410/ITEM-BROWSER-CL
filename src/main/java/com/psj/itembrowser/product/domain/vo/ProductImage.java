@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.psj.itembrowser.product.domain.dto.response.ProductImageResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
 import lombok.AllArgsConstructor;
@@ -41,6 +42,21 @@ public class ProductImage extends BaseDateTimeEntity {
 			.filePath(savePath.toString())
 			.type(file.getContentType())
 			.size(file.getSize())
+			.build();
+	}
+
+	public static ProductImage from(ProductImageResponseDTO dto) {
+		if (dto == null) {
+			return null;
+		}
+
+		return ProductImage.builder()
+			.id(dto.getId())
+			.productId(dto.getProductId())
+			.fileName(dto.getFileName())
+			.filePath(dto.getFilePath())
+			.type(dto.getType())
+			.size(dto.getSize())
 			.build();
 	}
 }

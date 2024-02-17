@@ -160,7 +160,7 @@ class ProductServiceImplTest {
 			// given
 			Long productId = 1L;
 			Product product = new Product();
-			ProductResponseDTO expectedResponse = ProductResponseDTO.of(product);
+			ProductResponseDTO expectedResponse = ProductResponseDTO.from(product);
 			when(productPersistence.findProductById(productId)).thenReturn(product);
 
 			// when

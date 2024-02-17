@@ -66,5 +66,4 @@ public class OrderEntity {
 
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
-
 }

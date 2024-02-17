@@ -8,6 +8,7 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductDeleteRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
+import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
@@ -28,13 +29,14 @@ import lombok.RequiredArgsConstructor;
 public class CartPersistence {
 
 	private final CartMapper cartMapper;
+	private final CartRepository cartRepository;
 
 	public CartResponseDTO getCart(@NonNull String userId) {
-		Cart cart = cartMapper.getCartByUserId(userId);
+		CartEntity cart = cartRepository.findByUserId(userId);
 		if (cart == null) {
 			throw new NotFoundException(CART_NOT_FOUND);
 		}
-		return CartResponseDTO.create(cart);
+		return CartResponseDTO.from(cart);
 	}
 
 	public CartResponseDTO getCart(@NonNull Long cartId) {
@@ -42,7 +44,7 @@ public class CartPersistence {
 		if (cart == null) {
 			throw new NotFoundException(CART_PRODUCT_NOT_FOUND);
 		}
-		return CartResponseDTO.create(cart);
+		return CartResponseDTO.from(cart);
 	}
 
 	public void insertCartProduct(@NonNull CartProductRequestDTO cartProductRequestDTO) {

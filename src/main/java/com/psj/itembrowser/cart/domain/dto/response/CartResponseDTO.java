@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 
@@ -32,7 +33,7 @@ public class CartResponseDTO implements Serializable {
 
 	List<CartProductRelationResponseDTO> products;
 
-	public static CartResponseDTO create(Cart cart) {
+	public static CartResponseDTO from(Cart cart) {
 		if (cart == null) {
 			return null;
 		}
@@ -47,9 +48,31 @@ public class CartResponseDTO implements Serializable {
 					cartProductRelation.getCartId(),
 					cartProductRelation.getProductId(),
 					cartProductRelation.getProductQuantity(),
-					ProductResponseDTO.of(cartProductRelation.getProduct())
+					ProductResponseDTO.from(cartProductRelation.getProduct())
 				)).collect(Collectors.toList()))
 
 			.build();
+	}
+
+	public static CartResponseDTO from(CartEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+
+		return CartResponseDTO.builder()
+			.userId(entity.getUserId())
+			.createdDate(entity.getCreatedDate())
+			.updatedDate(entity.getUpdatedDate())
+			.products(entity.getCartProductRelations()
+				.stream()
+				.map(cartProductRelation -> CartProductRelationResponseDTO.of(
+					cartProductRelation.getCartId(),
+					cartProductRelation.getProductId(),
+					cartProductRelation.getProductQuantity(),
+					ProductResponseDTO.from(cartProductRelation.getProduct())
+				)).collect(Collectors.toList()))
+
+			.build();
+
 	}
 }

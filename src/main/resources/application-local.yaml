@@ -12,7 +12,7 @@ spring:
     url: jdbc:log4jdbc:mysql://localhost:3307/item-browser?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF-8
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: true
 
 app:
