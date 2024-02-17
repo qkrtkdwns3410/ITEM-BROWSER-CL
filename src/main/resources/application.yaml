@@ -1,6 +1,11 @@
 spring:
   jpa:
     open-in-view: 'false'
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
   main:
     banner-mode: 'off'
   mvc:
