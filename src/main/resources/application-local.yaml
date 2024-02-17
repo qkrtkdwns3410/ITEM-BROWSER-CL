@@ -10,6 +10,10 @@ spring:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: item-admin
     url: jdbc:log4jdbc:mysql://localhost:3307/item-browser?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
 
 app:
   domain: http://localhost:8080
