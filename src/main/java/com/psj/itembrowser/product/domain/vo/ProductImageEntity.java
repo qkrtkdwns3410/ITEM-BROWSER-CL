@@ -1,7 +1,5 @@
 package com.psj.itembrowser.product.domain.vo;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductImageEntity {
+public class ProductImageEntity extends BaseDateTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -43,16 +42,7 @@ public class ProductImageEntity {
 	@Column(name = "size", nullable = false)
 	private Long size;
 
-	@Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private LocalDateTime createdDate;
-
-	@Column(name = "updated_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-	private LocalDateTime updatedDate;
-
-	@Column(name = "deleted_date", columnDefinition = "TIMESTAMP")
-	private LocalDateTime deletedDate;
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_entity_id")
-	private ProductEntity productEntity;
+	@JoinColumn(name = "product_id", insertable = false, updatable = false, referencedColumnName = "id")
+	private ProductEntity product;
 }

@@ -34,9 +34,8 @@ public class ShippingInfoEntity {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MEMBER_EMAIL", referencedColumnName = "EMAIL")
-	private MemberEntity memberEmail;
+	@Column(name = "MEMBER_NO")
+	private Long memberNo;
 
 	@Size(max = 45)
 	@Column(name = "RECEIVER", length = 45)
@@ -70,6 +69,10 @@ public class ShippingInfoEntity {
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
 
-	@OneToMany(mappedBy = "shippingInfo")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shippingInfo")
 	private List<OrderEntity> orders = new ArrayList<>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEMBER_NO", referencedColumnName = "MEMBER_NO", insertable = false, updatable = false)
+	private MemberEntity member;
 }

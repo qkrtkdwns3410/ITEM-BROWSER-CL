@@ -2,15 +2,15 @@ package com.psj.itembrowser.cart.domain.entity;
 
 import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,20 +21,22 @@ import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@IdClass(CartProductRelationEntity.CartProductRelationEntityId.class)
 @Entity
 @Table(name = "cart_product_relation")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CartProductRelationEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
 	private Long cartId;
 
+	@Id
 	@Column(name = "product_id")
 	private Long productId;
 
@@ -51,11 +53,11 @@ public class CartProductRelationEntity {
 	private LocalDateTime deletedDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRODUCT_ID", insertable = false, updatable = false)
+	@JoinColumn(name = "PRODUCT_ID", insertable = false, updatable = false, referencedColumnName = "ID")
 	private ProductEntity product;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "CART_ID", insertable = false, updatable = false)
+	@JoinColumn(name = "CART_ID", insertable = false, updatable = false, referencedColumnName = "ID")
 	private CartEntity cartEntity;
 
 	public static CartProductRelationEntity create(CartProductRelationResponseDTO dto) {
@@ -83,5 +85,12 @@ public class CartProductRelationEntity {
 			this.productId,
 			this.productQuantity
 		);
+	}
+
+	@AllArgsConstructor
+	@EqualsAndHashCode
+	public static class CartProductRelationEntityId implements Serializable {
+		private Long cartId;
+		private Long productId;
 	}
 }

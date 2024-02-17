@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
@@ -49,11 +48,12 @@ public class OrdersProductRelationEntity {
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
 
-	@OneToOne(mappedBy = "ordersProductRelationEntity")
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private OrderEntity order;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "PRODUCT_ID", nullable = false)
+	@JoinColumn(name = "PRODUCT_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private ProductEntity product;
 
 	@AllArgsConstructor

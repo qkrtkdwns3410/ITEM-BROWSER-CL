@@ -2,6 +2,8 @@ package com.psj.itembrowser.order.domain.entity;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -37,10 +38,8 @@ public class OrderEntity {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@MapsId
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "ID", nullable = false, referencedColumnName = "GROUP_ID")
-	private OrdersProductRelationEntity ordersProductRelationEntity;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	private List<OrdersProductRelationEntity> ordersProductRelationEntity = new ArrayList<>();
 
 	@Size(max = 200)
 	@Column(name = "ORDERER_NUMBER", length = 200)
@@ -55,7 +54,7 @@ public class OrderEntity {
 	private Instant paidDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SHIPPING_INFO_ID")
+	@JoinColumn(name = "SHIPPING_INFO_ID", referencedColumnName = "ID")
 	private ShippingInfoEntity shippingInfo;
 
 	@Column(name = "CREATED_DATE")

@@ -2,27 +2,33 @@ package com.psj.itembrowser.member.domain.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
-import com.psj.itembrowser.member.domain.vo.MemberNo;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,8 +44,10 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MemberEntity extends BaseDateTimeEntity {
 
-	@EmbeddedId
-	private MemberNo no;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_no", nullable = false)
+	private Long memberNo;
 
 	@Embedded
 	private Credentials credentials;
@@ -86,14 +94,18 @@ public class MemberEntity extends BaseDateTimeEntity {
 	/**
 	 * 생년월일. 생년월일
 	 */
-	@Column(name = "birthday", columnDefinition = "TIMESTAMP")
+	@Column(name = "birthday")
 	private LocalDate birthday;
 
 	/**
 	 * 최종 로그인 일시
 	 */
-	@Column(name = "last_login_date", columnDefinition = "TIMESTAMP")
+	@Column(name = "last_login_date")
 	private LocalDateTime lastLoginDate;
+
+	@OneToMany(mappedBy = "member")
+	@ToString.Exclude
+	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
 
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
@@ -104,7 +116,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 	public static MemberEntity from(MemberResponseDTO dto) {
 		MemberEntity member = new MemberEntity();
 
-		member.no = new MemberNo(dto.getMemberNo());
+		member.memberNo = dto.getMemberNo();
 		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
 		member.name = new Name(dto.getFirstName(), dto.getLastName());
 		member.phoneNumber = dto.getPhoneNumber();
@@ -132,5 +144,14 @@ public class MemberEntity extends BaseDateTimeEntity {
 
 	public boolean isActivated() {
 		return this.status == Status.ACTIVE;
+	}
+
+	@Transient
+	public String getCredentialEmail() {
+		if (this.credentials == null) {
+			return null;
+		}
+
+		return this.credentials.getEmail();
 	}
 }

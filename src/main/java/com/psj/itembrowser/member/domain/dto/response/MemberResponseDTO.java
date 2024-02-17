@@ -44,7 +44,7 @@ public class MemberResponseDTO {
 	public static MemberResponseDTO from(Member member) {
 		MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
 
-		memberResponseDTO.setMemberNo(member.getNo().getNo());
+		memberResponseDTO.setMemberNo(member.getMemberNo());
 		memberResponseDTO.setPassword(member.getCredentials().getPassword());
 		memberResponseDTO.setEmail(member.getCredentials().getEmail());
 		memberResponseDTO.setFirstName(member.getName().getFirstName());

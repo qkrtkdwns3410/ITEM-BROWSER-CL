@@ -66,14 +66,14 @@ public class CartServiceImpl implements CartService {
 			addCart(requestDTO.getUserId());
 		}
 
-		CartProductRelation findCartProduct = cartMapper.getCartProductRelation(
-			requestDTO.getCartId(), requestDTO.getProductId());
+		CartProductRelation findCartProduct = cartMapper.getCartProductRelation(requestDTO.getCartId(), requestDTO.getProductId());
 
 		if (findCartProduct != null) {
 			findCartProduct.addProductQuantity(requestDTO.getQuantity());
 			cartPersistence.modifyCartProduct(findCartProduct.toCartProductUpdateRequestDTO());
 			return;
 		}
+
 		cartPersistence.insertCartProduct(requestDTO);
 	}
 

@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseDateTimeEntity {
-	@Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@CreationTimestamp
+	@Column(name = "created_date", updatable = false)
 	protected LocalDateTime createdDate;
-	@Column(name = "updated_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@CreationTimestamp
+	@UpdateTimestamp
+	@Column(name = "updated_date")
 	protected LocalDateTime updatedDate;
-	@Column(name = "deleted_date", columnDefinition = "TIMESTAMP")
+	@Column(name = "deleted_date")
 	protected LocalDateTime deletedDate;
 }

@@ -1,6 +1,7 @@
 package com.psj.itembrowser.member.domain.vo;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.ToString;
  * -----------------------------------------------------------
  * 2024-01-06        ipeac       최초 생성
  */
+@Embeddable
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

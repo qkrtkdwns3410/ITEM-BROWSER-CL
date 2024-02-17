@@ -147,7 +147,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<CartProductRelationEntity> cartProductRelations;
 
-	@OneToMany(mappedBy = "productEntity", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<ProductImageEntity> productImages;
 
 	public void validateSellDates() {

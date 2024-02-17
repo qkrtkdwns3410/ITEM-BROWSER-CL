@@ -4,6 +4,7 @@
 
 <mapper namespace="com.psj.itembrowser.member.mapper.MemberMapper">
     <resultMap id="memberResultMap" type="com.psj.itembrowser.member.domain.vo.Member">
+        <id property="memberNo" column="MEMBER_NO"/>
         <result property="phoneNumber" column="PHONE_NUMBER"/>
         <result property="gender" column="GENDER" javaType="com.psj.itembrowser.member.domain.vo.Gender"
                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
@@ -23,9 +24,6 @@
         <association property="address" resultMap="addressResultMap"/>
     </resultMap>
 
-    <resultMap id="memberNoResultMap" type="com.psj.itembrowser.member.domain.vo.MemberNo">
-        <id property="no" column="MEMBER_NO"/>
-    </resultMap>
 
     <resultMap id="credentialsResultMap" type="com.psj.itembrowser.member.domain.vo.Credentials">
         <result property="email" column="EMAIL"/>

@@ -16,12 +16,12 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@EqualsAndHashCode(of = {"no", "credentials"}, callSuper = false)
+@EqualsAndHashCode(of = {"memberNo", "credentials"}, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseDateTimeEntity {
 
-	private MemberNo no;
+	private Long memberNo;
 
 	/**
 	 * 인증정보
@@ -79,7 +79,7 @@ public class Member extends BaseDateTimeEntity {
 	public static Member from(MemberResponseDTO dto) {
 		Member member = new Member();
 
-		member.no = new MemberNo(dto.getMemberNo());
+		member.memberNo = dto.getMemberNo();
 		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
 		member.name = new Name(dto.getFirstName(), dto.getLastName());
 		member.phoneNumber = dto.getPhoneNumber();
