@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.persistence.Transient;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
@@ -41,40 +41,40 @@ public class OrderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-
-	@Size(max = 200)
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ORDER_STATUS", length = 200)
 	private OrderStatus orderStatus;
-
+	
 	@Column(name = "PAID_DATE")
 	private LocalDateTime paidDate;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIPPING_INFO_ID", referencedColumnName = "ID")
 	private ShippingInfoEntity shippingInfo;
-
+	
 	@Column(name = "CREATED_DATE")
 	private LocalDateTime createdDate;
-
+	
 	@Column(name = "UPDATED_DATE")
 	private LocalDateTime updatedDate;
-
+	
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
-
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDERER_NUMBER", referencedColumnName = "MEMBER_NO")
 	private MemberEntity member;
-
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
 	private List<OrdersProductRelationEntity> ordersProductRelations = new ArrayList<>();
-
+	
+	@Transient
 	private OrderCalculationResult orderCalculationResult;
-
+	
 	public static OrderEntity from(Order order) {
 		OrderEntity orderEntity = new OrderEntity();
-
+		
 		orderEntity.id = order.getId();
 		orderEntity.orderStatus = order.getOrderStatus();
 		orderEntity.paidDate = order.getPaidDate();
@@ -82,10 +82,11 @@ public class OrderEntity {
 		orderEntity.createdDate = order.getCreatedDate();
 		orderEntity.updatedDate = order.getUpdatedDate();
 		orderEntity.deletedDate = order.getDeletedDate();
-		orderEntity.member = MemberEntity.from(order.getMember());
+		orderEntity.member = MemberEntity.from(order.getMember(), null, null);
 		orderEntity.ordersProductRelations = order.getProducts().stream()
 			.map(OrdersProductRelationEntity::from)
 			.collect(Collectors.toList());
+		
 		return orderEntity;
 	}
 }
