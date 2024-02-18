@@ -15,8 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
@@ -27,6 +27,7 @@ import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
@@ -46,7 +47,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "member_no", nullable = false)
+	@Column(name = "MEMBER_NO", nullable = false)
 	private Long memberNo;
 
 	@Embedded
@@ -107,6 +108,9 @@ public class MemberEntity extends BaseDateTimeEntity {
 	@ToString.Exclude
 	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
 
+	@OneToOne(mappedBy = "member")
+	private OrderEntity order;
+
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
 		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
@@ -144,14 +148,5 @@ public class MemberEntity extends BaseDateTimeEntity {
 
 	public boolean isActivated() {
 		return this.status == Status.ACTIVE;
-	}
-
-	@Transient
-	public String getCredentialEmail() {
-		if (this.credentials == null) {
-			return null;
-		}
-
-		return this.credentials.getEmail();
 	}
 }

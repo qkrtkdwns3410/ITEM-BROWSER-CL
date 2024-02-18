@@ -3,8 +3,6 @@ package com.psj.itembrowser.product.persistence;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.psj.itembrowser.security.common.exception.ErrorCode;
-import com.psj.itembrowser.security.common.exception.NotFoundException;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +17,8 @@ import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateReque
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImage;
 import com.psj.itembrowser.product.mapper.ProductMapper;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 @ExtendWith(SpringExtension.class)
 class ProductPersistenceTest {
@@ -33,7 +33,7 @@ class ProductPersistenceTest {
     @DisplayName("상품 생성 성공")
     public void createProduct() {
         // given
-        Product product = new Product();
+		Product product = mock(Product.class);
         productPersistence.createProduct(product);
 
         // when & then

@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,9 @@ import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.service.OrderService;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.security.common.pagination.PageRequestDTO;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
@@ -124,12 +127,52 @@ class OrderSelectApiControllerTest {
 			LocalDateTime.now(),
 			null,
 			null,
-			new Product());
+			new Product(
+				1L,
+				"섬유유연제",
+				1,
+				"상품 디테일",
+				ProductStatus.APPROVED,
+				10,
+				1000,
+				"qkrtkdwns3410",
+				LocalDateTime.now(),
+				LocalDateTime.now().plusDays(10),
+				"섬유유연제",
+				"섬유나라",
+				DeliveryFeeType.FREE,
+				"배송방법",
+				5000,
+				15000,
+				"returnCenterCode",
+				Collections.emptyList(),
+				Collections.emptyList()
+			));
 
 		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1,
 			LocalDateTime.now(),
 			null,
-			null, new Product());
+			null, new Product(
+				1L,
+				"섬유유연제",
+				1,
+				"상품 디테일",
+				ProductStatus.APPROVED,
+				10,
+				1000,
+				"qkrtkdwns3410",
+				LocalDateTime.now(),
+				LocalDateTime.now().plusDays(10),
+				"섬유유연제",
+				"섬유나라",
+				DeliveryFeeType.FREE,
+				"배송방법",
+				5000,
+				15000,
+				"returnCenterCode",
+				Collections.emptyList(),
+				Collections.emptyList()
+			));
 
 		this.expectedOrderWithADMINUser = Order.of(
 			1L,
@@ -421,7 +464,7 @@ class OrderSelectApiControllerTest {
 
 		PageInfo<OrderResponseDTO> expectedOrderResponseDTOPageInfo = new PageInfo<>(List.of(expectedOrderResponseDTO));
 
-		given(orderService.getOrdersWithPaginationAndNotDeleted(member, orderPageRequestDTO)).willReturn(
+		given(orderService.getOrdersWithPaginationAndNotDeleted(any(Member.class), any(OrderPageRequestDTO.class))).willReturn(
 			expectedOrderResponseDTOPageInfo);
 
 		given(userDetailsService.loadUserByJwt(any())).willReturn(
@@ -521,7 +564,7 @@ class OrderSelectApiControllerTest {
 		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize),
 			1L, requestYear);
 
-		given(orderService.getOrdersWithPaginationAndNotDeleted(member, orderPageRequestDTO)).willThrow(
+		given(orderService.getOrdersWithPaginationAndNotDeleted(any(Member.class), any(OrderPageRequestDTO.class))).willThrow(
 			new NotFoundException(ORDER_NOT_FOUND));
 
 		given(userDetailsService.loadUserByJwt(any())).willReturn(
@@ -576,16 +619,14 @@ class OrderSelectApiControllerTest {
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithADMINUser.getMember()));
 
-		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize),
-			1L, requestYear);
+		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize), 1L, requestYear);
 
 		PageInfo<OrderResponseDTO> expectedOrderResponseDTOPageInfo = new PageInfo<>(List.of(expectedOrderResponseDTO));
 
-		given(orderService.getOrdersWithPaginationAndNoCondition(member, orderPageRequestDTO)).willReturn(
+		given(orderService.getOrdersWithPaginationAndNoCondition(any(Member.class), any(orderPageRequestDTO.getClass()))).willReturn(
 			expectedOrderResponseDTOPageInfo);
 
-		given(userDetailsService.loadUserByJwt(any())).willReturn(
-			new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
+		given(userDetailsService.loadUserByJwt(any())).willReturn(new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
 
 		// when - then
 		ResultActions response = mockMvc.perform(
@@ -680,7 +721,7 @@ class OrderSelectApiControllerTest {
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithADMINUser.getMember()));
 
-		given(orderService.getOrdersWithPaginationAndNoCondition(member, orderPageRequestDTO)).willThrow(
+		given(orderService.getOrdersWithPaginationAndNoCondition(any(Member.class), any(OrderPageRequestDTO.class))).willThrow(
 			new NotFoundException(ORDER_NOT_FOUND));
 
 		given(userDetailsService.loadUserByJwt(any())).willReturn(

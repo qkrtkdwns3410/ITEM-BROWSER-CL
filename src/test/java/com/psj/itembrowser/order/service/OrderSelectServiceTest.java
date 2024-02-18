@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,9 @@ import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.service.impl.OrderServiceImpl;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.auth.service.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -90,12 +93,52 @@ public class OrderSelectServiceTest {
 			LocalDateTime.now(),
 			null,
 			null,
-			new Product());
-
+			new Product(
+				1L,
+				"섬유유연제",
+				1,
+				"상품 디테일",
+				ProductStatus.APPROVED,
+				10,
+				1000,
+				"qkrtkdwns3410",
+				LocalDateTime.now(),
+				LocalDateTime.now().plusDays(10),
+				"섬유유연제",
+				"섬유나라",
+				DeliveryFeeType.FREE,
+				"배송방법",
+				5000,
+				15000,
+				"returnCenterCode",
+				Collections.emptyList(),
+				Collections.emptyList()
+			));
 		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1,
 			LocalDateTime.now(),
 			null,
-			null, new Product());
+			null,
+			new Product(
+				1L,
+				"섬유유연제",
+				1,
+				"상품 디테일",
+				ProductStatus.APPROVED,
+				10,
+				1000,
+				"qkrtkdwns3410",
+				LocalDateTime.now(),
+				LocalDateTime.now().plusDays(10),
+				"섬유유연제",
+				"섬유나라",
+				DeliveryFeeType.FREE,
+				"배송방법",
+				5000,
+				15000,
+				"returnCenterCode",
+				Collections.emptyList(),
+				Collections.emptyList()
+			));
 
 		this.validOrder = Order.of(
 			1L,
@@ -314,8 +357,7 @@ public class OrderSelectServiceTest {
 				.authorizeOrdersWhenCustomer(List.of(validOrder), member);
 
 			//when
-			PageInfo<OrderResponseDTO> actualPages = orderService.getOrdersWithPaginationAndNotDeleted(
-				member, requestDTO);
+			PageInfo<OrderResponseDTO> actualPages = orderService.getOrdersWithPaginationAndNotDeleted(member, requestDTO);
 
 			List<OrderResponseDTO> actualList = actualPages.getList();
 			long actualTotal = actualPages.getTotal();

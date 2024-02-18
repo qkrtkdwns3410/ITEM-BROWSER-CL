@@ -1,16 +1,10 @@
 package com.psj.itembrowser.security.login.integrationTest;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.psj.itembrowser.member.service.MemberService;
-import com.psj.itembrowser.security.login.domain.dto.request.LoginRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,9 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.psj.itembrowser.member.service.MemberService;
+import com.psj.itembrowser.security.login.domain.dto.request.LoginRequestDTO;
 
 @SpringBootTest
 @Transactional
@@ -34,30 +31,28 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class LoginApiControllerIntegrationTest {
-    
+
     private final static String EXIST_USER_EMAIL = "qkrtkdwns3410@naver.com";
     private final static String EXIST_USER_PASSWORD = "jiohioqh123!@#";
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     @Autowired
     private MemberService memberService;
-    
+
     private LoginRequestDTO validLoginRequestDTO;
-    
+
     @BeforeEach
     public void setUp() {
         validLoginRequestDTO = new LoginRequestDTO(EXIST_USER_EMAIL, EXIST_USER_PASSWORD);
     }
-    
+
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-    @Sql(scripts = {"classpath:sql/h2/member/insert_member.sql"},
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"classpath:sql/h2/member/insert_member.sql"})
     @DisplayName("로그인시 엑세스토큰과 리프레시 토큰 정상 발급")
     public void whenValidLogin_thenReturnsAccessTokenAndRefreshToken() throws Exception {
         mockMvc.perform(post("/login")

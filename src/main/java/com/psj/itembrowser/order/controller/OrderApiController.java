@@ -44,7 +44,10 @@ public class OrderApiController {
 	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN')")
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_CUSTOMER') and returnObject.body.member.email == principal.username)")
 	@GetMapping("/v1/api/orders/{orderId}")
-	public ResponseEntity<OrderResponseDTO> getOrder(@PathVariable Long orderId, @CurrentUser Jwt jwt) {
+	public ResponseEntity<OrderResponseDTO> getOrder(
+		@PathVariable Long orderId,
+		@CurrentUser Jwt jwt
+	) {
 		log.info("getOrders orderId : {}", orderId);
 
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
@@ -58,8 +61,10 @@ public class OrderApiController {
 
 	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
 	@PostMapping("/v1/api/orders")
-	public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO,
-		@CurrentUser Jwt jwt) {
+	public ResponseEntity<OrderResponseDTO> createOrder(
+		@Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO,
+		@CurrentUser Jwt jwt
+	) {
 		log.info("createOrder orderCreateRequestDTO : {}", orderCreateRequestDTO);
 
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
@@ -78,8 +83,11 @@ public class OrderApiController {
 
 	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN')")
 	@GetMapping("/v1/api/orders/users/{userNumber}")
-	public ResponseEntity<PageInfo<OrderResponseDTO>> getOrders(@PathVariable Long userNumber,
-		@ModelAttribute OrderPageRequestDTO orderPageRequestDTO, @CurrentUser Jwt jwt) {
+	public ResponseEntity<PageInfo<OrderResponseDTO>> getOrders(
+		@PathVariable Long userNumber,
+		@ModelAttribute OrderPageRequestDTO orderPageRequestDTO,
+		@CurrentUser Jwt jwt
+	) {
 		log.info("getOrders userNumber : {}", userNumber);
 
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
@@ -107,6 +115,7 @@ public class OrderApiController {
 	}
 
 	private PageInfo<OrderResponseDTO> getOrdersResponseBasedOnRole(Member member, OrderPageRequestDTO pageRequestDTO) {
+
 		PageInfo<OrderResponseDTO> orderResponseDTOPageInfo;
 
 		if (member.hasRole(Role.ROLE_ADMIN)) {

@@ -13,6 +13,7 @@ import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Product extends BaseDateTimeEntity {

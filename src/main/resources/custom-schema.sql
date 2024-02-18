@@ -107,36 +107,24 @@ ALTER TABLE orders_product_relation
 -- DROP FOREIGN KEY CHARSET=utf8mb4;
 
 
--- shipping_infos Table Create SQL
--- 테이블 생성 SQL - shipping_infos
 CREATE TABLE shipping_infos
 (
-    `ID`                   bigint       NOT NULL AUTO_INCREMENT COMMENT '배송지 PK',
-    `MEMBER_EMAIL`         varchar(255) NULL DEFAULT NULL COMMENT '유저 아이디(이메일)',
-    `RECEIVER`             varchar(45)  NULL DEFAULT NULL COMMENT '수취인',
-    `MAIN_ADDRESS`         varchar(45)  NULL DEFAULT NULL COMMENT '메인주소',
-    `SUB_ADDRESS`          varchar(45)  NULL DEFAULT NULL COMMENT '상세주소',
-    `PHONE_NUMBER`         varchar(45)  NULL DEFAULT NULL COMMENT '휴대폰 번호. 휴대폰번호 (-) 가 없어야함',
-    `ALTERNATIVE_NUMBER`   int          NULL DEFAULT NULL COMMENT '대안 연락처. 번호 (-) 가 없어야함',
-    `SHIPPING_REQUEST_MSG` varchar(200) NULL DEFAULT NULL COMMENT '배송요청사항',
-    `CREATED_DATE`         timestamp    NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
-    `UPDATED_DATE`         timestamp    NULL DEFAULT NULL COMMENT '업데이트일',
-    `DELETED_DATE`         timestamp    NULL DEFAULT NULL COMMENT '삭제일',
-    PRIMARY KEY (ID)
+    ID                   BIGINT AUTO_INCREMENT NOT NULL,
+    MEMBER_NO            BIGINT                NULL,
+    RECEIVER             VARCHAR(45)           NULL,
+    MAIN_ADDRESS         VARCHAR(45)           NULL,
+    SUB_ADDRESS          VARCHAR(45)           NULL,
+    PHONE_NUMBER         VARCHAR(45)           NULL,
+    ALTERNATIVE_NUMBER   INT                   NULL,
+    SHIPPING_REQUEST_MSG VARCHAR(200)          NULL,
+    CREATED_DATE         datetime              NULL,
+    UPDATED_DATE         datetime              NULL,
+    DELETED_DATE         datetime              NULL,
+    CONSTRAINT PK_SHIPPING_INFOS PRIMARY KEY (ID)
 );
 
--- Index 설정 SQL - shipping_infos(MEMBER_EMAIL)
-CREATE INDEX FK_SHIPPING_INFOS_USER_ID_MEMBER_NO
-    ON shipping_infos (MEMBER_EMAIL);
-
--- Foreign Key 설정 SQL - shipping_infos(MEMBER_EMAIL) -> member(EMAIL)
 ALTER TABLE shipping_infos
-    ADD CONSTRAINT FK_shipping_infos_MEMBER_EMAIL_member_EMAIL FOREIGN KEY (MEMBER_EMAIL)
-        REFERENCES member (EMAIL) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
--- Foreign Key 삭제 SQL - shipping_infos(MEMBER_EMAIL)
--- ALTER TABLE shipping_infos
--- DROP FOREIGN KEY FK_shipping_infos_MEMBER_EMAIL_member_EMAIL;
+    ADD CONSTRAINT FK_SHIPPING_INFOS_ON_MEMBER_NO FOREIGN KEY (MEMBER_NO) REFERENCES MEMBER (MEMBER_NO);
 
 
 -- cart Table Create SQL
@@ -263,33 +251,26 @@ ALTER TABLE orders
 -- Foreign Key 설정 SQL - orders(ORDERER_NUMBER) -> member(EMAIL)
 ALTER TABLE orders
     ADD CONSTRAINT FK_ORDERS_ORDERER_NUMBER_MEMBER_EMAIL FOREIGN KEY (ORDERER_NUMBER)
-        REFERENCES member (EMAIL) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES MEMBER (MEMBER_NO) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- Foreign Key 삭제 SQL - orders(SHIPPING_INFO_ID)
 -- ALTER TABLE orders
 -- DROP FOREIGN KEY FK_ORDERS_SHIPPING_INFO_ID_SHIPPING_INFOS_ID;
 
 
--- member_refresh_token Table Create SQL
--- 테이블 생성 SQL - member_refresh_token
-CREATE TABLE member_refresh_token
+CREATE TABLE MEMBER_REFRESH_TOKEN
 (
-    `ID`            BIGINT       NOT NULL AUTO_INCREMENT,
-    `EMAIL`         varchar(255) NOT NULL,
-    `REFRESH_TOKEN` LONGTEXT     NULL,
-    `CREATED_DATE`  TIMESTAMP    NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (ID)
+    ID            BIGINT AUTO_INCREMENT NOT NULL,
+    CREATED_DATE  datetime              NULL,
+    UPDATED_DATE  datetime              NULL,
+    DELETED_DATE  datetime              NULL,
+    MEMBER_NO     BIGINT                NOT NULL,
+    REFRESH_TOKEN LONGTEXT              NULL,
+    CONSTRAINT PK_MEMBER_REFRESH_TOKEN PRIMARY KEY (ID)
 );
 
--- Unique Index 설정 SQL - member_refresh_token(EMAIL)
-CREATE UNIQUE INDEX UQ_member_refresh_token_1
-    ON member_refresh_token (EMAIL);
+ALTER TABLE MEMBER_REFRESH_TOKEN
+    ADD CONSTRAINT UC_MEMBER_REFRESH_TOKEN_MEMBER_NO UNIQUE (MEMBER_NO);
 
--- Foreign Key 설정 SQL - member_refresh_token(EMAIL) -> member(EMAIL)
-ALTER TABLE member_refresh_token
-    ADD CONSTRAINT FK_member_refresh_token_EMAIL_member_EMAIL FOREIGN KEY (EMAIL)
-        REFERENCES member (EMAIL) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
--- Foreign Key 삭제 SQL - member_refresh_token(EMAIL)
--- ALTER TABLE member_refresh_token
--- DROP FOREIGN KEY FK_member_refresh_token_EMAIL_member_EMAIL;
+ALTER TABLE MEMBER_REFRESH_TOKEN
+    ADD CONSTRAINT FK_MEMBER_REFRESH_TOKEN_ON_MEMBER_NO FOREIGN KEY (MEMBER_NO) REFERENCES MEMBER (MEMBER_NO);

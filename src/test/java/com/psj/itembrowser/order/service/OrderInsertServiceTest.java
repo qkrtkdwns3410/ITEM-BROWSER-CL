@@ -137,7 +137,7 @@ class OrderInsertServiceTest {
 
 		orderCreateRequestDTO = new OrderCreateRequestDTO(
 			1L,
-			List.of(OrdersProductRelationResponseDTO.create(ordersProductRelation)),
+			List.of(OrdersProductRelationResponseDTO.from(ordersProductRelation)),
 			MemberResponseDTO.from(member),
 			mock(ShippingInfoResponseDTO.class),
 			LocalDateTime.now()

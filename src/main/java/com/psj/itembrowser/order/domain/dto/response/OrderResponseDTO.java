@@ -55,7 +55,7 @@ public class OrderResponseDTO implements Serializable {
 		orderResponseDTO.setMember(MemberResponseDTO.from(member));
 
 		order.getProducts().stream()
-			.map(OrdersProductRelationResponseDTO::create)
+			.map(OrdersProductRelationResponseDTO::from)
 			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
 
 		return orderResponseDTO;

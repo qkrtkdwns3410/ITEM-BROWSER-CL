@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * DTO for {@link OrdersProductRelation}
@@ -37,7 +36,11 @@ public class OrdersProductRelationResponseDTO {
 	LocalDateTime updatedDate;
 	LocalDateTime deletedDate;
 
-	public static OrdersProductRelationResponseDTO create(@NonNull OrdersProductRelation ordersProductRelation) {
+	public static OrdersProductRelationResponseDTO from(OrdersProductRelation ordersProductRelation) {
+		if (ordersProductRelation == null) {
+			return null;
+		}
+
 		ProductResponseDTO productResponseDTO = ProductResponseDTO.from(ordersProductRelation.getProduct());
 
 		return new OrdersProductRelationResponseDTO(

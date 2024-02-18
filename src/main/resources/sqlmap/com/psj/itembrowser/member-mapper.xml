@@ -18,7 +18,6 @@
         <result property="updatedDate" column="UPDATED_DATE"/>
         <result property="deletedDate" column="DELETED_DATE"/>
 
-        <association property="no" resultMap="memberNoResultMap"/>
         <association property="credentials" resultMap="credentialsResultMap"/>
         <association property="name" resultMap="nameResultMap"/>
         <association property="address" resultMap="addressResultMap"/>

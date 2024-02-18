@@ -21,10 +21,10 @@ public interface RefreshTokenMapper {
 	/**
 	 * refreshToken을 조회한다.
 	 *
-	 * @param email email
+	 * @param memberNo memberNo
 	 * @return refreshToken
 	 */
-	Optional<RefreshToken> getRefreshTokenByEmail(@NonNull String email);
+	Optional<RefreshToken> getRefreshTokenByMemberNo(@NonNull Long memberNo);
 
 	Optional<RefreshToken> getRefreshTokenByRefreshToken(@NonNull String refreshToken);
 }

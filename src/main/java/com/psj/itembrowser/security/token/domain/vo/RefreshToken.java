@@ -25,18 +25,18 @@ public class RefreshToken {
 	@NotBlank
 	private String refreshToken;
 	@NotBlank
-	private String email;
+	private Long memberNo;
 
 	private LocalDateTime createdDate;
 
-	public RefreshToken(String refreshToken, String email) {
+	public RefreshToken(String refreshToken, Long memberNo) {
 		this.refreshToken = refreshToken;
-		this.email = email;
+		this.memberNo = memberNo;
 		this.createdDate = LocalDateTime.now();
 	}
 
-	public static RefreshToken create(String refreshToken, String email) {
-		return new RefreshToken(refreshToken, email);
+	public static RefreshToken create(String refreshToken, Long memberNo) {
+		return new RefreshToken(refreshToken, memberNo);
 	}
 
 	public RefreshToken update(String refreshToken) {

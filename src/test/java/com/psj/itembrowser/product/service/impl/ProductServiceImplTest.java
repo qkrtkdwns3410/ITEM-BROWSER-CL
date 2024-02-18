@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.product.service.FileService;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -66,12 +68,30 @@ class ProductServiceImplTest {
 			try (MockedStatic<Product> productMockedStatic = mockStatic(Product.class)) {
 				// given
 				ProductRequestDTO dto = mock(ProductRequestDTO.class);
-				LocalDateTime sellStartDatetime = LocalDateTime.now().plusDays(2);
-				LocalDateTime sellEndDatetime = LocalDateTime.now().plusDays(1);
+				LocalDateTime invalidSellStartDatetime = LocalDateTime.now().plusDays(2);
+				LocalDateTime invalidSellEndDatetime = LocalDateTime.now().plusDays(1);
 
-				Product product = new Product();
-				ReflectionTestUtils.setField(product, "sellStartDatetime", sellStartDatetime);
-				ReflectionTestUtils.setField(product, "sellEndDatetime", sellEndDatetime);
+				Product product = new Product(
+					1L,
+					"섬유유연제",
+					1,
+					"상품 디테일",
+					ProductStatus.APPROVED,
+					10,
+					1000,
+					"qkrtkdwns3410",
+					invalidSellStartDatetime,
+					invalidSellEndDatetime,
+					"섬유유연제",
+					"섬유나라",
+					DeliveryFeeType.FREE,
+					"배송방법",
+					5000,
+					15000,
+					"returnCenterCode",
+					Collections.emptyList(),
+					Collections.emptyList()
+				);
 
 				productMockedStatic.when(() -> Product.from(dto)).thenReturn(product);
 
@@ -159,7 +179,7 @@ class ProductServiceImplTest {
 		void getProductSuccess() {
 			// given
 			Long productId = 1L;
-			Product product = new Product();
+			Product product = mock(Product.class);
 			ProductResponseDTO expectedResponse = ProductResponseDTO.from(product);
 			when(productPersistence.findProductById(productId)).thenReturn(product);
 

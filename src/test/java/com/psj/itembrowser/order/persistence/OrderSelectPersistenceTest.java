@@ -80,11 +80,11 @@ public class OrderSelectPersistenceTest {
 		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1, LocalDateTime.now(),
 			null,
 			null,
-			new Product());
+			mock(Product.class));
 
 		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1, LocalDateTime.now(),
 			null,
-			null, new Product());
+			null, mock(Product.class));
 
 		this.expectedOrder = Order.of(
 			1L,

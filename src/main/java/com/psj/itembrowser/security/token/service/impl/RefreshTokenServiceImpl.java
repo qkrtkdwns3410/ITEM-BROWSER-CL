@@ -37,8 +37,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 		return null;
 	}
 
-	public RefreshToken getRefreshToken(String email) {
-		Optional<RefreshToken> refreshToken = refreshTokenMapper.getRefreshTokenByEmail(email);
+	@Override
+	public RefreshToken getRefreshToken(long memberNo) {
+		Optional<RefreshToken> refreshToken = refreshTokenMapper.getRefreshTokenByMemberNo(memberNo);
 		return refreshToken.orElse(null);
 	}
 }

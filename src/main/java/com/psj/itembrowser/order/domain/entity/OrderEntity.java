@@ -16,9 +16,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
@@ -37,13 +39,6 @@ public class OrderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-	private List<OrdersProductRelationEntity> ordersProductRelationEntity = new ArrayList<>();
-
-	@Size(max = 200)
-	@Column(name = "ORDERER_NUMBER", length = 200)
-	private String ordererNumber;
 
 	@Size(max = 200)
 	@Enumerated(EnumType.STRING)
@@ -65,4 +60,11 @@ public class OrderEntity {
 
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORDERER_NUMBER", referencedColumnName = "MEMBER_NO")
+	private MemberEntity member;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	private List<OrdersProductRelationEntity> ordersProductRelationEntity = new ArrayList<>();
 }

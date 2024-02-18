@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.security.common.config.jwt.JwtProvider;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.TokenException;
+import com.psj.itembrowser.security.data.config.MemberRepository;
 import com.psj.itembrowser.security.login.domain.dto.request.LoginRequestDTO;
 import com.psj.itembrowser.security.login.domain.dto.response.LoginResponseDTO;
 import com.psj.itembrowser.security.login.service.LoginService;
@@ -36,6 +38,7 @@ public class LoginServiceImpl implements LoginService {
 	private final JwtProvider jwtProvider;
 	private final UserDetailsServiceImpl userDetailsService;
 	private final RefreshTokenService refreshTokenService;
+	private final MemberRepository memberRepository;
 
 	@Override
 	@Transactional(readOnly = false)
@@ -93,9 +96,16 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	private Optional<RefreshToken> getOrUpdateRefreshToken(LoginRequestDTO requestDTO, String refreshTokenNumber) {
-		RefreshToken existRefreshToken = refreshTokenService.getRefreshToken(requestDTO.getEmail());
+		Optional<MemberEntity> byEmail = memberRepository.findByCredentialsEmail(requestDTO.getEmail());
+
+		if (byEmail.isEmpty()) {
+			throw new UsernameNotFoundException("User not found with email : " + requestDTO.getEmail());
+		}
+
+		RefreshToken existRefreshToken = refreshTokenService.getRefreshToken(byEmail.get().getMemberNo());
+
 		if (existRefreshToken == null) {
-			RefreshToken refreshToken = RefreshToken.create(refreshTokenNumber, requestDTO.getEmail());
+			RefreshToken refreshToken = RefreshToken.create(refreshTokenNumber, byEmail.get().getMemberNo());
 
 			refreshTokenService.createRefreshToken(refreshToken);
 

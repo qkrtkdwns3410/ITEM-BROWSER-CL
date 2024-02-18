@@ -6,14 +6,14 @@
                type="com.psj.itembrowser.security.token.domain.vo.RefreshToken">
         <id property="id" column="id"/>
         <result property="refreshToken" column="refresh_token"/>
-        <result property="email" column="email"/>
+        <result property="memberNo" column="member_no"/>
         <result property="createdDate" column="created_date"/>
     </resultMap>
 
     <sql id="refreshTokenColumns">
         id,
         refresh_token,
-        email,
+        member_no,
         created_date
     </sql>
 
@@ -22,30 +22,16 @@
         <selectKey keyProperty="id" resultType="long" order="BEFORE">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO member_refresh_token (REFRESH_TOKEN, EMAIL, CREATED_DATE)
-        VALUES (#{refreshToken}, #{email}, now())
+        INSERT INTO member_refresh_token (REFRESH_TOKEN, MEMBER_NO, CREATED_DATE)
+        VALUES (#{refreshToken}, #{memberNo}, now())
     </insert>
 
-    <select id="getRefreshTokenByEmail" resultMap="refreshTokenResultMap" parameterType="string">
+    <select id="getRefreshTokenByMemberNo" resultMap="refreshTokenResultMap" parameterType="long">
         SELECT
         <include refid="refreshTokenColumns"/>
         FROM member_refresh_token
-        WHERE email = #{email}
+        WHERE MEMBER_NO = #{memberNo}
     </select>
-
-    <delete id="deleteRefreshToken" parameterType="string">
-        DELETE
-        FROM member_refresh_token
-        WHERE email = #{email}
-    </delete>
-
-    <update id="updateRefreshToken"
-            parameterType="com.psj.itembrowser.security.token.domain.vo.RefreshToken">
-        UPDATE member_refresh_token
-        SET refresh_token = #{refreshToken}
-        , created_date = now()
-        WHERE email = #{email}
-    </update>
 
     <select id="getRefreshTokenByRefreshToken" resultMap="refreshTokenResultMap">
         SELECT

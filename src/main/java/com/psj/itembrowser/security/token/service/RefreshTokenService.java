@@ -20,5 +20,5 @@ public interface RefreshTokenService {
 
 	public RefreshToken createRefreshToken(RefreshToken refreshToken);
 
-	RefreshToken getRefreshToken(String email);
+	RefreshToken getRefreshToken(long memberNO);
 }

@@ -38,7 +38,7 @@ class CartMapperTest {
     private CartMapper cartMapper;
 
     @Nested
-    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-custom-schema.sql",
+    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
             "classpath:/sql/h2/member/insert_member.sql",
             "classpath:/sql/h2/cart/insert_cart.sql",
             "classpath:/sql/h2/product/insert_product.sql",
@@ -86,7 +86,7 @@ class CartMapperTest {
     }
 
     @Nested
-    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-custom-schema.sql",
+    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
             "classpath:/sql/h2/member/insert_member.sql",
             "classpath:/sql/h2/cart/insert_cart.sql",
             "classpath:/sql/h2/product/insert_product.sql",
@@ -137,7 +137,7 @@ class CartMapperTest {
     }
 
     @Nested
-    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-custom-schema.sql",
+    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
             "classpath:/sql/h2/member/insert_member.sql",
             "classpath:/sql/h2/cart/insert_cart.sql",
             "classpath:/sql/h2/product/insert_product.sql",
@@ -172,7 +172,7 @@ class CartMapperTest {
     }
 
     @Nested
-    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-custom-schema.sql",
+    @Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
             "classpath:/sql/h2/member/insert_member.sql",
             "classpath:/sql/h2/cart/insert_cart.sql",
             "classpath:/sql/h2/product/insert_product.sql",
