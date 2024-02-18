@@ -28,42 +28,43 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "orders_product_relation")
 public class OrdersProductRelationEntity {
-
+	
 	@Id
 	@Column(name = "GROUP_ID", nullable = false)
 	private Long groupId;
-
+	
 	@Id
 	@Column(name = "PRODUCT_ID", nullable = false)
 	private Long productId;
-
+	
 	@Column(name = "PRODUCT_QUANTITY")
 	private Integer productQuantity;
-
+	
 	@Column(name = "CREATED_DATE")
 	private LocalDateTime createdDate;
-
+	
 	@Column(name = "UPDATED_DATE")
 	private LocalDateTime updatedDate;
-
+	
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private OrderEntity order;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private ProductEntity product;
-
+	
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@AllArgsConstructor
 	@EqualsAndHashCode
 	public static class OrdersProductRelationEntityId implements Serializable {
 		private Long groupId;
 		private Long productId;
 	}
-
+	
 	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {
 		return new OrdersProductRelationEntity(
 			ordersProductRelation.getGroupId(),

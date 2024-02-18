@@ -151,7 +151,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 		return member;
 	}
 
-	public static MemberEntity from(Member member) {
+	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
 		if (member == null) {
 			return null;
 		}
@@ -170,6 +170,11 @@ public class MemberEntity extends BaseDateTimeEntity {
 		memberEntity.createdDate = member.getCreatedDate();
 		memberEntity.updatedDate = member.getUpdatedDate();
 		memberEntity.deletedDate = member.getDeletedDate();
+		if (shippingInfos != null) {
+			memberEntity.shippingInfos = shippingInfos;
+		}
+
+		memberEntity.order = order;
 
 		return memberEntity;
 	}
