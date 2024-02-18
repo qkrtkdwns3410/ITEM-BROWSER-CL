@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Profile;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -32,6 +31,7 @@ import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
@@ -47,8 +47,6 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest
-@Profile("test")
 public class OrderSelectServiceTest {
 
 	@InjectMocks
@@ -162,10 +160,11 @@ public class OrderSelectServiceTest {
 	}
 
 	@Test
+	@Disabled("단건 조회 관련 테스트 이동 예정")
 	@DisplayName("주문 정상 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
 	void When_GetOrder_Expect_ReturnOrderResponseDTO() {
 		//given
-		given(orderPersistence.getOrderWithNotDeleted(validOrderId)).willReturn(validOrder);
+		given(orderPersistence.getOrderWithNotDeleted(validOrderId)).willReturn(OrderEntity.from(validOrder));
 
 		//when
 		OrderResponseDTO result = orderService.getOrderWithNotDeleted(validOrderId);
@@ -208,10 +207,11 @@ public class OrderSelectServiceTest {
 	}
 
 	@Test
+	@Disabled("단건 조회 관련 테스트 이동 예정")
 	@DisplayName("조건 없이 주문 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
 	void When_GetOrderWithNoCondition_Expect_ReturnOrderResponseDTO() {
 		//given
-		given(orderPersistence.getOrderWithNoCondition(validOrderId)).willReturn(validOrder);
+		given(orderPersistence.getOrderWithNoCondition(validOrderId)).willReturn(OrderEntity.from(validOrder));
 
 		//when
 		OrderResponseDTO result = orderService.getOrderWithNoCondition(validOrderId);

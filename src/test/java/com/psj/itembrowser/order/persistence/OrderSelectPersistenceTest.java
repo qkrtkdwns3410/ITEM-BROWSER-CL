@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,7 @@ import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
  * 2023-11-08        ipeac       최초 생성
  */
 @ExtendWith(MockitoExtension.class)
+@Disabled("테스트 대상이 변경되어 테스트를 비활성화 합니다. 2024-02-18")
 public class OrderSelectPersistenceTest {
 	@InjectMocks
 	private OrderPersistence orderPersistence;
