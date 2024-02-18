@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Profile;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -45,6 +47,8 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 @ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@Profile("test")
 public class OrderSelectServiceTest {
 
 	@InjectMocks
@@ -78,7 +82,7 @@ public class OrderSelectServiceTest {
 			LocalDateTime.now());
 
 		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
-			"test@test.com",
+			1L,
 			"홍길동",
 			"test",
 			"test",

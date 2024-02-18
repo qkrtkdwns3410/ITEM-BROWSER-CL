@@ -112,7 +112,7 @@ class OrderSelectApiControllerTest {
 			LocalDateTime.now());
 
 		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
-			"mockUser3410@gamil.com",
+			1L,
 			"홍길동",
 			"test",
 			"test",
@@ -213,7 +213,7 @@ class OrderSelectApiControllerTest {
 	void When_GetOrderWithCustomer_Expect_Status200() throws Exception {
 		// given
 		long orderId = 1L;
-		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.of(expectedOrderWithCUSTOMERUser);
+		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithCUSTOMERUser);
 		given(orderService.getOrderWithNotDeleted(orderId)).willReturn(expectedOrderResponseDTO);
 		given(userDetailsService.loadUserByJwt(any())).willReturn(
 			new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
@@ -291,7 +291,7 @@ class OrderSelectApiControllerTest {
 	void When_GetOrderWithAdmin_Expect_Status200() throws Exception {
 		// given
 		long orderId = 1L;
-		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.of(expectedOrderWithADMINUser);
+		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithADMINUser);
 		given(orderService.getOrderWithNoCondition(orderId)).willReturn(expectedOrderResponseDTO);
 		given(userDetailsService.loadUserByJwt(any())).willReturn(
 			new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
@@ -455,7 +455,7 @@ class OrderSelectApiControllerTest {
 		int pageSize = 10;
 		String requestYear = "2024";
 
-		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.of(expectedOrderWithCUSTOMERUser);
+		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithCUSTOMERUser);
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithCUSTOMERUser.getMember()));
 
@@ -615,7 +615,7 @@ class OrderSelectApiControllerTest {
 		int pageSize = 10;
 		String requestYear = "2024";
 
-		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.of(expectedOrderWithADMINUser);
+		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithADMINUser);
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithADMINUser.getMember()));
 

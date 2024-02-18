@@ -23,6 +23,7 @@ import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
@@ -66,7 +67,7 @@ public class OrderSelectPersistenceTest {
 			LocalDateTime.now());
 
 		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
-			"test@test.com",
+			1L,
 			"홍길동",
 			"test",
 			"test",
@@ -110,7 +111,7 @@ public class OrderSelectPersistenceTest {
 		given(orderMapper.selectOrderWithNotDeleted(1L)).willReturn(expectedOrder);
 
 		//when
-		Order foundOrder = orderPersistence.getOrderWithNotDeleted(1L);
+		OrderEntity foundOrder = orderPersistence.getOrderWithNotDeleted(anyLong());
 
 		//then
 		assertThat(foundOrder).isNotNull();

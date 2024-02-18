@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
@@ -28,6 +29,7 @@ import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
@@ -53,6 +55,7 @@ import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoRespons
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 @ExtendWith(MockitoExtension.class)
+@DataJpaTest
 class OrderInsertServiceTest {
 
 	@Mock
@@ -161,7 +164,7 @@ class OrderInsertServiceTest {
 
 		shippingInfo = new ShippingInfo(
 			1L,
-			"qkrtkdwns3410",
+			1L,
 			"박상준",
 			"서울시 강남구 역삼동",
 			"김밥천국 101동",
@@ -206,9 +209,9 @@ class OrderInsertServiceTest {
 			given(orderCalculationService.calculateOrderDetails(any(OrderCreateRequestDTO.class),
 				any(Member.class))).willReturn(mock(OrderCalculationResult.class));
 
-			given(orderPersistence.getOrderWithNoCondition(mock.getId())).willReturn(expectedOrder);
+			given(orderPersistence.getOrderWithNoCondition(mock.getId())).willReturn(mock(OrderEntity.class));
 
-			orderResponseDTOMockedStatic.when(() -> OrderResponseDTO.of(expectedOrder)).thenReturn(expected);
+			orderResponseDTOMockedStatic.when(() -> OrderResponseDTO.from(expectedOrder)).thenReturn(expected);
 
 			// when
 			OrderResponseDTO actual = orderService.createOrder(member, mockedOrderCreateRequestDTO);
