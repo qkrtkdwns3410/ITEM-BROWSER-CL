@@ -160,27 +160,6 @@ public class OrderSelectServiceTest {
 	}
 
 	@Test
-	@Disabled("단건 조회 관련 테스트 이동 예정")
-	@DisplayName("주문 정상 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
-	void When_GetOrder_Expect_ReturnOrderResponseDTO() {
-		//given
-		given(orderPersistence.getOrderWithNotDeleted(validOrderId)).willReturn(OrderEntity.from(validOrder));
-
-		//when
-		OrderResponseDTO result = orderService.getOrderWithNotDeleted(validOrderId);
-
-		//then
-		assertThat(validOrder.getId()).isEqualTo(result.getId());
-		assertThat(validOrder.getOrdererNumber()).isEqualTo(result.getOrdererNumber());
-		assertThat(validOrder.getOrderStatus()).isEqualTo(result.getOrderStatus());
-		assertThat(validOrder.getPaidDate()).isEqualTo(result.getPaidDate());
-		assertThat(validOrder.getShippingInfoId()).isEqualTo(result.getShippingInfoId());
-		assertThat(validOrder.getCreatedDate()).isEqualTo(result.getCreatedDate());
-		assertThat(validOrder.getUpdatedDate()).isEqualTo(result.getUpdatedDate());
-		assertThat(validOrder.getDeletedDate()).isEqualTo(result.getDeletedDate());
-	}
-
-	@Test
 	@DisplayName("주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
 	void When_GetOrder_Expect_ThrowNotFoundException() {
 		//given
