@@ -17,6 +17,7 @@ import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.mapper.OrderMapper;
@@ -66,16 +67,16 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderResponseDTO getOrderWithNotDeleted(Long id) {
-		Order findOrder = orderPersistence.getOrderWithNotDeleted(id);
+		OrderEntity orderWithNotDeleted = orderPersistence.getOrderWithNotDeleted(id);
 
-		return OrderResponseDTO.of(findOrder);
+		return OrderResponseDTO.from(orderWithNotDeleted);
 	}
 
 	@Override
 	public OrderResponseDTO getOrderWithNoCondition(Long id) {
-		Order findOrder = orderPersistence.getOrderWithNoCondition(id);
+		OrderEntity orderWithNoCondition = orderPersistence.getOrderWithNoCondition(id);
 
-		return OrderResponseDTO.of(findOrder);
+		return OrderResponseDTO.from(orderWithNoCondition);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
 		List<Order> orders = orderPersistence.getOrdersWithPaginationAndNoCondition(requestDTO);
 
-		return new PageInfo<>(orders.stream().map(OrderResponseDTO::of).collect(Collectors.toList()));
+		return new PageInfo<>(orders.stream().map(OrderResponseDTO::from).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -97,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
 
 		authenticationService.authorizeOrdersWhenCustomer(orders, member);
 
-		return new PageInfo<>(orders.stream().map(OrderResponseDTO::of).collect(Collectors.toList()));
+		return new PageInfo<>(orders.stream().map(OrderResponseDTO::from).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -141,8 +142,8 @@ public class OrderServiceImpl implements OrderService {
 		//TODO 추후 필요
 
 		//insert 된 주문정보를 조회하여 반환한다.
-		Order createdOrder = orderPersistence.getOrderWithNoCondition(order.getId());
+		OrderEntity createdOrderWithNoCondition = orderPersistence.getOrderWithNoCondition(order.getId());
 
-		return OrderResponseDTO.of(createdOrder);
+		return OrderResponseDTO.from(createdOrderWithNoCondition);
 	}
 }

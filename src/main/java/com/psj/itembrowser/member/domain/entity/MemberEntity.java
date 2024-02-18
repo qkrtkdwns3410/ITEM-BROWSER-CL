@@ -23,6 +23,7 @@ import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
+import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -111,6 +112,22 @@ public class MemberEntity extends BaseDateTimeEntity {
 	@OneToOne(mappedBy = "member")
 	private OrderEntity order;
 
+	public boolean isSame(MemberEntity other) {
+		if (other == null) {
+			return false;
+		}
+
+		return Objects.equals(this, other);
+	}
+
+	public boolean hasRole(Role role) {
+		return this.role == role;
+	}
+
+	public boolean isActivated() {
+		return this.status == Status.ACTIVE;
+	}
+
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
 		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
@@ -134,19 +151,26 @@ public class MemberEntity extends BaseDateTimeEntity {
 		return member;
 	}
 
-	public boolean isSame(MemberEntity other) {
-		if (other == null) {
-			return false;
+	public static MemberEntity from(Member member) {
+		if (member == null) {
+			return null;
 		}
+		MemberEntity memberEntity = new MemberEntity();
 
-		return Objects.equals(this, other);
-	}
+		memberEntity.credentials = member.getCredentials();
+		memberEntity.name = member.getName();
+		memberEntity.phoneNumber = member.getPhoneNumber();
+		memberEntity.gender = member.getGender();
+		memberEntity.role = member.getRole();
+		memberEntity.status = member.getStatus();
+		memberEntity.memberShipType = member.getMemberShipType();
+		memberEntity.address = member.getAddress();
+		memberEntity.birthday = member.getBirthday();
+		memberEntity.lastLoginDate = member.getLastLoginDate();
+		memberEntity.createdDate = member.getCreatedDate();
+		memberEntity.updatedDate = member.getUpdatedDate();
+		memberEntity.deletedDate = member.getDeletedDate();
 
-	public boolean hasRole(Role role) {
-		return this.role == role;
-	}
-
-	public boolean isActivated() {
-		return this.status == Status.ACTIVE;
+		return memberEntity;
 	}
 }

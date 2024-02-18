@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
+import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,7 +55,7 @@ public class ShippingInfoEntity {
 	private String phoneNumber;
 
 	@Column(name = "ALTERNATIVE_NUMBER")
-	private Integer alternativeNumber;
+	private String alternativeNumber;
 
 	@Size(max = 200)
 	@Column(name = "SHIPPING_REQUEST_MSG", length = 200)
@@ -75,4 +76,26 @@ public class ShippingInfoEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_NO", referencedColumnName = "MEMBER_NO", insertable = false, updatable = false)
 	private MemberEntity member;
+
+	public static ShippingInfoEntity from(ShippingInfo shippingInfo) {
+		if (shippingInfo == null) {
+			return null;
+		}
+
+		ShippingInfoEntity shippingInfoEntity = new ShippingInfoEntity();
+
+		shippingInfoEntity.id = shippingInfo.getId();
+		shippingInfoEntity.memberNo = shippingInfo.getMemberNo();
+		shippingInfoEntity.receiver = shippingInfo.getReceiver();
+		shippingInfoEntity.mainAddress = shippingInfo.getMainAddress();
+		shippingInfoEntity.subAddress = shippingInfo.getSubAddress();
+		shippingInfoEntity.phoneNumber = shippingInfo.getPhoneNumber();
+		shippingInfoEntity.alternativeNumber = shippingInfo.getAlternativeNumber();
+		shippingInfoEntity.shippingRequestMsg = shippingInfo.getShippingRequestMsg();
+		shippingInfoEntity.createdDate = shippingInfo.getCreatedDate();
+		shippingInfoEntity.updatedDate = shippingInfo.getUpdatedDate();
+		shippingInfoEntity.deletedDate = shippingInfo.getDeletedDate();
+
+		return shippingInfoEntity;
+	}
 }

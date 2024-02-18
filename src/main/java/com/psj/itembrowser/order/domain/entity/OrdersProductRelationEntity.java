@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 
 import lombok.AccessLevel;
@@ -61,5 +62,18 @@ public class OrdersProductRelationEntity {
 	public static class OrdersProductRelationEntityId implements Serializable {
 		private Long groupId;
 		private Long productId;
+	}
+
+	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {
+		return new OrdersProductRelationEntity(
+			ordersProductRelation.getGroupId(),
+			ordersProductRelation.getProductId(),
+			ordersProductRelation.getProductQuantity(),
+			ordersProductRelation.getCreatedDate(),
+			ordersProductRelation.getUpdatedDate(),
+			ordersProductRelation.getDeletedDate(),
+			null,
+			null
+		);
 	}
 }

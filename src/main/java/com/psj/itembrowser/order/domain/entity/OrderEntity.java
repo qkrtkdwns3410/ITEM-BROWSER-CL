@@ -1,9 +1,9 @@
 package com.psj.itembrowser.order.domain.entity;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
+import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
@@ -46,7 +48,7 @@ public class OrderEntity {
 	private OrderStatus orderStatus;
 
 	@Column(name = "PAID_DATE")
-	private Instant paidDate;
+	private LocalDateTime paidDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIPPING_INFO_ID", referencedColumnName = "ID")
@@ -66,5 +68,24 @@ public class OrderEntity {
 	private MemberEntity member;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-	private List<OrdersProductRelationEntity> ordersProductRelationEntity = new ArrayList<>();
+	private List<OrdersProductRelationEntity> ordersProductRelations = new ArrayList<>();
+
+	private OrderCalculationResult orderCalculationResult;
+
+	public static OrderEntity from(Order order) {
+		OrderEntity orderEntity = new OrderEntity();
+
+		orderEntity.id = order.getId();
+		orderEntity.orderStatus = order.getOrderStatus();
+		orderEntity.paidDate = order.getPaidDate();
+		orderEntity.shippingInfo = ShippingInfoEntity.from(order.getShippingInfo());
+		orderEntity.createdDate = order.getCreatedDate();
+		orderEntity.updatedDate = order.getUpdatedDate();
+		orderEntity.deletedDate = order.getDeletedDate();
+		orderEntity.member = MemberEntity.from(order.getMember());
+		orderEntity.ordersProductRelations = order.getProducts().stream()
+			.map(OrdersProductRelationEntity::from)
+			.collect(Collectors.toList());
+		return orderEntity;
+	}
 }

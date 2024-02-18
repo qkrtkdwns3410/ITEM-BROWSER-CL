@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
@@ -62,6 +63,35 @@ public class MemberResponseDTO {
 		memberResponseDTO.setCreatedDate(member.getCreatedDate());
 		memberResponseDTO.setUpdatedDate(member.getUpdatedDate());
 		memberResponseDTO.setDeletedDate(member.getDeletedDate());
+
+		return memberResponseDTO;
+	}
+
+	public static MemberResponseDTO from(MemberEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+
+		MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
+
+		memberResponseDTO.setMemberNo(entity.getMemberNo());
+		memberResponseDTO.setEmail(entity.getCredentials().getEmail());
+		memberResponseDTO.setPassword(entity.getCredentials().getPassword());
+		memberResponseDTO.setFirstName(entity.getName().getFirstName());
+		memberResponseDTO.setLastName(entity.getName().getLastName());
+		memberResponseDTO.setPhoneNumber(entity.getPhoneNumber());
+		memberResponseDTO.setAddressMain(entity.getAddress().getAddressMain());
+		memberResponseDTO.setAddressSub(entity.getAddress().getAddressSub());
+		memberResponseDTO.setZipCode(entity.getAddress().getZipCode());
+		memberResponseDTO.setGender(entity.getGender());
+		memberResponseDTO.setRole(entity.getRole());
+		memberResponseDTO.setStatus(entity.getStatus());
+		memberResponseDTO.setMemberShipType(entity.getMemberShipType());
+		memberResponseDTO.setBirthday(entity.getBirthday());
+		memberResponseDTO.setLastLoginDate(entity.getLastLoginDate());
+		memberResponseDTO.setCreatedDate(entity.getCreatedDate());
+		memberResponseDTO.setUpdatedDate(entity.getUpdatedDate());
+		memberResponseDTO.setDeletedDate(entity.getDeletedDate());
 
 		return memberResponseDTO;
 	}

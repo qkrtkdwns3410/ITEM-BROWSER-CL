@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 
 import lombok.AccessLevel;
@@ -51,6 +52,24 @@ public class OrdersProductRelationResponseDTO {
 			ordersProductRelation.getCreatedDate(),
 			ordersProductRelation.getUpdatedDate(),
 			ordersProductRelation.getDeletedDate()
+		);
+	}
+
+	public static OrdersProductRelationResponseDTO from(OrdersProductRelationEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+
+		ProductResponseDTO productResponseDTO = ProductResponseDTO.from(entity.getProduct());
+
+		return new OrdersProductRelationResponseDTO(
+			entity.getGroupId(),
+			entity.getProductId(),
+			productResponseDTO,
+			entity.getProductQuantity(),
+			entity.getCreatedDate(),
+			entity.getUpdatedDate(),
+			entity.getDeletedDate()
 		);
 	}
 }

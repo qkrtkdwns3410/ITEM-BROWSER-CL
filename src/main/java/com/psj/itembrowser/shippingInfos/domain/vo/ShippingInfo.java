@@ -8,11 +8,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * DTO for {@link com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo}
  */
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShippingInfo {
@@ -24,7 +26,7 @@ public class ShippingInfo {
 	/**
 	 * 유저ID
 	 */
-	private String userId;
+	private Long memberNo;
 
 	/**
 	 * 수취인
@@ -83,7 +85,7 @@ public class ShippingInfo {
 		ShippingInfo shippingInfo = new ShippingInfo();
 
 		shippingInfo.id = shippingInfoResponseDTO.getId();
-		shippingInfo.userId = shippingInfoResponseDTO.getUserId();
+		shippingInfo.memberNo = shippingInfoResponseDTO.getMemberNo();
 		shippingInfo.receiver = shippingInfoResponseDTO.getReceiver();
 		shippingInfo.mainAddress = shippingInfoResponseDTO.getMainAddress();
 		shippingInfo.subAddress = shippingInfoResponseDTO.getSubAddress();
@@ -95,22 +97,5 @@ public class ShippingInfo {
 		shippingInfo.deletedDate = shippingInfoResponseDTO.getDeletedDate();
 
 		return shippingInfo;
-	}
-
-	@Override
-	public String toString() {
-		return "ShippingInfo{" +
-			"id=" + id +
-			", userId='" + userId + '\'' +
-			", receiver='" + receiver + '\'' +
-			", mainAddress='" + mainAddress + '\'' +
-			", subAddress='" + subAddress + '\'' +
-			", phoneNumber='" + phoneNumber + '\'' +
-			", alternativeNumber='" + alternativeNumber + '\'' +
-			", shippingRequestMsg='" + shippingRequestMsg + '\'' +
-			", createdDate=" + createdDate +
-			", updatedDate=" + updatedDate +
-			", deletedDate=" + deletedDate +
-			'}';
 	}
 }

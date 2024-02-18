@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ShippingInfoResponseDTO implements Serializable {
 	Long id;
-	String userId;
+	Long memberNo;
 	String receiver;
 	String mainAddress;
 	String subAddress;

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
@@ -39,7 +41,7 @@ public class OrderResponseDTO implements Serializable {
 	private MemberResponseDTO member;
 	private List<OrdersProductRelationResponseDTO> ordersProductRelations = new ArrayList<>();
 
-	public static OrderResponseDTO of(Order order) {
+	public static OrderResponseDTO from(Order order) {
 		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
 
 		orderResponseDTO.setId(order.getId());
@@ -55,6 +57,32 @@ public class OrderResponseDTO implements Serializable {
 		orderResponseDTO.setMember(MemberResponseDTO.from(member));
 
 		order.getProducts().stream()
+			.map(OrdersProductRelationResponseDTO::from)
+			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
+
+		return orderResponseDTO;
+	}
+
+	public static OrderResponseDTO from(OrderEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+
+		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+
+		orderResponseDTO.setId(entity.getId());
+		orderResponseDTO.setOrdererNumber(entity.getMember().getMemberNo());
+		orderResponseDTO.setOrderStatus(entity.getOrderStatus());
+		orderResponseDTO.setPaidDate(entity.getPaidDate());
+		orderResponseDTO.setShippingInfoId(entity.getShippingInfo().getId());
+		orderResponseDTO.setCreatedDate(entity.getCreatedDate());
+		orderResponseDTO.setUpdatedDate(entity.getUpdatedDate());
+		orderResponseDTO.setDeletedDate(entity.getDeletedDate());
+
+		MemberEntity member = entity.getMember();
+		orderResponseDTO.setMember(MemberResponseDTO.from(member));
+
+		entity.getOrdersProductRelations().stream()
 			.map(OrdersProductRelationResponseDTO::from)
 			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
 
