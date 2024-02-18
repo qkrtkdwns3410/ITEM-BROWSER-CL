@@ -34,7 +34,7 @@ import com.psj.itembrowser.product.domain.vo.ProductStatus;
 @AutoConfigureTestDatabase(replace = Replace.AUTO_CONFIGURED)
 @ActiveProfiles("test")
 @Transactional
-@Sql(value = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
+@Sql(value = {"classpath:drop-table.sql", "classpath:custom-custom-schema.sql",
     "classpath:/sql/h2/member/insert_member.sql",
     "classpath:/sql/h2/product/insert_product.sql",
     "classpath:/sql/h2/product/insert_product_image.sql"})
