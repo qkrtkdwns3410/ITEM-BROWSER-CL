@@ -35,6 +35,7 @@ import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -43,6 +44,7 @@ import lombok.ToString;
 @Table(name = "member")
 @Getter
 @ToString
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MemberEntity extends BaseDateTimeEntity {
