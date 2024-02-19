@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.member.repository.MemberRepository;
 import com.psj.itembrowser.security.common.config.jwt.JwtProvider;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.TokenException;
-import com.psj.itembrowser.security.data.config.MemberRepository;
 import com.psj.itembrowser.security.login.domain.dto.request.LoginRequestDTO;
 import com.psj.itembrowser.security.login.domain.dto.response.LoginResponseDTO;
 import com.psj.itembrowser.security.login.service.LoginService;

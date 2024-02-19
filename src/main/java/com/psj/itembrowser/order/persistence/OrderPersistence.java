@@ -13,8 +13,8 @@ import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.mapper.OrderDeleteRequestDTO;
 import com.psj.itembrowser.order.mapper.OrderMapper;
+import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
-import com.psj.itembrowser.security.data.config.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
 

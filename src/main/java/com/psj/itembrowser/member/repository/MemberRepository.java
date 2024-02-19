@@ -1,4 +1,4 @@
-package com.psj.itembrowser.security.data.config;
+package com.psj.itembrowser.member.repository;
 
 import java.util.Optional;
 

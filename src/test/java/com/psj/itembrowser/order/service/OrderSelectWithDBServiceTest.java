@@ -30,6 +30,7 @@ import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.member.repository.MemberRepository;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
@@ -37,6 +38,7 @@ import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
+import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.order.service.impl.OrderCalculationServiceImpl;
 import com.psj.itembrowser.order.service.impl.PaymentService;
 import com.psj.itembrowser.order.service.impl.ShppingInfoValidationService;
@@ -44,16 +46,14 @@ import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
+import com.psj.itembrowser.product.repository.ProductRepository;
 import com.psj.itembrowser.product.service.impl.ProductServiceImpl;
 import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationServiceImpl;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
-import com.psj.itembrowser.security.data.config.MemberRepository;
-import com.psj.itembrowser.security.data.config.OrderRepository;
-import com.psj.itembrowser.security.data.config.ProductRepository;
-import com.psj.itembrowser.security.data.config.ShippingInfoRepository;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
+import com.psj.itembrowser.shippingInfos.repository.ShippingInfoRepository;
 
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
