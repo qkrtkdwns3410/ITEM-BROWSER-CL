@@ -243,4 +243,23 @@ public class OrderSelectWithDBServiceTest {
 		assertThatThrownBy(() -> orderService.getOrderWithNotDeleted(invalidOrderId))
 			.isInstanceOf(NotFoundException.class).hasMessageContaining("Not Found Order");
 	}
+	
+	@Test
+	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNoCondition) - 모든 정보 조회시 주문 정보가 있을 경우 주문 정보 리스트 반환")
+	void When_GetOrdersWithPaginationAndNoCondition_Expect_ReturnOrderResponseDTOList() {
+		//given
+		MemberEntity member = MemberEntity.builder().role(Role.ROLE_CUSTOMER).build();
+		em.persist(member);
+		
+		//when
+		List<OrderResponseDTO> orderResponseDTOList = orderService.getOrdersWithPaginationAndNoCondition(member, null);
+		
+		//then
+		assertThat(orderResponseDTOList).isNotNull();
+		assertThat(orderResponseDTOList).hasSize(1);
+		assertThat(orderResponseDTOList.get(0).getId()).isEqualTo(saved.getId());
+		assertThat(orderResponseDTOList.get(0).getOrderStatus()).isEqualTo(saved.getOrderStatus());
+		assertThat(orderResponseDTOList.get(0).getOrdersProductRelations()).hasSize(1);
+		assertThat(orderResponseDTOList.get(0).getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
+	}
 }
