@@ -7,14 +7,19 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
@@ -25,25 +30,41 @@ import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
+import com.psj.itembrowser.order.service.impl.OrderCalculationServiceImpl;
+import com.psj.itembrowser.order.service.impl.PaymentService;
+import com.psj.itembrowser.order.service.impl.ShppingInfoValidationService;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
+import com.psj.itembrowser.product.service.impl.ProductServiceImpl;
+import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
+import com.psj.itembrowser.security.auth.service.impl.AuthenticationServiceImpl;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.security.data.config.MemberRepository;
 import com.psj.itembrowser.security.data.config.OrderRepository;
+import com.psj.itembrowser.security.data.config.ProductRepository;
 import com.psj.itembrowser.security.data.config.ShippingInfoRepository;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
-@DataJpaTest
 @ActiveProfiles("test")
-@Import({OrderPersistence.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
+@Import({OrderPersistence.class, OrderCalculationServiceImpl.class, ProductValidationHelper.class, ShppingInfoValidationService.class,
+	AuthenticationServiceImpl.class, ProductServiceImpl.class})
 public class OrderSelectWithDBServiceTest {
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Autowired
 	private OrderRepository orderRepository;
@@ -52,13 +73,19 @@ public class OrderSelectWithDBServiceTest {
 	private MemberRepository memberRepository;
 	
 	@Autowired
-	private ShippingInfoRepository shippingInfoRepository;
+	private ProductRepository productRepository;
 	
 	@Autowired
-	private OrderPersistence orderPersistence;
+	private ShippingInfoRepository shippingInfoRepository;
+	
+	@MockBean
+	private PaymentService paymentService;
 	
 	@MockBean
 	private OrderMapper orderMapper;
+	
+	@PersistenceContext
+	EntityManager em;
 	
 	private Long validOrderId;
 	
@@ -69,9 +96,9 @@ public class OrderSelectWithDBServiceTest {
 	@BeforeEach
 	public void setUp() {
 		validOrderId = 1L;
-		invalidOrderId = 2L;
+		invalidOrderId = 99L;
 		
-		Member member = new Member(1L,
+		Member member = new Member(null,
 			Credentials.create("test@test.com", "test"),
 			Name.create("홍", "길동"),
 			"010-1234-1234",
@@ -84,7 +111,7 @@ public class OrderSelectWithDBServiceTest {
 		
 		MemberEntity expectedMember = MemberEntity.from(member, null, null);
 		
-		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
+		ShippingInfo expectedShppingInfo = new ShippingInfo(null,
 			1L,
 			"홍길동",
 			"test",
@@ -103,7 +130,7 @@ public class OrderSelectWithDBServiceTest {
 			null,
 			null,
 			new Product(
-				1L,
+				null,
 				"섬유유연제",
 				1,
 				"상품 디테일",
@@ -140,32 +167,80 @@ public class OrderSelectWithDBServiceTest {
 			null
 		));
 		
-		memberRepository.save(expectedMember);
-		shippingInfoRepository.save(expectedShippingInfoEntity);
+		ProductEntity productEntity = ProductEntity.builder().name("섬유유연제").unitPrice(1000).quantity(10).build();
+		
+		em.persist(expectedMember);
+		em.persist(productEntity);
+		em.persist(expectedShippingInfoEntity);
+		
+		em.flush();
 	}
 	
 	@Test
-	@DisplayName("주문에 대한 단건 조회의 경우 메서드가 정상적으로 Order 를 반환하는지")
+	@DisplayName("조건 없이 주문 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
+	void When_GetOrderWithNoCondition_Expect_ReturnOrderResponseDTO() {
+		//given
+		OrderEntity saved = orderRepository.save(validOrder);
+		
+		//when
+		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNoCondition(saved.getId());
+		
+		//then
+		assertThat(orderResponseDTO).isNotNull();
+		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
+		assertThat(orderResponseDTO.getOrderStatus()).isEqualTo(saved.getOrderStatus());
+		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
+		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
+	}
+	
+	@Test
+	@DisplayName("삭제되지 않은 주문 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
+	void When_GetOrderWithNotDeleted_Expect_ReturnOrderResponseDTO() {
+		//given
+		OrderEntity saved = orderRepository.save(validOrder);
+		
+		//when
+		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNotDeleted(saved.getId());
+		
+		//then
+		assertThat(orderResponseDTO).isNotNull();
+		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
+		assertThat(orderResponseDTO.getOrderStatus()).isEqualTo(saved.getOrderStatus());
+		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
+		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
+	}
+	
+	@Test
+	@DisplayName("주문에 대한 단건 조회의 경우 메서드가 정상적으로 orderResponseDTO 를 반환하는지")
 	void test() {
 		//given
 		OrderEntity saved = orderRepository.save(validOrder);
 		
 		//when
-		OrderEntity orderWithNotDeleted = orderPersistence.getOrderWithNotDeleted(saved.getId());
+		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNoCondition(saved.getId());
 		
 		//then
-		assertThat(orderWithNotDeleted.getId()).isEqualTo(saved.getId());
-		assertThat(orderWithNotDeleted.getOrderStatus()).isEqualTo(saved.getOrderStatus());
-		assertThat(orderWithNotDeleted.getPaidDate()).isEqualTo(saved.getPaidDate());
-		assertThat(orderWithNotDeleted.getCreatedDate()).isEqualTo(saved.getCreatedDate());
-		assertThat(orderWithNotDeleted.getUpdatedDate()).isEqualTo(saved.getUpdatedDate());
-		assertThat(orderWithNotDeleted.getDeletedDate()).isEqualTo(saved.getDeletedDate());
+		assertThat(orderResponseDTO).isNotNull();
+		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
+		assertThat(orderResponseDTO.getOrderStatus()).isEqualTo(saved.getOrderStatus());
+		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
+		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
 	}
 	
 	@Test
-	@DisplayName("주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
+	@DisplayName("조건 없이 주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
+	void When_GetOrderWithNoCondition_Expect_ThrowNotFoundException() {
+		//when - then
+		assertThatThrownBy(() -> orderService.getOrderWithNoCondition(invalidOrderId))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining("Not Found Order");
+	}
+	
+	@Test
+	@DisplayName("삭제되지 않은 주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
 	void When_GetOrder_Expect_ThrowNotFoundException() {
-		//given
-		
+		// when - then
+		assertThatThrownBy(() -> orderService.getOrderWithNotDeleted(invalidOrderId))
+			.isInstanceOf(NotFoundException.class).hasMessageContaining("Not Found Order");
 	}
 }
