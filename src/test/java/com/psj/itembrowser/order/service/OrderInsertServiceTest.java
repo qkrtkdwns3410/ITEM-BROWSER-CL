@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.vo.Address;
@@ -56,7 +55,6 @@ import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoRespons
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest
 class OrderInsertServiceTest {
 
 	@Mock

@@ -2,7 +2,6 @@ package com.psj.itembrowser.product.domain.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +18,6 @@ import javax.validation.constraints.Positive;
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
-import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTOForEntity;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
@@ -189,37 +187,6 @@ public class ProductEntity extends BaseDateTimeEntity {
 
 	public double calculateDiscount(int quantity, int discountRate) {
 		return (this.unitPrice * quantity) * ((double)discountRate / 100);
-	}
-
-	public static ProductEntity from(ProductResponseDTOForEntity productResponseDTO) {
-		if (productResponseDTO == null) {
-			return null;
-		}
-
-		ProductEntity product = new ProductEntity();
-
-		product.id = productResponseDTO.getId();
-		product.name = productResponseDTO.getName();
-		product.category = productResponseDTO.getCategory();
-		product.detail = productResponseDTO.getDetail();
-		product.status = productResponseDTO.getStatus();
-		product.quantity = productResponseDTO.getQuantity();
-		product.unitPrice = productResponseDTO.getUnitPrice();
-		product.sellerId = productResponseDTO.getSellerId();
-		product.sellStartDatetime = productResponseDTO.getSellStartDatetime();
-		product.sellEndDatetime = productResponseDTO.getSellEndDatetime();
-		product.displayName = productResponseDTO.getDisplayName();
-		product.brand = productResponseDTO.getBrand();
-		product.deliveryMethod = productResponseDTO.getDeliveryMethod();
-		product.deliveryDefaultFee = productResponseDTO.getDeliveryDefaultFee();
-		product.freeShipOverAmount = productResponseDTO.getFreeShipOverAmount();
-		product.returnCenterCode = productResponseDTO.getReturnCenterCode();
-
-		if (Objects.nonNull(productResponseDTO.getProductImages()) && !productResponseDTO.getProductImages().isEmpty()) {
-			product.productImages = productResponseDTO.getProductImages();
-		}
-
-		return product;
 	}
 
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {

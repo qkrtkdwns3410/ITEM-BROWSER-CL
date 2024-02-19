@@ -47,7 +47,7 @@
     <result property="size" column="SIZE"/>
     <result property="createdDate" column="CREATED_DATE"/>
     <result property="updatedDate" column="UPDATED_DATE"/>
-    <result property="deleteDate" column="DELETE_DATE"/>
+      <result property="deletedDate" column="DELETED_DATE"/>
   </resultMap>
 
   <select id="findProductById" resultMap="productResultMap">
