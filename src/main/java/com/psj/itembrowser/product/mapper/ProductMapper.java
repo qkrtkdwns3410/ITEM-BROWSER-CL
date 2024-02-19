@@ -38,14 +38,14 @@ public interface ProductMapper {
 	boolean updateProductQuantity(ProductQuantityUpdateRequestDTO product);
 
 	void insertProduct(Product product);
-
-	boolean insertProductImages(List<ProductImage> productImages);
-
-	List<ProductImage> findProductImagesByImageIds(List<Long> imageIds);
+	
+	boolean insertProductImages(@Param("productImages") List<ProductImage> productImages);
+	
+	List<ProductImage> findProductImagesByImageIds(@Param("imageIds") List<Long> imageIds);
 
 	void updateProduct(Product product);
-
-	void softDeleteProductImages(List<Long> deleteImageIds);
+	
+	void softDeleteProductImages(@Param("deleteImageIds") List<Long> deleteImageIds);
 
 	void softDeleteProduct(@Param("productId") Long productId);
 
