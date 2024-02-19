@@ -11,6 +11,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,98 +46,98 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MemberEntity extends BaseDateTimeEntity {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "MEMBER_NO", nullable = false)
 	private Long memberNo;
-
+	
 	@Embedded
 	private Credentials credentials;
-
+	
 	/**
 	 * 성. 이름
 	 */
 	@Embedded
 	private Name name;
-
+	
 	/**
 	 * 휴대폰번호
 	 */
 	@Column(name = "phone_number")
 	private String phoneNumber;
-
+	
 	/**
 	 * 성별
 	 */
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
-
+	
 	/**
 	 * 역할
 	 */
 	@Enumerated(EnumType.STRING)
 	private Role role;
-
+	
 	/**
 	 * 회원 상태. ACTIVE -> 활성화, READY -> 대기, DISABLED -> 비활성화
 	 */
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.ACTIVE;
-
+	
 	@Enumerated(EnumType.STRING)
 	private MemberShipType memberShipType = MemberShipType.REGULAR;
-
+	
 	/**
 	 * 주소
 	 */
 	@Embedded
 	private Address address;
-
+	
 	/**
 	 * 생년월일. 생년월일
 	 */
 	@Column(name = "birthday")
 	private LocalDate birthday;
-
+	
 	/**
 	 * 최종 로그인 일시
 	 */
 	@Column(name = "last_login_date")
 	private LocalDateTime lastLoginDate;
-
-	@OneToMany(mappedBy = "member")
+	
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
-
+	
 	@OneToOne(mappedBy = "member")
 	private OrderEntity order;
-
+	
 	public boolean isSame(MemberEntity other) {
 		if (other == null) {
 			return false;
 		}
-
+		
 		return Objects.equals(this, other);
 	}
-
+	
 	public boolean hasRole(Role role) {
 		return this.role == role;
 	}
-
+	
 	public boolean isActivated() {
 		return this.status == Status.ACTIVE;
 	}
-
+	
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
 		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
 		return member;
 	}
-
+	
 	public static MemberEntity from(MemberResponseDTO dto) {
 		MemberEntity member = new MemberEntity();
-
+		
 		member.memberNo = dto.getMemberNo();
 		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
 		member.name = new Name(dto.getFirstName(), dto.getLastName());
@@ -147,16 +148,16 @@ public class MemberEntity extends BaseDateTimeEntity {
 		member.address = new Address(dto.getAddressMain(), dto.getAddressSub(), dto.getZipCode());
 		member.birthday = dto.getBirthday();
 		member.lastLoginDate = dto.getLastLoginDate();
-
+		
 		return member;
 	}
-
+	
 	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
 		if (member == null) {
 			return null;
 		}
 		MemberEntity memberEntity = new MemberEntity();
-
+		
 		memberEntity.credentials = member.getCredentials();
 		memberEntity.name = member.getName();
 		memberEntity.phoneNumber = member.getPhoneNumber();
@@ -173,9 +174,9 @@ public class MemberEntity extends BaseDateTimeEntity {
 		if (shippingInfos != null) {
 			memberEntity.shippingInfos = shippingInfos;
 		}
-
+		
 		memberEntity.order = order;
-
+		
 		return memberEntity;
 	}
 }

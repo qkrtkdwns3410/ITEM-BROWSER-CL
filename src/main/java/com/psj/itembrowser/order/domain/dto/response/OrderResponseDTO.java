@@ -14,6 +14,7 @@ import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
+import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 public class OrderResponseDTO implements Serializable {
-
+	
 	private Long id;
 	private Long ordererNumber;
 	private OrderStatus orderStatus;
@@ -37,13 +38,13 @@ public class OrderResponseDTO implements Serializable {
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
 	private LocalDateTime deletedDate;
-
+	
 	private MemberResponseDTO member;
 	private List<OrdersProductRelationResponseDTO> ordersProductRelations = new ArrayList<>();
-
+	
 	public static OrderResponseDTO from(Order order) {
 		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-
+		
 		orderResponseDTO.setId(order.getId());
 		orderResponseDTO.setOrdererNumber(order.getOrdererNumber());
 		orderResponseDTO.setOrderStatus(order.getOrderStatus());
@@ -52,40 +53,48 @@ public class OrderResponseDTO implements Serializable {
 		orderResponseDTO.setCreatedDate(order.getCreatedDate());
 		orderResponseDTO.setUpdatedDate(order.getUpdatedDate());
 		orderResponseDTO.setDeletedDate(order.getDeletedDate());
-
+		
 		Member member = order.getMember();
 		orderResponseDTO.setMember(MemberResponseDTO.from(member));
-
+		
 		order.getProducts().stream()
 			.map(OrdersProductRelationResponseDTO::from)
 			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
-
+		
 		return orderResponseDTO;
 	}
-
+	
 	public static OrderResponseDTO from(OrderEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-
+		
 		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-
+		
 		orderResponseDTO.setId(entity.getId());
-		orderResponseDTO.setOrdererNumber(entity.getMember().getMemberNo());
 		orderResponseDTO.setOrderStatus(entity.getOrderStatus());
 		orderResponseDTO.setPaidDate(entity.getPaidDate());
-		orderResponseDTO.setShippingInfoId(entity.getShippingInfo().getId());
 		orderResponseDTO.setCreatedDate(entity.getCreatedDate());
 		orderResponseDTO.setUpdatedDate(entity.getUpdatedDate());
 		orderResponseDTO.setDeletedDate(entity.getDeletedDate());
-
+		
 		MemberEntity member = entity.getMember();
-		orderResponseDTO.setMember(MemberResponseDTO.from(member));
-
+		
+		if (member != null) {
+			orderResponseDTO.setMember(MemberResponseDTO.from(member));
+			orderResponseDTO.setOrdererNumber(member.getMemberNo());
+		}
+		
+		ShippingInfoEntity shippingInfo = entity.getShippingInfo();
+		
+		if (shippingInfo != null) {
+			orderResponseDTO.setShippingInfoId(shippingInfo.getId());
+		}
+		
 		entity.getOrdersProductRelations().stream()
 			.map(OrdersProductRelationResponseDTO::from)
 			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
-
+		
 		return orderResponseDTO;
 	}
 }

@@ -34,8 +34,8 @@ public class ShippingInfoEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-
-	@Column(name = "MEMBER_NO")
+	
+	@Column(name = "MEMBER_NO", nullable = false)
 	private Long memberNo;
 
 	@Size(max = 45)
