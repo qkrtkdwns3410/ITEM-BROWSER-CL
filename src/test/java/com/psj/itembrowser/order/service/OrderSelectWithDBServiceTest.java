@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +34,8 @@ import com.psj.itembrowser.member.repository.MemberRepository;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
-import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
-import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
@@ -44,9 +43,6 @@ import com.psj.itembrowser.order.service.impl.OrderCalculationServiceImpl;
 import com.psj.itembrowser.order.service.impl.PaymentService;
 import com.psj.itembrowser.order.service.impl.ShppingInfoValidationService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
-import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
-import com.psj.itembrowser.product.domain.vo.Product;
-import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.repository.ProductRepository;
 import com.psj.itembrowser.product.service.impl.ProductServiceImpl;
 import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
@@ -63,42 +59,42 @@ import com.psj.itembrowser.shippingInfos.repository.ShippingInfoRepository;
 @Import({OrderPersistence.class, OrderCalculationServiceImpl.class, ProductValidationHelper.class, ShppingInfoValidationService.class,
 	AuthenticationServiceImpl.class, ProductServiceImpl.class})
 public class OrderSelectWithDBServiceTest {
-
+	
 	@Autowired
 	private OrderService orderService;
-
+	
 	@Autowired
 	private OrderRepository orderRepository;
-
+	
 	@Autowired
 	private MemberRepository memberRepository;
-
+	
 	@Autowired
 	private ProductRepository productRepository;
-
+	
 	@Autowired
 	private ShippingInfoRepository shippingInfoRepository;
-
+	
 	@MockBean
 	private PaymentService paymentService;
-
+	
 	@MockBean
 	private OrderMapper orderMapper;
-
+	
 	@PersistenceContext
 	EntityManager em;
-
+	
 	private Long validOrderId;
-
+	
 	private Long invalidOrderId;
-
+	
 	private OrderEntity validOrder;
-
+	
 	@BeforeEach
 	public void setUp() {
 		validOrderId = 1L;
 		invalidOrderId = 99L;
-
+		
 		Member member = new Member(null,
 			Credentials.create("test@test.com", "test"),
 			Name.create("홍", "길동"),
@@ -109,9 +105,9 @@ public class OrderSelectWithDBServiceTest {
 			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
 			LocalDate.of(1995, 11, 3),
 			LocalDateTime.now());
-
+		
 		MemberEntity expectedMember = MemberEntity.from(member, null, null);
-
+		
 		ShippingInfo expectedShppingInfo = new ShippingInfo(null,
 			1L,
 			"홍길동",
@@ -123,69 +119,48 @@ public class OrderSelectWithDBServiceTest {
 			LocalDateTime.now(),
 			null,
 			null);
-
+		
 		ShippingInfoEntity expectedShippingInfoEntity = ShippingInfoEntity.from(expectedShppingInfo);
-
-		OrdersProductRelation expectedOrderRelation = OrdersProductRelation.of(1L, 1L, 1,
-			LocalDateTime.now(),
-			null,
-			null,
-			new Product(
-				null,
-				"섬유유연제",
-				1,
-				"상품 디테일",
-				ProductStatus.APPROVED,
-				10,
-				1000,
-				"qkrtkdwns3410",
-				LocalDateTime.now(),
-				LocalDateTime.now().plusDays(10),
-				"섬유유연제",
-				"섬유나라",
-				DeliveryFeeType.FREE,
-				"배송방법",
-				5000,
-				15000,
-				"returnCenterCode",
-				Collections.emptyList(),
-				Collections.emptyList()
-			));
-
-		this.validOrder = OrderEntity.from(Order.of(
-			null,
-			1L,
-			OrderStatus.ACCEPT,
-			LocalDateTime.now(),
-			1L,
-			LocalDateTime.now(),
-			null,
-			null,
-			List.of(
-				expectedOrderRelation
-			),
-			null,
-			null
-		));
-
+		
+		OrdersProductRelationEntity expectedOrderRelation = OrdersProductRelationEntity.builder()
+			.groupId(1L)
+			.productId(1L)
+			.productQuantity(1)
+			.createdDate(LocalDateTime.now())
+			.updatedDate(LocalDateTime.now())
+			.deletedDate(null)
+			.build();
+		
+		this.validOrder = OrderEntity.builder()
+			.id(1L)
+			.member(MemberEntity.builder()
+				.memberNo(1L)
+				.address(Address.builder().addressMain("포항시 남구 연일읍 유강길 10 - 44").addressSub("김밥아파트 101동 302호").build())
+				.build())
+			.orderStatus(OrderStatus.ACCEPT)
+			.paidDate(LocalDateTime.now())
+			.shippingInfo(expectedShippingInfoEntity)
+			.ordersProductRelations(List.of(expectedOrderRelation))
+			.build();
+		
 		ProductEntity productEntity = ProductEntity.builder().name("섬유유연제").unitPrice(1000).quantity(10).build();
-
+		
 		em.persist(expectedMember);
 		em.persist(productEntity);
 		em.persist(expectedShippingInfoEntity);
-
+		
 		em.flush();
 	}
-
+	
 	@Test
 	@DisplayName("조건 없이 주문 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
 	void When_GetOrderWithNoCondition_Expect_ReturnOrderResponseDTO() {
 		//given
 		OrderEntity saved = orderRepository.save(validOrder);
-
+		
 		//when
 		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNoCondition(saved.getId());
-
+		
 		//then
 		assertThat(orderResponseDTO).isNotNull();
 		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
@@ -193,16 +168,16 @@ public class OrderSelectWithDBServiceTest {
 		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
 		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
 	}
-
+	
 	@Test
 	@DisplayName("삭제되지 않은 주문 조회 후 주문 정보 반환이 올바르게 되는지 테스트")
 	void When_GetOrderWithNotDeleted_Expect_ReturnOrderResponseDTO() {
 		//given
 		OrderEntity saved = orderRepository.save(validOrder);
-
+		
 		//when
 		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNotDeleted(saved.getId());
-
+		
 		//then
 		assertThat(orderResponseDTO).isNotNull();
 		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
@@ -210,16 +185,16 @@ public class OrderSelectWithDBServiceTest {
 		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
 		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
 	}
-
+	
 	@Test
 	@DisplayName("주문에 대한 단건 조회의 경우 메서드가 정상적으로 orderResponseDTO 를 반환하는지")
 	void test() {
 		//given
 		OrderEntity saved = orderRepository.save(validOrder);
-
+		
 		//when
 		OrderResponseDTO orderResponseDTO = orderService.getOrderWithNoCondition(saved.getId());
-
+		
 		//then
 		assertThat(orderResponseDTO).isNotNull();
 		assertThat(orderResponseDTO.getId()).isEqualTo(saved.getId());
@@ -227,7 +202,7 @@ public class OrderSelectWithDBServiceTest {
 		assertThat(orderResponseDTO.getOrdersProductRelations()).hasSize(1);
 		assertThat(orderResponseDTO.getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
 	}
-
+	
 	@Test
 	@DisplayName("조건 없이 주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
 	void When_GetOrderWithNoCondition_Expect_ThrowNotFoundException() {
@@ -236,7 +211,7 @@ public class OrderSelectWithDBServiceTest {
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining("Not Found Order");
 	}
-
+	
 	@Test
 	@DisplayName("삭제되지 않은 주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
 	void When_GetOrder_Expect_ThrowNotFoundException() {
@@ -244,25 +219,27 @@ public class OrderSelectWithDBServiceTest {
 		assertThatThrownBy(() -> orderService.getOrderWithNotDeleted(invalidOrderId))
 			.isInstanceOf(NotFoundException.class).hasMessageContaining("Not Found Order");
 	}
-
+	
 	@Test
 	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNoCondition) - 모든 정보 조회시 주문 정보가 있을 경우 주문 정보 리스트 반환")
 	void When_GetOrdersWithPaginationAndNoCondition_Expect_ReturnOrderResponseDTOList() {
 		//given
 		MemberEntity member = MemberEntity.builder().role(Role.ROLE_CUSTOMER).build();
-		em.persist(member);
-
-		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(1).pageSize(1).userNumber(1L).build();
-
+		
+		OrderEntity expectedOrder = orderRepository.save(validOrder);
+		
+		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(0).pageSize(1).userNumber(1L).build();
+		
 		//when
-		// List<OrderResponseDTO> orderResponseDTOList = orderService.getOrdersWithPaginationAndNoCondition(member, dto);
-
+		Page<OrderResponseDTO> ordersWithPaginationAndNoCondition = orderService.getOrdersWithPaginationAndNoCondition(member, dto);
+		
 		//then
-		// assertThat(orderResponseDTOList).isNotNull();
-		// assertThat(orderResponseDTOList).hasSize(1);
-		// assertThat(orderResponseDTOList.get(0).getId()).isEqualTo(saved.getId());
-		// assertThat(orderResponseDTOList.get(0).getOrderStatus()).isEqualTo(saved.getOrderStatus());
-		// assertThat(orderResponseDTOList.get(0).getOrdersProductRelations()).hasSize(1);
-		// assertThat(orderResponseDTOList.get(0).getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
+		assertThat(ordersWithPaginationAndNoCondition).isNotNull();
+		assertThat(ordersWithPaginationAndNoCondition.getContent()).isNotNull();
+		assertThat(ordersWithPaginationAndNoCondition.getTotalPages()).isEqualTo(1);
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getId()).isEqualTo(expectedOrder.getId());
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrderStatus()).isEqualTo(expectedOrder.getOrderStatus());
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrdersProductRelations()).hasSize(1);
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
 	}
 }

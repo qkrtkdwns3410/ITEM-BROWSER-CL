@@ -29,71 +29,71 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class OrderPersistence {
-
+	
 	private final OrderMapper orderMapper;
 	private final OrderRepository orderRepository;
 	private final CustomOrderRepository customOrderRepository;
-
+	
 	public void removeOrder(long id) {
 		OrderDeleteRequestDTO deleteOrderRequestDTO = OrderDeleteRequestDTO.builder()
 			.id(id)
 			.orderStatus(CANCELED)
 			.build();
-
+		
 		orderMapper.deleteSoftly(deleteOrderRequestDTO);
 	}
-
+	
 	public void removeOrderProducts(long orderId) {
 		orderMapper.deleteSoftlyOrderProducts(orderId);
 	}
-
+	
 	public Order findOrderStatusForUpdate(long orderId) {
 		Order findOrder = orderMapper.selectOrderWithPessimissticLock(orderId);
-
+		
 		if (findOrder == null) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
 		}
-
+		
 		return findOrder;
 	}
-
+	
 	public OrderEntity getOrderWithNotDeleted(long id) {
 		Optional<OrderEntity> findOrder = orderRepository.findByIdAndDeletedDateIsNull(id);
-
+		
 		if (findOrder.isEmpty()) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
 		}
-
+		
 		return findOrder.get();
 	}
-
+	
 	public OrderEntity getOrderWithNoCondition(Long id) {
 		Optional<OrderEntity> findOrder = orderRepository.findById(id);
-
+		
 		if (findOrder.isEmpty()) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
 		}
-
+		
 		return findOrder.get();
 	}
-
+	
 	public Page<OrderEntity> getOrdersWithPaginationAndNoCondition(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPaginationAndNoCondition(requestDTO, pageable);
-
+		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, null);
+		
 		if (orders.isEmpty()) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
 		}
-
+		
 		return orders;
 	}
-
+	
 	public Page<OrderEntity> getOrdersWithPaginationAndNotDeleted(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPaginationAndNotDeleted(requestDTO, pageable);
-
+		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, false);
+		
 		if (orders.isEmpty()) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
 		}
-
+		
 		return orders;
 	}
 }

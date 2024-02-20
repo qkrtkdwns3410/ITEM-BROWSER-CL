@@ -9,8 +9,6 @@ import com.psj.itembrowser.order.domain.entity.OrderEntity;
 
 @Repository
 public interface CustomOrderRepository {
-
-	Page<OrderEntity> selectOrdersWithPaginationAndNoCondition(OrderPageRequestDTO orderPageRequestDTO, Pageable pageable);
-
-	Page<OrderEntity> selectOrdersWithPaginationAndNotDeleted(OrderPageRequestDTO requestDTO, Pageable pageable);
+	
+	Page<OrderEntity> selectOrdersWithPagination(OrderPageRequestDTO orderPageRequestDTO, Pageable pageable, Boolean isDeleted);
 }
