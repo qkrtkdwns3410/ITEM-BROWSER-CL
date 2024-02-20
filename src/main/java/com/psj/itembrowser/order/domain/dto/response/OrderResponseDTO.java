@@ -91,9 +91,11 @@ public class OrderResponseDTO implements Serializable {
 			orderResponseDTO.setShippingInfoId(shippingInfo.getId());
 		}
 		
-		entity.getOrdersProductRelations().stream()
-			.map(OrdersProductRelationResponseDTO::from)
-			.forEach(orderResponseDTO.getOrdersProductRelations()::add);
+		if (entity.getOrdersProductRelations() != null && !entity.getOrdersProductRelations().isEmpty()) {
+			entity.getOrdersProductRelations().stream()
+				.map(OrdersProductRelationResponseDTO::from)
+				.forEach(orderResponseDTO.getOrdersProductRelations()::add);
+		}
 		
 		return orderResponseDTO;
 	}

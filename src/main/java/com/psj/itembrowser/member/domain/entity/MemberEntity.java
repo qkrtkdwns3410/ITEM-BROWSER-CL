@@ -150,7 +150,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 	
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
-		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
+		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
 		return member;
 	}
 	
@@ -158,7 +158,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 		MemberEntity member = new MemberEntity();
 		
 		member.memberNo = dto.getMemberNo();
-		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
+		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
 		member.name = Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build();
 		member.phoneNumber = dto.getPhoneNumber();
 		member.gender = dto.getGender(); // Gender enum에 맞게 변환
