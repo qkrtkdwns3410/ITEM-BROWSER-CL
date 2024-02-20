@@ -87,3 +87,8 @@ aws:
 server:
   error:
     include-stacktrace: never
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false
