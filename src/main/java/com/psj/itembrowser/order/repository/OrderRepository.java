@@ -8,5 +8,4 @@ import com.psj.itembrowser.order.domain.entity.OrderEntity;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 	Optional<OrderEntity> findByIdAndDeletedDateIsNull(Long id);
-
 }

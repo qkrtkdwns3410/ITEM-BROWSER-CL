@@ -1,18 +1,16 @@
 package com.psj.itembrowser.security.auth.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.psj.itembrowser.member.domain.vo.Member;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Role;
-import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.security.auth.service.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
-    public void authorizeOrdersWhenCustomer(@NonNull final List<Order> orders, @NonNull Member currentMember) {
+    public void authorizeOrdersWhenCustomer(final Page<OrderEntity> orders, MemberEntity currentMember) {
         log.info("AuthenticationServiceImpl#authorizeOrders started");
 
         if (orders.isEmpty()) {
