@@ -34,7 +34,6 @@ import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,9 +43,7 @@ import lombok.ToString;
 @Table(name = "member")
 @Getter
 @ToString
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class MemberEntity extends BaseDateTimeEntity {
 	
 	@Id
@@ -115,6 +112,26 @@ public class MemberEntity extends BaseDateTimeEntity {
 	@OneToOne(mappedBy = "member")
 	private OrderEntity order;
 	
+	@Builder
+	private MemberEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials,
+		Name name, String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
+		LocalDateTime lastLoginDate, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
+		super(createdDate, updatedDate, deletedDate);
+		this.memberNo = memberNo;
+		this.credentials = credentials;
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.gender = gender;
+		this.role = role;
+		this.status = status;
+		this.memberShipType = memberShipType;
+		this.address = address;
+		this.birthday = birthday;
+		this.lastLoginDate = lastLoginDate;
+		this.shippingInfos = shippingInfos;
+		this.order = order;
+	}
+	
 	public boolean isSame(MemberEntity other) {
 		if (other == null) {
 			return false;
@@ -142,12 +159,12 @@ public class MemberEntity extends BaseDateTimeEntity {
 		
 		member.memberNo = dto.getMemberNo();
 		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
-		member.name = new Name(dto.getFirstName(), dto.getLastName());
+		member.name = Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build();
 		member.phoneNumber = dto.getPhoneNumber();
 		member.gender = dto.getGender(); // Gender enum에 맞게 변환
 		member.role = dto.getRole(); // Role enum에 맞게 변환
 		member.status = dto.getStatus(); // Status enum에 맞게 변환
-		member.address = new Address(dto.getAddressMain(), dto.getAddressSub(), dto.getZipCode());
+		member.address = Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build();
 		member.birthday = dto.getBirthday();
 		member.lastLoginDate = dto.getLastLoginDate();
 		

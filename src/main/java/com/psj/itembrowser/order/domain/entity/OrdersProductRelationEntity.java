@@ -17,6 +17,7 @@ import com.psj.itembrowser.product.domain.entity.ProductEntity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,6 @@ import lombok.NoArgsConstructor;
 @IdClass(OrdersProductRelationEntity.OrdersProductRelationEntityId.class)
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Table(name = "orders_product_relation")
 public class OrdersProductRelationEntity {
 	
@@ -63,6 +63,19 @@ public class OrdersProductRelationEntity {
 	public static class OrdersProductRelationEntityId implements Serializable {
 		private Long groupId;
 		private Long productId;
+	}
+	
+	@Builder
+	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity, LocalDateTime createdDate, LocalDateTime updatedDate,
+		LocalDateTime deletedDate, OrderEntity order, ProductEntity product) {
+		this.groupId = groupId;
+		this.productId = productId;
+		this.productQuantity = productQuantity;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.deletedDate = deletedDate;
+		this.order = order;
+		this.product = product;
 	}
 	
 	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {

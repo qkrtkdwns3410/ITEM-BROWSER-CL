@@ -5,43 +5,51 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.psj.itembrowser.security.common.pagination.PageRequestDTO;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
-@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Slf4j
 public class OrderPageRequestDTO extends PageRequestDTO {
-
+	
 	@NotNull(message = "userNumber must not be null")
 	private Long userNumber;
-
+	
 	@PastOrPresent(message = "requestYear must be past or present date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate requestYear;
-
+	
+	@Builder
+	private OrderPageRequestDTO(
+		@Positive(message = "pageNum must be positive number") int pageNum,
+		@Positive(message = "pageSize must be positive number") int pageSize,
+		Long userNumber,
+		LocalDate requestYear
+	) {
+		super(pageNum, pageSize);
+		this.userNumber = userNumber;
+		this.requestYear = requestYear;
+	}
+	
 	public static OrderPageRequestDTO create(PageRequestDTO pageRequestDTO, Long userNumber, String requestYearString) {
 		OrderPageRequestDTO orderPageRequestDTO = new OrderPageRequestDTO();
-
+		
 		orderPageRequestDTO.setPageNum(pageRequestDTO.getPageNum());
 		orderPageRequestDTO.setPageSize(pageRequestDTO.getPageSize());
 		orderPageRequestDTO.setUserNumber(userNumber);
-
+		
 		if (Objects.nonNull(requestYearString)) {
 			try {
 				int year = Integer.parseInt(requestYearString);
@@ -51,7 +59,7 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 				log.info("requestYear parse error : {}", e.getMessage());
 			}
 		}
-
+		
 		return orderPageRequestDTO;
 	}
 }
