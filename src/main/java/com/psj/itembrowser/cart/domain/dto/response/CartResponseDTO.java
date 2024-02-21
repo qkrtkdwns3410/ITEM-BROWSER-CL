@@ -26,20 +26,20 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"userId"})
 @AllArgsConstructor
 public class CartResponseDTO implements Serializable {
-
+	
 	String userId;
-
+	
 	LocalDateTime createdDate;
-
+	
 	LocalDateTime updatedDate;
-
+	
 	List<CartProductRelationResponseDTO> products;
-
+	
 	public static CartResponseDTO from(Cart cart) {
 		if (cart == null) {
 			throw new NotFoundException(ErrorCode.CART_NOT_FOUND);
 		}
-
+		
 		return CartResponseDTO.builder()
 			.userId(cart.getUserId())
 			.createdDate(cart.getCreatedDate())
@@ -52,29 +52,24 @@ public class CartResponseDTO implements Serializable {
 					cartProductRelation.getProductQuantity(),
 					ProductResponseDTO.from(cartProductRelation.getProduct())
 				)).collect(Collectors.toList()))
-
+			
 			.build();
 	}
-
+	
 	public static CartResponseDTO from(CartEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-
+		
 		return CartResponseDTO.builder()
 			.userId(entity.getUserId())
 			.createdDate(entity.getCreatedDate())
 			.updatedDate(entity.getUpdatedDate())
 			.products(entity.getCartProductRelations()
 				.stream()
-				.map(cartProductRelation -> CartProductRelationResponseDTO.of(
-					cartProductRelation.getCartId(),
-					cartProductRelation.getProductId(),
-					cartProductRelation.getProductQuantity(),
-					ProductResponseDTO.from(cartProductRelation.getProduct())
-				)).collect(Collectors.toList()))
-
+				.map(CartProductRelationResponseDTO::from)
+				.collect(Collectors.toList()))
 			.build();
-
+		
 	}
 }
