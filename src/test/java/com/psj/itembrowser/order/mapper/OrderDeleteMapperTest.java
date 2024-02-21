@@ -93,13 +93,13 @@ public class OrderDeleteMapperTest {
         OrdersProductRelation expectedOrderProductRelation = mock(OrdersProductRelation.class);
         given(expectedOrderProductRelation.getGroupId()).willReturn(orderId);
         given(expectedOrderProductRelation.getProductId()).willReturn(1L);
-        given(expectedOrderProductRelation.getProductQuantity()).willReturn(10);
+        given(expectedOrderProductRelation.getProductQuantity()).willReturn(10L);
         given(expectedOrderProductRelation.getProduct()).willReturn(mock(Product.class));
 
         OrdersProductRelation expectedOrderProductRelation2 = mock(OrdersProductRelation.class);
         given(expectedOrderProductRelation2.getGroupId()).willReturn(orderId);
         given(expectedOrderProductRelation2.getProductId()).willReturn(2L);
-        given(expectedOrderProductRelation2.getProductQuantity()).willReturn(20);
+        given(expectedOrderProductRelation2.getProductQuantity()).willReturn(20L);
         given(expectedOrderProductRelation2.getProduct()).willReturn(mock(Product.class));
 
         // when

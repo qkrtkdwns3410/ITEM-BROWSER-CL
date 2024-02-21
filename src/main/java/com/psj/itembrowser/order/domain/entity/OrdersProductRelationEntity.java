@@ -38,7 +38,7 @@ public class OrdersProductRelationEntity {
 	private Long productId;
 	
 	@Column(name = "PRODUCT_QUANTITY")
-	private Integer productQuantity;
+	private Long productQuantity;
 	
 	@Column(name = "CREATED_DATE")
 	private LocalDateTime createdDate;

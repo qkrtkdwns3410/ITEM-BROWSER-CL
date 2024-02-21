@@ -107,7 +107,7 @@ class OrderInsertServiceTest {
 
 		ordersProductRelation = new OrdersProductRelation(
 			1L,
-			1L, 10,
+			1L, 10L,
 			mock(OrderCalculationResult.class),
 			LocalDateTime.now(),
 			LocalDateTime.now(),

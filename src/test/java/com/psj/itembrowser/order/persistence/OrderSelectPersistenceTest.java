@@ -79,13 +79,13 @@ public class OrderSelectPersistenceTest {
 			LocalDateTime.now(),
 			null,
 			null);
-
-		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1, LocalDateTime.now(),
+		
+		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1L, LocalDateTime.now(),
 			null,
 			null,
 			mock(Product.class));
-
-		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1, LocalDateTime.now(),
+		
+		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1L, LocalDateTime.now(),
 			null,
 			null, mock(Product.class));
 

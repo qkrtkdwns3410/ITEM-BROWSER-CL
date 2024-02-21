@@ -2,11 +2,15 @@ package com.psj.itembrowser.cart.domain.dto.response;
 
 import javax.validation.constraints.PositiveOrZero;
 
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * packageName    : com.psj.itembrowser.cart.domain.dto.response fileName       :
@@ -14,22 +18,43 @@ import lombok.NoArgsConstructor;
  * =========================================================== DATE              AUTHOR NOTE
  * ----------------------------------------------------------- 2023-10-23        ipeac 최초 생성
  */
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CartProductRelationResponseDTO {
-
+	
 	Long cartId;
-
+	
 	Long productId;
-
+	
 	@PositiveOrZero
 	Long productQuantity;
-
+	
 	ProductResponseDTO product;
-
-	public static CartProductRelationResponseDTO of(Long cartId, Long productId,
-		Long productQuantity, ProductResponseDTO product) {
+	
+	public static CartProductRelationResponseDTO of(Long cartId, Long productId, Long productQuantity, ProductResponseDTO product) {
 		return new CartProductRelationResponseDTO(cartId, productId, productQuantity, product);
+	}
+	
+	@Builder
+	private CartProductRelationResponseDTO(Long cartId, Long productId, Long productQuantity, ProductResponseDTO product) {
+		this.cartId = cartId;
+		this.productId = productId;
+		this.productQuantity = productQuantity;
+		this.product = product;
+	}
+	
+	public static CartProductRelationResponseDTO from(OrdersProductRelationEntity entity) {
+		if (entity == null) {
+			throw new NotFoundException(ErrorCode.CART_PRODUCT_NOT_FOUND);
+		}
+		
+		return CartProductRelationResponseDTO.builder()
+			.cartId(entity.getGroupId())
+			.productId(entity.getProductId())
+			.productQuantity(entity.getProductQuantity())
+			.product(ProductResponseDTO.from(entity.getProduct()))
+			.build();
+		
 	}
 }

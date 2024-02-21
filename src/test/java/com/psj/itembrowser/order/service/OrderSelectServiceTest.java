@@ -90,8 +90,8 @@ public class OrderSelectServiceTest {
 			LocalDateTime.now(),
 			null,
 			null);
-
-		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1,
+		
+		OrdersProductRelation expectedOrderRelation1 = OrdersProductRelation.of(1L, 1L, 1L,
 			LocalDateTime.now(),
 			null,
 			null,
@@ -116,7 +116,7 @@ public class OrderSelectServiceTest {
 				Collections.emptyList(),
 				Collections.emptyList()
 			));
-		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1,
+		OrdersProductRelation expectedOrderRelation2 = OrdersProductRelation.of(2L, 1L, 1L,
 			LocalDateTime.now(),
 			null,
 			null,

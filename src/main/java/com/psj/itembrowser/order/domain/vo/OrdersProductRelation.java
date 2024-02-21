@@ -22,38 +22,38 @@ public class OrdersProductRelation {
 	 * 주문그룹ID
 	 */
 	private Long groupId;
-
+	
 	/**
 	 * 상품ID
 	 */
 	private Long productId;
-
+	
 	/**
 	 * 상품수량
 	 */
-	private Integer productQuantity;
-
+	private Long productQuantity;
+	
 	private OrderCalculationResult orderCalculationResult;
-
+	
 	private LocalDateTime createdDate;
-
+	
 	private LocalDateTime updatedDate;
-
+	
 	private LocalDateTime deletedDate;
-
+	
 	private Product product;
-
+	
 	public static OrdersProductRelation of(
 		Long groupId,
 		Long productId,
-		int productQuantity,
+		Long productQuantity,
 		LocalDateTime createdDate,
 		LocalDateTime updatedDate,
 		LocalDateTime deletedDate,
 		Product product
 	) {
 		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-
+		
 		ordersProductRelation.groupId = groupId;
 		ordersProductRelation.productId = productId;
 		ordersProductRelation.productQuantity = productQuantity;
@@ -61,20 +61,20 @@ public class OrdersProductRelation {
 		ordersProductRelation.updatedDate = updatedDate;
 		ordersProductRelation.deletedDate = deletedDate;
 		ordersProductRelation.product = product;
-
+		
 		return ordersProductRelation;
 	}
-
+	
 	public static OrdersProductRelation of(OrdersProductRelationResponseDTO ordersProductRelationResponseDTO) {
 		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-
+		
 		ordersProductRelation.groupId = ordersProductRelationResponseDTO.getGroupId();
 		ordersProductRelation.productId = ordersProductRelationResponseDTO.getProductId();
 		ordersProductRelation.productQuantity = ordersProductRelationResponseDTO.getProductQuantity();
 		ordersProductRelation.createdDate = ordersProductRelationResponseDTO.getCreatedDate();
 		ordersProductRelation.updatedDate = ordersProductRelationResponseDTO.getUpdatedDate();
 		ordersProductRelation.deletedDate = ordersProductRelationResponseDTO.getDeletedDate();
-
+		
 		return ordersProductRelation;
 	}
 }

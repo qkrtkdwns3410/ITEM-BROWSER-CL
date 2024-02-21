@@ -125,7 +125,7 @@ public class OrderSelectWithDBServiceTest {
 		
 		ShippingInfoEntity expectedShippingInfoEntity = ShippingInfoEntity.from(expectedShppingInfo);
 		
-		OrdersProductRelation expectedOrderRelation = OrdersProductRelation.of(1L, 1L, 1,
+		OrdersProductRelation expectedOrderRelation = OrdersProductRelation.of(1L, 1L, 1L,
 			LocalDateTime.now(),
 			null,
 			null,

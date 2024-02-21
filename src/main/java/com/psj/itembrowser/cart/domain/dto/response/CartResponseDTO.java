@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +37,7 @@ public class CartResponseDTO implements Serializable {
 
 	public static CartResponseDTO from(Cart cart) {
 		if (cart == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.CART_NOT_FOUND);
 		}
 
 		return CartResponseDTO.builder()
