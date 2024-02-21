@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -16,6 +17,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.proxy.HibernateProxy;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
@@ -131,7 +134,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 			return false;
 		}
 		
-		return this.getCredentials().getEmail().equals(other.getCredentials().getEmail());
+		return Objects.equals(this, other);
 	}
 	
 	public boolean hasRole(Role role) {
@@ -196,19 +199,25 @@ public class MemberEntity extends BaseDateTimeEntity {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
+	public final boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof MemberEntity))
+		if (o == null)
 			return false;
-		
+		Class<?> oEffectiveClass =
+			o instanceof HibernateProxy ? ((HibernateProxy)o).getHibernateLazyInitializer().getPersistentClass() :
+				o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
 		MemberEntity member = (MemberEntity)o;
-		
-		return memberNo.equals(member.memberNo);
+		return getMemberNo() != null && Objects.equals(getMemberNo(), member.getMemberNo());
 	}
 	
 	@Override
-	public int hashCode() {
-		return memberNo.hashCode();
+	public final int hashCode() {
+		return this instanceof HibernateProxy ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }
