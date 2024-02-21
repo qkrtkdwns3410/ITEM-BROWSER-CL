@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -16,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
@@ -109,9 +107,6 @@ public class MemberEntity extends BaseDateTimeEntity {
 	@ToString.Exclude
 	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
 	
-	@OneToOne(mappedBy = "member")
-	private OrderEntity order;
-	
 	@Builder
 	private MemberEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials,
 		Name name, String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
@@ -129,7 +124,6 @@ public class MemberEntity extends BaseDateTimeEntity {
 		this.birthday = birthday;
 		this.lastLoginDate = lastLoginDate;
 		this.shippingInfos = shippingInfos;
-		this.order = order;
 	}
 	
 	public boolean isSame(MemberEntity other) {
@@ -137,7 +131,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 			return false;
 		}
 		
-		return Objects.equals(this, other);
+		return this.getCredentials().getEmail().equals(other.getCredentials().getEmail());
 	}
 	
 	public boolean hasRole(Role role) {
@@ -155,47 +149,66 @@ public class MemberEntity extends BaseDateTimeEntity {
 	}
 	
 	public static MemberEntity from(MemberResponseDTO dto) {
-		MemberEntity member = new MemberEntity();
+		if (dto == null) {
+			return null;
+		}
 		
-		member.memberNo = dto.getMemberNo();
-		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
-		member.name = Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build();
-		member.phoneNumber = dto.getPhoneNumber();
-		member.gender = dto.getGender(); // Gender enum에 맞게 변환
-		member.role = dto.getRole(); // Role enum에 맞게 변환
-		member.status = dto.getStatus(); // Status enum에 맞게 변환
-		member.address = Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build();
-		member.birthday = dto.getBirthday();
-		member.lastLoginDate = dto.getLastLoginDate();
-		
-		return member;
+		return MemberEntity.builder()
+			.memberNo(dto.getMemberNo())
+			.credentials(Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build())
+			.name(Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build())
+			.phoneNumber(dto.getPhoneNumber())
+			.gender(dto.getGender())
+			.role(dto.getRole())
+			.status(dto.getStatus())
+			.address(Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build())
+			.birthday(dto.getBirthday())
+			.lastLoginDate(dto.getLastLoginDate())
+			.build();
 	}
 	
 	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
 		if (member == null) {
 			return null;
 		}
-		MemberEntity memberEntity = new MemberEntity();
 		
-		memberEntity.credentials = member.getCredentials();
-		memberEntity.name = member.getName();
-		memberEntity.phoneNumber = member.getPhoneNumber();
-		memberEntity.gender = member.getGender();
-		memberEntity.role = member.getRole();
-		memberEntity.status = member.getStatus();
-		memberEntity.memberShipType = member.getMemberShipType();
-		memberEntity.address = member.getAddress();
-		memberEntity.birthday = member.getBirthday();
-		memberEntity.lastLoginDate = member.getLastLoginDate();
-		memberEntity.createdDate = member.getCreatedDate();
-		memberEntity.updatedDate = member.getUpdatedDate();
-		memberEntity.deletedDate = member.getDeletedDate();
+		MemberEntity memberEntity = MemberEntity.builder()
+			.credentials(member.getCredentials())
+			.name(member.getName())
+			.phoneNumber(member.getPhoneNumber())
+			.gender(member.getGender())
+			.role(member.getRole())
+			.status(member.getStatus())
+			.memberShipType(member.getMemberShipType())
+			.address(member.getAddress())
+			.birthday(member.getBirthday())
+			.lastLoginDate(member.getLastLoginDate())
+			.createdDate(member.getCreatedDate())
+			.updatedDate(member.getUpdatedDate())
+			.deletedDate(member.getDeletedDate())
+			.build();
+		
 		if (shippingInfos != null) {
 			memberEntity.shippingInfos = shippingInfos;
 		}
 		
-		memberEntity.order = order;
-		
 		return memberEntity;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof MemberEntity))
+			return false;
+		
+		MemberEntity member = (MemberEntity)o;
+		
+		return memberNo.equals(member.memberNo);
+	}
+	
+	@Override
+	public int hashCode() {
+		return memberNo.hashCode();
 	}
 }

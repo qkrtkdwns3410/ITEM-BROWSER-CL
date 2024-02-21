@@ -24,9 +24,14 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,7 +41,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.github.pagehelper.PageInfo;
 import com.psj.itembrowser.member.annotation.MockMember;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
@@ -90,27 +94,43 @@ class OrderSelectApiControllerTest {
 			.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
 			.build();
 		
-		Member expectedAdminMember = new Member(1L,
-			Credentials.create("mockUser3410@gamil.com", "3410"),
-			Name.create("홍", "길동"),
-			"010-1234-1234",
-			Gender.MEN,
-			Role.ROLE_ADMIN, Status.ACTIVE,
-			MemberShipType.REGULAR,
-			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
-			LocalDate.of(1995, 11, 3),
-			LocalDateTime.now());
+		Member expectedAdminMember = Member.builder()
+			.memberNo(1L)
+			.credentials(Credentials.builder()
+				.email("qkrtkdwns3410@gmail.com").password("3410").build())
+			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.phoneNumber("010-1234-1234")
+			.gender(Gender.MEN)
+			.role(Role.ROLE_ADMIN)
+			.status(Status.ACTIVE)
+			.memberShipType(MemberShipType.REGULAR)
+			.address(
+				Address.builder()
+					.addressMain("서울시 강남구")
+					.addressSub("김밥빌딩 101동 302호")
+					.zipCode("01012").build())
+			.birthday(LocalDate.of(1995, 11, 3))
+			.lastLoginDate(LocalDateTime.now())
+			.build();
 		
-		Member expectedCustomerMember = new Member(1L,
-			Credentials.create("mockUser3410@gmail.com", "3410"),
-			Name.create("홍", "길동"),
-			"010-1234-1234",
-			Gender.MEN,
-			Role.ROLE_CUSTOMER, Status.ACTIVE,
-			MemberShipType.REGULAR,
-			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
-			LocalDate.of(1995, 11, 3),
-			LocalDateTime.now());
+		Member expectedCustomerMember = Member.builder()
+			.memberNo(1L)
+			.credentials(Credentials.builder()
+				.email("qkrtkdwns3410@gmail.com").password("3410").build())
+			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.phoneNumber("010-1234-1234")
+			.gender(Gender.MEN)
+			.role(Role.ROLE_CUSTOMER)
+			.status(Status.ACTIVE)
+			.memberShipType(MemberShipType.REGULAR)
+			.address(
+				Address.builder()
+					.addressMain("서울시 강남구")
+					.addressSub("김밥빌딩 101동 302호")
+					.zipCode("01012").build())
+			.birthday(LocalDate.of(1995, 11, 3))
+			.lastLoginDate(LocalDateTime.now())
+			.build();
 		
 		ShippingInfo expectedShppingInfo = new ShippingInfo(1L,
 			1L,
@@ -456,20 +476,20 @@ class OrderSelectApiControllerTest {
 		int pageSize = 10;
 		String requestYear = "2024";
 		
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		
 		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithCUSTOMERUser);
+		expectedOrderResponseDTO.setDeletedDate(null);
 		
-		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithCUSTOMERUser.getMember()));
+		MemberResponseDTO memberDTO = MemberResponseDTO.builder().build();
 		
-		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize),
-			1L, requestYear);
+		Page<OrderResponseDTO> expectedOrderResponseDTOPage = new PageImpl<>(List.of(expectedOrderResponseDTO), pageable, 1L);
 		
-		PageInfo<OrderResponseDTO> expectedOrderResponseDTOPageInfo = new PageInfo<>(List.of(expectedOrderResponseDTO));
+		given(orderService.getOrdersWithPaginationAndNotDeleted(any(MemberEntity.class), any(OrderPageRequestDTO.class)))
+			.willReturn(expectedOrderResponseDTOPage);
 		
-		given(orderService.getOrdersWithPaginationAndNotDeleted(any(MemberEntity.class), any(OrderPageRequestDTO.class))).willReturn(
-			null);
-		
-		given(userDetailsService.loadUserByJwt(any())).willReturn(
-			new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
+		given(userDetailsService.loadUserByJwt(any()))
+			.willReturn(new UserDetailsServiceImpl.CustomUserDetails(memberDTO));
 		
 		// when - then
 		ResultActions response = mockMvc.perform(
@@ -481,6 +501,7 @@ class OrderSelectApiControllerTest {
 					.contentType(APPLICATION_JSON)
 					.accept(APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
 		response
 			.andDo(MockMvcRestDocumentationWrapper.document(
 				"get-orders-customer",
@@ -493,59 +514,67 @@ class OrderSelectApiControllerTest {
 						parameterWithName("userNumber").description("사용자 번호")
 					)
 					.responseFields(
-						fieldWithPath("total").description("전체 주문 수"),
-						fieldWithPath("list").description("주문 리스트"),
-						fieldWithPath("list[].id").description("주문 ID"),
-						fieldWithPath("list[].ordererNumber").description("주문자 번호"),
-						fieldWithPath("list[].orderStatus").description("주문 상태"),
-						fieldWithPath("list[].paidDate").description("결제 일자"),
-						fieldWithPath("list[].shippingInfoId").description("배송지 ID"),
-						fieldWithPath("list[].createdDate").description("생성 일자"),
-						fieldWithPath("list[].updatedDate").description("수정 일자"),
-						fieldWithPath("list[].deletedDate").description("삭제 일자"),
-						fieldWithPath("list[].member").description("주문자 정보"),
-						fieldWithPath("list[].member.memberNo").description("주문자 번호"),
-						fieldWithPath("list[].member.email").description("이메일"),
-						fieldWithPath("list[].member.firstName").description("이름"),
-						fieldWithPath("list[].member.lastName").description("성"),
-						fieldWithPath("list[].member.phoneNumber").description("전화번호"),
-						fieldWithPath("list[].member.addressMain").description("주소"),
-						fieldWithPath("list[].member.addressSub").description("상세주소"),
-						fieldWithPath("list[].member.zipCode").description("우편번호"),
-						fieldWithPath("list[].member.memberShipType").description("회원의 멤버십 유형"),
-						fieldWithPath("list[].member.gender").description("성별"),
-						fieldWithPath("list[].member.role").description("역할"),
-						fieldWithPath("list[].member.status").description("상태"),
-						fieldWithPath("list[].member.birthday").description("생년월일"),
-						fieldWithPath("list[].member.lastLoginDate").description("마지막 로그인 일자"),
-						fieldWithPath("list[].member.createdDate").optional().description("생성 일자"),
-						fieldWithPath("list[].member.updatedDate").optional().description("수정 일자"),
-						fieldWithPath("list[].member.deletedDate").optional().description("삭제 일자"),
-						fieldWithPath("list[].ordersProductRelations").description("주문-상품 관계 리스트"),
-						fieldWithPath("list[].ordersProductRelations[].groupId").description("주문 ID"),
-						fieldWithPath("list[].ordersProductRelations[].productId").description("상품 ID"),
-						fieldWithPath("list[].ordersProductRelations[].productQuantity").description("상품 수량"),
-						fieldWithPath("list[].ordersProductRelations[].createdDate").description("생성 일자"),
-						fieldWithPath("list[].ordersProductRelations[].updatedDate").description("수정 일자"),
-						fieldWithPath("list[].ordersProductRelations[].deletedDate").description("삭제 일자"),
-						subsectionWithPath("list[].ordersProductRelations[].productResponseDTO").description(
-							"상품에 대한 응답 데이터"),
-						fieldWithPath("pageNum").description("현재 페이지 번호"),
-						fieldWithPath("pageSize").description("페이지 크기"),
-						fieldWithPath("size").description("현재 페이지 크기"),
-						fieldWithPath("startRow").description("현재 페이지 시작 행"),
-						fieldWithPath("endRow").description("현재 페이지 끝 행"),
-						fieldWithPath("pages").description("전체 페이지 수"),
-						fieldWithPath("prePage").description("이전 페이지"),
-						fieldWithPath("nextPage").description("다음 페이지"),
-						fieldWithPath("isFirstPage").description("첫 페이지 여부"),
-						fieldWithPath("isLastPage").description("마지막 페이지 여부"),
-						fieldWithPath("hasPreviousPage").description("이전 페이지 여부"),
-						fieldWithPath("hasNextPage").description("다음 페이지 여부"),
-						fieldWithPath("navigatePages").description("네비게이션 페이지 수"),
-						fieldWithPath("navigatepageNums").description("네비게이션 페이지 번호"),
-						fieldWithPath("navigateFirstPage").description("첫 네비게이션 페이지"),
-						fieldWithPath("navigateLastPage").description("마지막 네비게이션 페이지")
+						fieldWithPath("content").description("결과 데이터의 배열"),
+						fieldWithPath("content[].id").description("주문 ID"),
+						fieldWithPath("content[].ordererNumber").description("주문자 번호"),
+						fieldWithPath("content[].orderStatus").description("주문 상태"),
+						fieldWithPath("content[].paidDate").description("결제 일자"),
+						fieldWithPath("content[].shippingInfoId").description("배송지 ID"),
+						fieldWithPath("content[].createdDate").description("생성 일자"),
+						fieldWithPath("content[].updatedDate").description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].deletedDate").description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// member
+						fieldWithPath("content[].member").description("주문자 정보"),
+						fieldWithPath("content[].member.memberNo").description("회원 번호"),
+						fieldWithPath("content[].member.email").description("이메일"),
+						fieldWithPath("content[].member.firstName").description("이름"),
+						fieldWithPath("content[].member.lastName").description("성"),
+						fieldWithPath("content[].member.phoneNumber").description("전화번호"),
+						fieldWithPath("content[].member.addressMain").description("주소"),
+						fieldWithPath("content[].member.addressSub").description("상세주소"),
+						fieldWithPath("content[].member.zipCode").description("우편번호"),
+						fieldWithPath("content[].member.gender").description("성별"),
+						fieldWithPath("content[].member.memberShipType").description("멤버십 유형"),
+						fieldWithPath("content[].member.role").description("역할"),
+						fieldWithPath("content[].member.status").description("상태"),
+						fieldWithPath("content[].member.birthday").description("생년월일"),
+						fieldWithPath("content[].member.lastLoginDate").description("마지막 로그인 일자"),
+						fieldWithPath("content[].member.createdDate").optional().description("생성 일자"),
+						fieldWithPath("content[].member.updatedDate").optional().description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].member.deletedDate").optional().description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// ordersProductRelations
+						fieldWithPath("content[].ordersProductRelations").description("주문-상품 관계 리스트"),
+						fieldWithPath("content[].ordersProductRelations[].groupId").description("그룹 ID"),
+						fieldWithPath("content[].ordersProductRelations[].productId").description("상품 ID"),
+						fieldWithPath("content[].ordersProductRelations[].productQuantity").description("상품 수량"),
+						fieldWithPath("content[].ordersProductRelations[].createdDate").description("생성 일자"),
+						fieldWithPath("content[].ordersProductRelations[].updatedDate").description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].ordersProductRelations[].deletedDate").description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// productResponseDTO
+						subsectionWithPath("content[].ordersProductRelations[].productResponseDTO").description("상품 응답 데이터"),
+						// pageable
+						fieldWithPath("pageable").description("페이지네이션 정보"),
+						fieldWithPath("pageable.sort").description("정렬 정보"),
+						fieldWithPath("pageable.sort.empty").description("정렬이 비어있는지 여부"),
+						fieldWithPath("pageable.sort.unsorted").description("정렬되지 않았는지 여부"),
+						fieldWithPath("pageable.sort.sorted").description("정렬되었는지 여부"),
+						fieldWithPath("pageable.offset").description("페이지 오프셋"),
+						fieldWithPath("pageable.pageNumber").description("페이지 번호"),
+						fieldWithPath("pageable.pageSize").description("페이지 크기"),
+						fieldWithPath("pageable.unpaged").description("페이징 되지 않았는지 여부"),
+						fieldWithPath("pageable.paged").description("페이징 되었는지 여부"),
+						fieldWithPath("last").description("마지막 페이지인지 여부"),
+						fieldWithPath("totalPages").description("전체 페이지 수"),
+						fieldWithPath("totalElements").description("전체 요소 수"),
+						fieldWithPath("number").description("현재 페이지 번호"),
+						fieldWithPath("sort").description("정렬 정보"),
+						fieldWithPath("sort.empty").description("정렬이 비어있는지 여부"),
+						fieldWithPath("sort.unsorted").description("정렬되지 않았는지 여부"),
+						fieldWithPath("sort.sorted").description("정렬되었는지 여부"),
+						fieldWithPath("first").description("첫 번째 페이지인지 여부"),
+						fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
+						fieldWithPath("empty").description("결과가 비어있는지 여부"),
+						fieldWithPath("size").description("페이지 크기")
 					).build())));
 	}
 	
@@ -616,18 +645,20 @@ class OrderSelectApiControllerTest {
 		int pageSize = 10;
 		String requestYear = "2024";
 		
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		
 		OrderResponseDTO expectedOrderResponseDTO = OrderResponseDTO.from(expectedOrderWithADMINUser);
+		expectedOrderResponseDTO.setDeletedDate(null);
 		
-		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithADMINUser.getMember()));
+		MemberResponseDTO memberDTO = MemberResponseDTO.builder().build();
 		
-		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize), 1L, requestYear);
+		Page<OrderResponseDTO> expectedOrderResponseDTOPage = new PageImpl<>(List.of(expectedOrderResponseDTO), pageable, 1L);
 		
-		PageInfo<OrderResponseDTO> expectedOrderResponseDTOPageInfo = new PageInfo<>(List.of(expectedOrderResponseDTO));
+		given(orderService.getOrdersWithPaginationAndNotDeleted(any(MemberEntity.class), any(OrderPageRequestDTO.class)))
+			.willReturn(expectedOrderResponseDTOPage);
 		
-		given(orderService.getOrdersWithPaginationAndNoCondition(any(MemberEntity.class), any(orderPageRequestDTO.getClass()))).willReturn(
-			null);
-		
-		given(userDetailsService.loadUserByJwt(any())).willReturn(new UserDetailsServiceImpl.CustomUserDetails(expectedOrderResponseDTO.getMember()));
+		given(userDetailsService.loadUserByJwt(any()))
+			.willReturn(new UserDetailsServiceImpl.CustomUserDetails(memberDTO));
 		
 		// when - then
 		ResultActions response = mockMvc.perform(
@@ -639,6 +670,7 @@ class OrderSelectApiControllerTest {
 					.contentType(APPLICATION_JSON)
 					.accept(APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
 		response
 			.andDo(MockMvcRestDocumentationWrapper.document(
 				"get-orders-admin",
@@ -651,59 +683,67 @@ class OrderSelectApiControllerTest {
 						parameterWithName("userNumber").description("사용자 번호")
 					)
 					.responseFields(
-						fieldWithPath("total").description("전체 주문 수"),
-						fieldWithPath("list").description("주문 리스트"),
-						fieldWithPath("list[].id").description("주문 ID"),
-						fieldWithPath("list[].ordererNumber").description("주문자 번호"),
-						fieldWithPath("list[].orderStatus").description("주문 상태"),
-						fieldWithPath("list[].paidDate").description("결제 일자"),
-						fieldWithPath("list[].shippingInfoId").description("배송지 ID"),
-						fieldWithPath("list[].createdDate").description("생성 일자"),
-						fieldWithPath("list[].updatedDate").description("수정 일자"),
-						fieldWithPath("list[].deletedDate").description("삭제 일자"),
-						fieldWithPath("list[].member").description("주문자 정보"),
-						fieldWithPath("list[].member.memberNo").description("주문자 번호"),
-						fieldWithPath("list[].member.email").description("이메일"),
-						fieldWithPath("list[].member.firstName").description("이름"),
-						fieldWithPath("list[].member.lastName").description("성"),
-						fieldWithPath("list[].member.phoneNumber").description("전화번호"),
-						fieldWithPath("list[].member.addressMain").description("주소"),
-						fieldWithPath("list[].member.addressSub").description("상세주소"),
-						fieldWithPath("list[].member.zipCode").description("우편번호"),
-						fieldWithPath("list[].member.gender").description("성별"),
-						fieldWithPath("list[].member.role").description("역할"),
-						fieldWithPath("list[].member.status").description("상태"),
-						fieldWithPath("list[].member.memberShipType").description("회원의 멤버십 유형"),
-						fieldWithPath("list[].member.birthday").description("생년월일"),
-						fieldWithPath("list[].member.lastLoginDate").description("마지막 로그인 일자"),
-						fieldWithPath("list[].member.createdDate").optional().description("생성 일자"),
-						fieldWithPath("list[].member.updatedDate").optional().description("수정 일자"),
-						fieldWithPath("list[].member.deletedDate").optional().description("삭제 일자"),
-						fieldWithPath("list[].ordersProductRelations").description("주문-상품 관계 리스트"),
-						fieldWithPath("list[].ordersProductRelations[].groupId").description("주문 ID"),
-						fieldWithPath("list[].ordersProductRelations[].productId").description("상품 ID"),
-						fieldWithPath("list[].ordersProductRelations[].productQuantity").description("상품 수량"),
-						fieldWithPath("list[].ordersProductRelations[].createdDate").description("생성 일자"),
-						fieldWithPath("list[].ordersProductRelations[].updatedDate").description("수정 일자"),
-						fieldWithPath("list[].ordersProductRelations[].deletedDate").description("삭제 일자"),
-						subsectionWithPath("list[].ordersProductRelations[].productResponseDTO").description(
-							"상품에 대한 응답 데이터"),
-						fieldWithPath("pageNum").description("현재 페이지 번호"),
-						fieldWithPath("pageSize").description("페이지 크기"),
-						fieldWithPath("size").description("현재 페이지 크기"),
-						fieldWithPath("startRow").description("현재 페이지 시작 행"),
-						fieldWithPath("endRow").description("현재 페이지 끝 행"),
-						fieldWithPath("pages").description("전체 페이지 수"),
-						fieldWithPath("prePage").description("이전 페이지"),
-						fieldWithPath("nextPage").description("다음 페이지"),
-						fieldWithPath("isFirstPage").description("첫 페이지 여부"),
-						fieldWithPath("isLastPage").description("마지막 페이지 여부"),
-						fieldWithPath("hasPreviousPage").description("이전 페이지 여부"),
-						fieldWithPath("hasNextPage").description("다음 페이지 여부"),
-						fieldWithPath("navigatePages").description("네비게이션 페이지 수"),
-						fieldWithPath("navigatepageNums").description("네비게이션 페이지 번호"),
-						fieldWithPath("navigateFirstPage").description("첫 네비게이션 페이지"),
-						fieldWithPath("navigateLastPage").description("마지막 네비게이션 페이지")
+						fieldWithPath("content").description("결과 데이터의 배열"),
+						fieldWithPath("content[].id").description("주문 ID"),
+						fieldWithPath("content[].ordererNumber").description("주문자 번호"),
+						fieldWithPath("content[].orderStatus").description("주문 상태"),
+						fieldWithPath("content[].paidDate").description("결제 일자"),
+						fieldWithPath("content[].shippingInfoId").description("배송지 ID"),
+						fieldWithPath("content[].createdDate").description("생성 일자"),
+						fieldWithPath("content[].updatedDate").description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].deletedDate").description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// member
+						fieldWithPath("content[].member").description("주문자 정보"),
+						fieldWithPath("content[].member.memberNo").description("회원 번호"),
+						fieldWithPath("content[].member.email").description("이메일"),
+						fieldWithPath("content[].member.firstName").description("이름"),
+						fieldWithPath("content[].member.lastName").description("성"),
+						fieldWithPath("content[].member.phoneNumber").description("전화번호"),
+						fieldWithPath("content[].member.addressMain").description("주소"),
+						fieldWithPath("content[].member.addressSub").description("상세주소"),
+						fieldWithPath("content[].member.zipCode").description("우편번호"),
+						fieldWithPath("content[].member.gender").description("성별"),
+						fieldWithPath("content[].member.memberShipType").description("멤버십 유형"),
+						fieldWithPath("content[].member.role").description("역할"),
+						fieldWithPath("content[].member.status").description("상태"),
+						fieldWithPath("content[].member.birthday").description("생년월일"),
+						fieldWithPath("content[].member.lastLoginDate").description("마지막 로그인 일자"),
+						fieldWithPath("content[].member.createdDate").optional().description("생성 일자"),
+						fieldWithPath("content[].member.updatedDate").optional().description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].member.deletedDate").optional().description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// ordersProductRelations
+						fieldWithPath("content[].ordersProductRelations").description("주문-상품 관계 리스트"),
+						fieldWithPath("content[].ordersProductRelations[].groupId").description("그룹 ID"),
+						fieldWithPath("content[].ordersProductRelations[].productId").description("상품 ID"),
+						fieldWithPath("content[].ordersProductRelations[].productQuantity").description("상품 수량"),
+						fieldWithPath("content[].ordersProductRelations[].createdDate").description("생성 일자"),
+						fieldWithPath("content[].ordersProductRelations[].updatedDate").description("수정 일자").optional().type(JsonFieldType.NULL),
+						fieldWithPath("content[].ordersProductRelations[].deletedDate").description("삭제 일자").optional().type(JsonFieldType.NULL),
+						// productResponseDTO
+						subsectionWithPath("content[].ordersProductRelations[].productResponseDTO").description("상품 응답 데이터"),
+						// pageable
+						fieldWithPath("pageable").description("페이지네이션 정보"),
+						fieldWithPath("pageable.sort").description("정렬 정보"),
+						fieldWithPath("pageable.sort.empty").description("정렬이 비어있는지 여부"),
+						fieldWithPath("pageable.sort.unsorted").description("정렬되지 않았는지 여부"),
+						fieldWithPath("pageable.sort.sorted").description("정렬되었는지 여부"),
+						fieldWithPath("pageable.offset").description("페이지 오프셋"),
+						fieldWithPath("pageable.pageNumber").description("페이지 번호"),
+						fieldWithPath("pageable.pageSize").description("페이지 크기"),
+						fieldWithPath("pageable.unpaged").description("페이징 되지 않았는지 여부"),
+						fieldWithPath("pageable.paged").description("페이징 되었는지 여부"),
+						fieldWithPath("last").description("마지막 페이지인지 여부"),
+						fieldWithPath("totalPages").description("전체 페이지 수"),
+						fieldWithPath("totalElements").description("전체 요소 수"),
+						fieldWithPath("number").description("현재 페이지 번호"),
+						fieldWithPath("sort").description("정렬 정보"),
+						fieldWithPath("sort.empty").description("정렬이 비어있는지 여부"),
+						fieldWithPath("sort.unsorted").description("정렬되지 않았는지 여부"),
+						fieldWithPath("sort.sorted").description("정렬되었는지 여부"),
+						fieldWithPath("first").description("첫 번째 페이지인지 여부"),
+						fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
+						fieldWithPath("empty").description("결과가 비어있는지 여부"),
+						fieldWithPath("size").description("페이지 크기")
 					).build())));
 	}
 	

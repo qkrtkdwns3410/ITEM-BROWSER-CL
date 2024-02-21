@@ -25,19 +25,19 @@ public class CartEntity {
 	@Id
 	@Column(name = "id", nullable = false)
 	private Long id;
-
+	
 	@Column(name = "user_id")
 	private String userId;
-
+	
 	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.PERSIST)
 	private List<CartProductRelationEntity> cartProductRelations = new ArrayList<>();
-
+	
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
-
+	
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
-
+	
 	@Column(name = "deleted_date")
 	private LocalDateTime deletedDate;
 }

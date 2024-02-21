@@ -9,6 +9,7 @@ import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -70,27 +71,45 @@ public class Member extends BaseDateTimeEntity {
 	 */
 	private LocalDateTime lastLoginDate;
 	
+	@Builder
+	private Member(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials, Name name,
+		String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
+		LocalDateTime lastLoginDate) {
+		super(createdDate, updatedDate, deletedDate);
+		this.memberNo = memberNo;
+		this.credentials = credentials;
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.gender = gender;
+		this.role = role;
+		this.status = status;
+		this.memberShipType = memberShipType;
+		this.address = address;
+		this.birthday = birthday;
+		this.lastLoginDate = lastLoginDate;
+	}
+	
 	public static Member from(MemberRequestDTO dto) {
-		Member member = new Member();
-		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
-		return member;
+		return Member.builder().credentials(Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build()).build();
 	}
 	
 	public static Member from(MemberResponseDTO dto) {
-		Member member = new Member();
+		if (dto == null) {
+			return null;
+		}
 		
-		member.memberNo = dto.getMemberNo();
-		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
-		member.name = Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build();
-		member.phoneNumber = dto.getPhoneNumber();
-		member.gender = dto.getGender(); // Gender enum에 맞게 변환
-		member.role = dto.getRole(); // Role enum에 맞게 변환
-		member.status = dto.getStatus(); // Status enum에 맞게 변환
-		member.address = Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build();
-		member.birthday = dto.getBirthday();
-		member.lastLoginDate = dto.getLastLoginDate();
-		
-		return member;
+		return Member.builder()
+			.memberNo(dto.getMemberNo())
+			.credentials(Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build())
+			.name(Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build())
+			.phoneNumber(dto.getPhoneNumber())
+			.gender(dto.getGender())
+			.role(dto.getRole())
+			.status(dto.getStatus())
+			.address(Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build())
+			.birthday(dto.getBirthday())
+			.lastLoginDate(dto.getLastLoginDate())
+			.build();
 	}
 	
 	public boolean isSame(Member other) {

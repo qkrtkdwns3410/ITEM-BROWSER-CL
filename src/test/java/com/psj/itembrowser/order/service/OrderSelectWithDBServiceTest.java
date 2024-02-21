@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.psj.itembrowser.member.annotation.MockMember;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
@@ -252,7 +251,6 @@ public class OrderSelectWithDBServiceTest {
 	}
 	
 	@Test
-	@MockMember(role = Role.ROLE_CUSTOMER)
 	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNotDeleted) - 삭제되지 않은 주문 조회시 주문 정보가 있을 경우 주문 정보 리스트 반환")
 	void When_GetOrdersWithPaginationAndNotDeleted_Expect_ReturnOrderResponseDTOList() {
 		//given
