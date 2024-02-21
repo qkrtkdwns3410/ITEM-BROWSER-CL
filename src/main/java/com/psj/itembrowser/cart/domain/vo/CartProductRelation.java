@@ -26,26 +26,25 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"cartId", "productId"}, callSuper = false)
 @ToString
 public class CartProductRelation extends BaseDateTimeEntity {
-
+	
 	private Long cartId;
 	private Long productId;
 	private Long productQuantity;
-
+	
 	private Cart cart;
 	private Product product;
-
-	public static CartProductRelation create(CartProductRelationResponseDTO dto) {
+	
+	public static CartProductRelation from(CartProductRelationResponseDTO dto) {
 		CartProductRelation cartProductRelation = new CartProductRelation();
-
+		
 		cartProductRelation.cartId = dto.getCartId();
 		cartProductRelation.productId = dto.getProductId();
 		cartProductRelation.productQuantity = dto.getProductQuantity();
-		//TODO 추후 변환하여 사용
-		cartProductRelation.product = null;
-
+		cartProductRelation.product = Product.from(dto.getProduct());
+		
 		return cartProductRelation;
 	}
-
+	
 	public void addProductQuantity(long quantity) {
 		if (quantity < 0) {
 			throw new DatabaseOperationException(CART_PRODUCT_QUANTITY_NOT_POSITIVE);
