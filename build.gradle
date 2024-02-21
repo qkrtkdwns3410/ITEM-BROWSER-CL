@@ -130,11 +130,12 @@ tasks.register('copyOasToSwagger', Copy) {
         def openapi3File = file("$buildDir/api-spec/openapi3.yaml")
 
         // JWT 인증을 위한 securitySchemes와 security 요소를 정의합니다.
-        def securitySchemesContent = "  securitySchemes:\n" + "    APIKey:\n" + "      type: apiKey\n" +                    \
-                                                        "      name: Authorization\n" +                    \
-                                                        "      in: header\n" +                   \
-                                                        "security:\n" +
-                "  - APIKey : []  # Apply the secu rity scheme here"
+        def securitySchemesContent = "  securitySchemes:\n" + "    APIKey:\n" +
+                "      type: apiKey\n" +                      \
+                                                          "      name: Authorization\n" +                      \
+                                                          "      in: header\n" +                     \
+                                                          "security:\n" +
+                "  - APIKey : []  # Apply the security scheme here"
 
         // openapi3.yaml 파일에 내용을 추가합니다.
         if (openapi3File.exists()) {
