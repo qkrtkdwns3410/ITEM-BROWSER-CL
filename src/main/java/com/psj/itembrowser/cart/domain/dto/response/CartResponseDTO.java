@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,20 +26,20 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"userId"})
 @AllArgsConstructor
 public class CartResponseDTO implements Serializable {
-
+	
 	String userId;
-
+	
 	LocalDateTime createdDate;
-
+	
 	LocalDateTime updatedDate;
-
+	
 	List<CartProductRelationResponseDTO> products;
-
+	
 	public static CartResponseDTO from(Cart cart) {
 		if (cart == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.CART_NOT_FOUND);
 		}
-
+		
 		return CartResponseDTO.builder()
 			.userId(cart.getUserId())
 			.createdDate(cart.getCreatedDate())
@@ -50,29 +52,24 @@ public class CartResponseDTO implements Serializable {
 					cartProductRelation.getProductQuantity(),
 					ProductResponseDTO.from(cartProductRelation.getProduct())
 				)).collect(Collectors.toList()))
-
+			
 			.build();
 	}
-
+	
 	public static CartResponseDTO from(CartEntity entity) {
 		if (entity == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.CART_NOT_FOUND);
 		}
-
+		
 		return CartResponseDTO.builder()
 			.userId(entity.getUserId())
 			.createdDate(entity.getCreatedDate())
 			.updatedDate(entity.getUpdatedDate())
 			.products(entity.getCartProductRelations()
 				.stream()
-				.map(cartProductRelation -> CartProductRelationResponseDTO.of(
-					cartProductRelation.getCartId(),
-					cartProductRelation.getProductId(),
-					cartProductRelation.getProductQuantity(),
-					ProductResponseDTO.from(cartProductRelation.getProduct())
-				)).collect(Collectors.toList()))
-
+				.map(CartProductRelationResponseDTO::from)
+				.collect(Collectors.toList()))
 			.build();
-
+		
 	}
 }

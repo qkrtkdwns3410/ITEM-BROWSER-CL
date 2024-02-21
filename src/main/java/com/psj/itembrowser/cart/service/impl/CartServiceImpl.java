@@ -30,59 +30,59 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CartServiceImpl implements CartService {
-
+	
 	private final CartPersistence cartPersistence;
 	private final CartMapper cartMapper;
-
+	
 	@Override
 	public CartResponseDTO getCart(String userId) {
 		//TODO userId NPE 체크필수
 		return cartPersistence.getCart(userId);
 	}
-
+	
 	@Override
 	public CartResponseDTO getCart(Long cartId) {
 		//TODO cartId NPE 체크필수
 		return cartPersistence.getCart(cartId);
 	}
-
+	
 	@Override
 	public void addCart(@NonNull String userId) {
 		cartPersistence.addCart(userId);
 	}
-
+	
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void addCartProduct(CartProductRequestDTO requestDTO) {
 		CartResponseDTO cart = null;
-
+		
 		try {
 			cart = getCart(requestDTO.getUserId());
 		} catch (NotFoundException e) {
 			log.info("cart not found, add cart");
 		}
-
+		
 		if (cart == null) {
 			addCart(requestDTO.getUserId());
 		}
-
+		
 		CartProductRelation findCartProduct = cartMapper.getCartProductRelation(requestDTO.getCartId(), requestDTO.getProductId());
-
+		
 		if (findCartProduct != null) {
 			findCartProduct.addProductQuantity(requestDTO.getQuantity());
-			cartPersistence.modifyCartProduct(findCartProduct.toCartProductUpdateRequestDTO());
+			cartPersistence.modifyCartProduct(CartProductUpdateRequestDTO.from(findCartProduct));
 			return;
 		}
-
+		
 		cartPersistence.insertCartProduct(requestDTO);
 	}
-
+	
 	@Override
 	@Transactional(readOnly = false)
 	public void modifyCartProduct(CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		cartPersistence.modifyCartProduct(cartProductUpdateRequestDTO);
 	}
-
+	
 	@Override
 	@Transactional(readOnly = false)
 	public void removeCart(@NonNull CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {

@@ -2,7 +2,6 @@ package com.psj.itembrowser.cart.domain.vo;
 
 import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 
-import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
@@ -52,13 +51,5 @@ public class CartProductRelation extends BaseDateTimeEntity {
 			throw new DatabaseOperationException(CART_PRODUCT_QUANTITY_NOT_POSITIVE);
 		}
 		this.productQuantity += quantity;
-	}
-
-	public CartProductUpdateRequestDTO toCartProductUpdateRequestDTO() {
-		return new CartProductUpdateRequestDTO(
-			this.cartId,
-			this.productId,
-			this.productQuantity
-		);
 	}
 }
