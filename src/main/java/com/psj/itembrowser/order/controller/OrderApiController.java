@@ -82,7 +82,6 @@ public class OrderApiController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN')")
 	@GetMapping("/v1/api/orders/users/{userNumber}")
 	public ResponseEntity<Page<OrderResponseDTO>> getOrders(
 		@PathVariable Long userNumber,
