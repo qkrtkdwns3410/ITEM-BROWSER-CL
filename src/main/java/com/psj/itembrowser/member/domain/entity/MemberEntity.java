@@ -167,7 +167,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 			.build();
 	}
 	
-	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
+	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos) {
 		if (member == null) {
 			return null;
 		}

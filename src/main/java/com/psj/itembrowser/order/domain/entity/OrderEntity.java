@@ -97,7 +97,7 @@ public class OrderEntity {
 		orderEntity.createdDate = order.getCreatedDate();
 		orderEntity.updatedDate = order.getUpdatedDate();
 		orderEntity.deletedDate = order.getDeletedDate();
-		orderEntity.member = MemberEntity.from(order.getMember(), null, null);
+		orderEntity.member = MemberEntity.from(order.getMember(), null);
 		orderEntity.ordersProductRelations = order.getProducts().stream()
 			.map(OrdersProductRelationEntity::from)
 			.collect(Collectors.toList());
