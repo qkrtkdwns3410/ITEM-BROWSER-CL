@@ -1,5 +1,7 @@
 package com.psj.itembrowser.security.auth.service.impl;
 
+import java.util.Objects;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -21,33 +23,33 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
-
-    private final UserDetailsServiceImpl userDetailsService;
-
-    @Override
-    public void authorizeOrdersWhenCustomer(final Page<OrderEntity> orders, MemberEntity currentMember) {
-        log.info("AuthenticationServiceImpl#authorizeOrders started");
-
-        if (orders.isEmpty()) {
-            log.info("authorizeOrders orders is empty");
-
-            return;
-        }
-
-        if (currentMember.hasRole(Role.ROLE_CUSTOMER)) {
-            log.info("authorizeOrders currentRole : {}", currentMember.getRole());
-
-            orders.forEach(order -> {
-                if (!currentMember.isSame(order.getMember())) {
-                    throw new BadRequestException(ErrorCode.ORDER_IS_NOT_MATCH_CURRENT_MEMBER);
-                }
-
-                log.info("authorizeOrders currentMember is same with order member ==> passed");
-            });
-
-            return;
-        }
-
-        throw new BadRequestException(ErrorCode.INVALID_MEMBER_ROLE);
-    }
+	
+	private final UserDetailsServiceImpl userDetailsService;
+	
+	@Override
+	public void authorizeOrdersWhenCustomer(final Page<OrderEntity> orders, MemberEntity currentMember) {
+		log.info("AuthenticationServiceImpl#authorizeOrders started");
+		
+		if (orders.isEmpty()) {
+			log.info("authorizeOrders orders is empty");
+			
+			return;
+		}
+		
+		if (currentMember.hasRole(Role.ROLE_CUSTOMER)) {
+			log.info("authorizeOrders currentRole : {}", currentMember.getRole());
+			
+			orders.forEach(order -> {
+				if (!Objects.equals(currentMember, order.getMember())) {
+					throw new BadRequestException(ErrorCode.ORDER_IS_NOT_MATCH_CURRENT_MEMBER);
+				}
+				
+				log.info("authorizeOrders currentMember is same with order member ==> passed");
+			});
+			
+			return;
+		}
+		
+		throw new BadRequestException(ErrorCode.INVALID_MEMBER_ROLE);
+	}
 }

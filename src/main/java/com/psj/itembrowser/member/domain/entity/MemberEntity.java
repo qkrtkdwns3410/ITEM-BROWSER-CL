@@ -129,14 +129,6 @@ public class MemberEntity extends BaseDateTimeEntity {
 		this.shippingInfos = shippingInfos;
 	}
 	
-	public boolean isSame(MemberEntity other) {
-		if (other == null) {
-			return false;
-		}
-		
-		return Objects.equals(this, other);
-	}
-	
 	public boolean hasRole(Role role) {
 		return this.role == role;
 	}
