@@ -10,6 +10,8 @@ import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -95,30 +97,28 @@ public class MemberResponseDTO {
 	
 	public static MemberResponseDTO from(MemberEntity entity) {
 		if (entity == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 		
-		MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
-		
-		memberResponseDTO.setMemberNo(entity.getMemberNo());
-		memberResponseDTO.setEmail(entity.getCredentials().getEmail());
-		memberResponseDTO.setPassword(entity.getCredentials().getPassword());
-		memberResponseDTO.setFirstName(entity.getName().getFirstName());
-		memberResponseDTO.setLastName(entity.getName().getLastName());
-		memberResponseDTO.setPhoneNumber(entity.getPhoneNumber());
-		memberResponseDTO.setAddressMain(entity.getAddress().getAddressMain());
-		memberResponseDTO.setAddressSub(entity.getAddress().getAddressSub());
-		memberResponseDTO.setZipCode(entity.getAddress().getZipCode());
-		memberResponseDTO.setGender(entity.getGender());
-		memberResponseDTO.setRole(entity.getRole());
-		memberResponseDTO.setStatus(entity.getStatus());
-		memberResponseDTO.setMemberShipType(entity.getMemberShipType());
-		memberResponseDTO.setBirthday(entity.getBirthday());
-		memberResponseDTO.setLastLoginDate(entity.getLastLoginDate());
-		memberResponseDTO.setCreatedDate(entity.getCreatedDate());
-		memberResponseDTO.setUpdatedDate(entity.getUpdatedDate());
-		memberResponseDTO.setDeletedDate(entity.getDeletedDate());
-		
-		return memberResponseDTO;
+		return MemberResponseDTO.builder()
+			.memberNo(entity.getMemberNo())
+			.email(entity.getCredentials().getEmail())
+			.password(entity.getCredentials().getPassword())
+			.firstName(entity.getName().getFirstName())
+			.lastName(entity.getName().getLastName())
+			.phoneNumber(entity.getPhoneNumber())
+			.addressMain(entity.getAddress().getAddressMain())
+			.addressSub(entity.getAddress().getAddressSub())
+			.zipCode(entity.getAddress().getZipCode())
+			.gender(entity.getGender())
+			.role(entity.getRole())
+			.status(entity.getStatus())
+			.memberShipType(entity.getMemberShipType())
+			.birthday(entity.getBirthday())
+			.lastLoginDate(entity.getLastLoginDate())
+			.createdDate(entity.getCreatedDate())
+			.updatedDate(entity.getUpdatedDate())
+			.deletedDate(entity.getDeletedDate())
+			.build();
 	}
 }
