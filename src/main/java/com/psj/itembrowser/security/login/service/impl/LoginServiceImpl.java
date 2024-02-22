@@ -34,32 +34,32 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
-
+	
 	private final JwtProvider jwtProvider;
 	private final UserDetailsServiceImpl userDetailsService;
 	private final RefreshTokenService refreshTokenService;
 	private final MemberRepository memberRepository;
-
+	
 	@Override
 	@Transactional(readOnly = false)
 	public LoginResponseDTO login(LoginRequestDTO requestDTO) {
 		try {
 			CustomUserDetails details = (CustomUserDetails)userDetailsService.loadUserByUsername(requestDTO.getEmail());
-
+			
 			String accessToken = jwtProvider.generateAccessToken(details)
 				.orElseThrow(() ->
 					new TokenException(ErrorCode.ACCESS_TOKEN_NOT_GENERATED));
 			String refreshTokenNumber = jwtProvider.generateRefreshToken(details)
 				.orElseThrow(() ->
 					new TokenException(ErrorCode.REFRESH_TOKEN_NOT_GENERATED));
-
+			
 			Optional<RefreshToken> refreshToken = getOrUpdateRefreshToken(requestDTO, refreshTokenNumber);
-
+			
 			if (refreshToken.isPresent()) {
 				return new LoginResponseDTO(accessToken, refreshToken.get()
 					.getRefreshToken());
 			}
-
+			
 		} catch (UsernameNotFoundException e) {
 			log.error("UsernameNotFoundException : LoginServiceImpl.login() : {}", e.getMessage());
 		} catch (TokenException e) {
@@ -67,10 +67,10 @@ public class LoginServiceImpl implements LoginService {
 		} catch (RuntimeException e) {
 			log.error("Runtime : LoginServiceImpl.login() : {}", e.getMessage());
 		}
-
+		
 		throw new RuntimeException("login fail");
 	}
-
+	
 	@Override
 	public TokenPairDTO refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -79,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			throw new TokenException(ErrorCode.ACCESS_TOKEN_NOT_GENERATED);
 		}
-
+		
 		refreshToken = authHeader.substring(7);
 		userEmail = jwtProvider.extractUserEmail(refreshToken);
 		if (userEmail != null) {
@@ -88,30 +88,27 @@ public class LoginServiceImpl implements LoginService {
 				String accessToken = jwtProvider.generateAccessToken(details)
 					.orElseThrow(() ->
 						new TokenException(ErrorCode.ACCESS_TOKEN_NOT_GENERATED));
-
+				
 				return new TokenPairDTO(accessToken, refreshToken);
 			}
 		}
 		return null;
 	}
-
+	
 	private Optional<RefreshToken> getOrUpdateRefreshToken(LoginRequestDTO requestDTO, String refreshTokenNumber) {
-		Optional<MemberEntity> byEmail = memberRepository.findByCredentialsEmail(requestDTO.getEmail());
-
-		if (byEmail.isEmpty()) {
-			throw new UsernameNotFoundException("User not found with email : " + requestDTO.getEmail());
-		}
-
-		RefreshToken existRefreshToken = refreshTokenService.getRefreshToken(byEmail.get().getMemberNo());
-
+		MemberEntity foundMember = memberRepository.findByCredentialsEmail(requestDTO.getEmail())
+			.orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + requestDTO.getEmail()));
+		
+		RefreshToken existRefreshToken = refreshTokenService.getRefreshToken(foundMember.getMemberNo());
+		
 		if (existRefreshToken == null) {
-			RefreshToken refreshToken = RefreshToken.create(refreshTokenNumber, byEmail.get().getMemberNo());
-
+			RefreshToken refreshToken = RefreshToken.create(refreshTokenNumber, foundMember.getMemberNo());
+			
 			refreshTokenService.createRefreshToken(refreshToken);
-
+			
 			return Optional.of(refreshToken);
 		}
-
+		
 		return Optional.of(existRefreshToken);
 	}
 }
