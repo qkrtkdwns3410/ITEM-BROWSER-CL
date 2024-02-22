@@ -1,4 +1,4 @@
-package com.psj.itembrowser.security.data.config;
+package com.psj.itembrowser.shippingInfos.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

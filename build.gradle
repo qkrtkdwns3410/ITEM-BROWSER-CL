@@ -5,10 +5,12 @@ plugins {
     id 'org.springframework.boot' version '2.7.16'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id('com.epages.restdocs-api-spec') version '0.15.3'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 ext {
     set('springCloudVersion', "2021.0.4")
+    set('queryDslVersion', "5.0.0")
 }
 
 group = 'com.psj'
@@ -23,37 +25,11 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
     mavenCentral()
-}
-
-// QueryDSL 메타 모델을 생성하기 위한 설정
-def querydslDir = "${buildDir}/generated"
-
-sourceSets {
-    main.java.srcDir querydslDir
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-
-tasks.register('generateQueryDSL', JavaCompile) {
-    source = sourceSets.main.java
-    classpath = configurations.querydsl
-    options.annotationProcessorPath = configurations.querydsl
-    destinationDir = file(querydslDir)
-}
-
-compileJava {
-    dependsOn tasks.named('generateQueryDSL')
-    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
-}
-
-clean {
-    delete querydslDir
 }
 
 dependencies {
@@ -72,13 +48,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // QueryDSL
-    implementation 'com.querydsl:querydsl-jpa'
-    implementation 'com.querydsl:querydsl-apt'
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
 
     implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'org.yaml:snakeyaml:2.0' // yaml 파싱을 위한 라이브러리
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -151,13 +130,12 @@ tasks.register('copyOasToSwagger', Copy) {
         def openapi3File = file("$buildDir/api-spec/openapi3.yaml")
 
         // JWT 인증을 위한 securitySchemes와 security 요소를 정의합니다.
-        def securitySchemesContent = "  securitySchemes:\n" +             \
-                                                 "    APIKey:\n" +             \
-                                                 "      type: apiKey\n" +             \
-                                                 "      name: Authorization\n" +             \
-                                                 "      in: header\n" +            \
-                                                 "security:\n" +
-                "  - APIKey: []  # Apply the security scheme here"
+        def securitySchemesContent = "  securitySchemes:\n" + "    APIKey:\n" +
+                "      type: apiKey\n" +                      \
+                                                          "      name: Authorization\n" +                      \
+                                                          "      in: header\n" +                     \
+                                                          "security:\n" +
+                "  - APIKey : []  # Apply the security scheme here"
 
         // openapi3.yaml 파일에 내용을 추가합니다.
         if (openapi3File.exists()) {
@@ -166,9 +144,33 @@ tasks.register('copyOasToSwagger', Copy) {
             println "Warning: openapi3.yaml not found at ${openapi3File.path}"
         }
     }
-
-    bootRun {
-        //openapi3 task가 먼저 실행되도록 설정
-        dependsOn 'openapi3'
-    }
 }
+
+bootRun {
+    //openapi3 task가 먼저 실행되도록 설정
+    dependsOn 'openapi3'
+}
+
+//querydsl 추가 시작
+def querydslDir = "src/main/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+//querydsl 추가 끝

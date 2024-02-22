@@ -25,21 +25,19 @@ import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
+import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class OrderEntity {
+public class OrderEntity extends BaseDateTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
@@ -56,15 +54,6 @@ public class OrderEntity {
 	@JoinColumn(name = "SHIPPING_INFO_ID", referencedColumnName = "ID")
 	private ShippingInfoEntity shippingInfo;
 	
-	@Column(name = "CREATED_DATE")
-	private LocalDateTime createdDate;
-	
-	@Column(name = "UPDATED_DATE")
-	private LocalDateTime updatedDate;
-	
-	@Column(name = "DELETED_DATE")
-	private LocalDateTime deletedDate;
-	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDERER_NUMBER", referencedColumnName = "MEMBER_NO")
 	private MemberEntity member;
@@ -74,6 +63,23 @@ public class OrderEntity {
 	
 	@Transient
 	private OrderCalculationResult orderCalculationResult;
+	
+	@Builder
+	private OrderEntity(Long id, OrderStatus orderStatus, LocalDateTime paidDate, ShippingInfoEntity shippingInfo, LocalDateTime createdDate,
+		LocalDateTime updatedDate,
+		LocalDateTime deletedDate, MemberEntity member, List<OrdersProductRelationEntity> ordersProductRelations,
+		OrderCalculationResult orderCalculationResult) {
+		this.id = id;
+		this.orderStatus = orderStatus;
+		this.paidDate = paidDate;
+		this.shippingInfo = shippingInfo;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.deletedDate = deletedDate;
+		this.member = member;
+		this.ordersProductRelations = ordersProductRelations;
+		this.orderCalculationResult = orderCalculationResult;
+	}
 	
 	public static OrderEntity from(Order order) {
 		OrderEntity orderEntity = new OrderEntity();
@@ -85,7 +91,7 @@ public class OrderEntity {
 		orderEntity.createdDate = order.getCreatedDate();
 		orderEntity.updatedDate = order.getUpdatedDate();
 		orderEntity.deletedDate = order.getDeletedDate();
-		orderEntity.member = MemberEntity.from(order.getMember(), null, null);
+		orderEntity.member = MemberEntity.from(order.getMember(), null);
 		orderEntity.ordersProductRelations = order.getProducts().stream()
 			.map(OrdersProductRelationEntity::from)
 			.collect(Collectors.toList());

@@ -36,13 +36,13 @@ import lombok.RequiredArgsConstructor;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+	
 	@Value("${jwt.public.key}")
 	RSAPublicKey key;
-
+	
 	@Value("${jwt.private.key}")
 	RSAPrivateKey priv;
-
+	
 	//WebSecutiry 에 대한 세부적인 설정을 가능하게함. (Web -> HTTP)
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -54,54 +54,54 @@ public class SecurityConfig {
 			.antMatchers("/docs/**")
 			.antMatchers("/resources/**");
 	}
-
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(); // cors 허용
-
+		
 		http.csrf()
 			.disable() // CSRF 를 사용하지 않음
-
+			
 			.formLogin()
 			.disable() // 기본 로그인 페이지를 사용하지 않음
-
+			
 			.httpBasic()
 			.disable() // 기본 인증 방식을 사용하지 않음
-
+			
 			.oauth2ResourceServer(
 				OAuth2ResourceServerConfigurer::jwt) // oauth2ResourceServer 를 JWT 방식으로 설정
-
+			
 			.sessionManagement(
 				(session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
+			
 			.exceptionHandling((exceptions) -> exceptions
 				.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
 				.accessDeniedHandler(new BearerTokenAccessDeniedHandler())
 			)
-
+			
 			.authorizeHttpRequests((authorize) -> authorize
 				.antMatchers("/", "/refresh-token", "/login").permitAll()
 				.antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
 					"/static/swagger-ui/**").permitAll()
 				.anyRequest().authenticated()
 			)
-
+			
 			//로그인전 UserPasswordAuthenticationFilter 를 통해 인증을 받도록 설정
 			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
-
+	
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
-
+	
 	@Bean
 	public JwtDecoder jwtDecoder() {
 		return NimbusJwtDecoder.withPublicKey(this.key)
 			.build();
 	}
-
+	
 	@Bean
 	public JwtEncoder jwtEncoder() {
 		JWK jwk = new RSAKey.Builder(this.key).privateKey(this.priv)
@@ -109,7 +109,7 @@ public class SecurityConfig {
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);
 	}
-
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();

@@ -1,10 +1,9 @@
 package com.psj.itembrowser.order.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,36 +24,30 @@ import org.springframework.transaction.annotation.Transactional;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
-import com.psj.itembrowser.member.domain.vo.Gender;
-import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
-import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.member.repository.MemberRepository;
+import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
-import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
-import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
+import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.order.service.impl.OrderCalculationServiceImpl;
 import com.psj.itembrowser.order.service.impl.PaymentService;
 import com.psj.itembrowser.order.service.impl.ShppingInfoValidationService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
-import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
-import com.psj.itembrowser.product.domain.vo.Product;
-import com.psj.itembrowser.product.domain.vo.ProductStatus;
+import com.psj.itembrowser.product.repository.ProductRepository;
 import com.psj.itembrowser.product.service.impl.ProductServiceImpl;
 import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
+import com.psj.itembrowser.security.auth.service.AuthenticationService;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationServiceImpl;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
-import com.psj.itembrowser.security.data.config.MemberRepository;
-import com.psj.itembrowser.security.data.config.OrderRepository;
-import com.psj.itembrowser.security.data.config.ProductRepository;
-import com.psj.itembrowser.security.data.config.ShippingInfoRepository;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
+import com.psj.itembrowser.shippingInfos.repository.ShippingInfoRepository;
 
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -84,6 +78,9 @@ public class OrderSelectWithDBServiceTest {
 	@MockBean
 	private OrderMapper orderMapper;
 	
+	@MockBean
+	private AuthenticationService authenticationService;
+	
 	@PersistenceContext
 	EntityManager em;
 	
@@ -98,18 +95,11 @@ public class OrderSelectWithDBServiceTest {
 		validOrderId = 1L;
 		invalidOrderId = 99L;
 		
-		Member member = new Member(null,
-			Credentials.create("test@test.com", "test"),
-			Name.create("홍", "길동"),
-			"010-1234-1234",
-			Gender.MEN,
-			Role.ROLE_CUSTOMER, Status.ACTIVE,
-			MemberShipType.REGULAR,
-			Address.create("서울시 강남구", "김밥빌딩 101동 302호", "01012"),
-			LocalDate.of(1995, 11, 3),
-			LocalDateTime.now());
-		
-		MemberEntity expectedMember = MemberEntity.from(member, null, null);
+		MemberEntity expectedMember = MemberEntity.builder()
+			.credentials(Credentials.builder().email("qkrtkdwns3410@gmail.com").password("PasswordIsHard!@#").build())
+			.address(Address.builder().addressMain("포항시 남구 연일읍 유강길 10 - 44").addressSub("김밥아파트 101동 302호").zipCode("08593").build())
+			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.build();
 		
 		ShippingInfo expectedShppingInfo = new ShippingInfo(null,
 			1L,
@@ -125,47 +115,26 @@ public class OrderSelectWithDBServiceTest {
 		
 		ShippingInfoEntity expectedShippingInfoEntity = ShippingInfoEntity.from(expectedShppingInfo);
 		
-		OrdersProductRelation expectedOrderRelation = OrdersProductRelation.of(1L, 1L, 1,
-			LocalDateTime.now(),
-			null,
-			null,
-			new Product(
-				null,
-				"섬유유연제",
-				1,
-				"상품 디테일",
-				ProductStatus.APPROVED,
-				10,
-				1000,
-				"qkrtkdwns3410",
-				LocalDateTime.now(),
-				LocalDateTime.now().plusDays(10),
-				"섬유유연제",
-				"섬유나라",
-				DeliveryFeeType.FREE,
-				"배송방법",
-				5000,
-				15000,
-				"returnCenterCode",
-				Collections.emptyList(),
-				Collections.emptyList()
-			));
+		OrdersProductRelationEntity expectedOrderRelation = OrdersProductRelationEntity.builder()
+			.groupId(1L)
+			.productId(1L)
+			.productQuantity(1)
+			.createdDate(LocalDateTime.now())
+			.updatedDate(LocalDateTime.now())
+			.deletedDate(null)
+			.build();
 		
-		this.validOrder = OrderEntity.from(Order.of(
-			null,
-			1L,
-			OrderStatus.ACCEPT,
-			LocalDateTime.now(),
-			1L,
-			LocalDateTime.now(),
-			null,
-			null,
-			List.of(
-				expectedOrderRelation
-			),
-			null,
-			null
-		));
+		this.validOrder = OrderEntity.builder()
+			.id(1L)
+			.member(expectedMember)
+			.orderStatus(OrderStatus.ACCEPT)
+			.paidDate(LocalDateTime.now())
+			.shippingInfo(expectedShippingInfoEntity)
+			.ordersProductRelations(List.of(expectedOrderRelation))
+			.createdDate(LocalDateTime.now())
+			.updatedDate(LocalDateTime.now())
+			.deletedDate(null)
+			.build();
 		
 		ProductEntity productEntity = ProductEntity.builder().name("섬유유연제").unitPrice(1000).quantity(10).build();
 		
@@ -242,5 +211,110 @@ public class OrderSelectWithDBServiceTest {
 		// when - then
 		assertThatThrownBy(() -> orderService.getOrderWithNotDeleted(invalidOrderId))
 			.isInstanceOf(NotFoundException.class).hasMessageContaining("Not Found Order");
+	}
+	
+	@Test
+	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNoCondition) - 모든 정보 조회시 주문 정보가 있을 경우 주문 정보 리스트 반환")
+	void When_GetOrdersWithPaginationAndNoCondition_Expect_ReturnOrderResponseDTOList() {
+		//given
+		MemberEntity member = MemberEntity.builder().role(Role.ROLE_CUSTOMER).build();
+		
+		OrderEntity expectedOrder = orderRepository.save(validOrder);
+		
+		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(0).pageSize(1).userNumber(1L).build();
+		
+		//when
+		Page<OrderResponseDTO> ordersWithPaginationAndNoCondition = orderService.getOrdersWithPaginationAndNoCondition(member, dto);
+		
+		//then
+		assertThat(ordersWithPaginationAndNoCondition).isNotNull();
+		assertThat(ordersWithPaginationAndNoCondition.getContent()).isNotNull();
+		assertThat(ordersWithPaginationAndNoCondition.getTotalPages()).isEqualTo(1);
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getId()).isEqualTo(expectedOrder.getId());
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrderStatus()).isEqualTo(expectedOrder.getOrderStatus());
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrdersProductRelations()).hasSize(1);
+		assertThat(ordersWithPaginationAndNoCondition.getContent().get(0).getOrdersProductRelations().get(0).getProductId()).isEqualTo(1L);
+	}
+	
+	@Test
+	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNoCondition) - 모든 정보 조회시 주문 정보가 없을 경우 NotFoundException 발생")
+	void When_GetOrdersWithPaginationAndNoCondition_Expect_ThrowNotFoundException() {
+		//given
+		MemberEntity member = MemberEntity.builder().role(Role.ROLE_CUSTOMER).build();
+		
+		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(0).pageSize(1).userNumber(1L).build();
+		
+		//when - then
+		assertThatThrownBy(() -> orderService.getOrdersWithPaginationAndNoCondition(member, dto))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining("Not Found Order");
+	}
+	
+	@Test
+	@DisplayName("다건 주문 조회 (getOrdersWithPaginationAndNotDeleted) - 삭제되지 않은 주문 조회시 주문 정보가 있을 경우 주문 정보 리스트 반환")
+	void When_GetOrdersWithPaginationAndNotDeleted_Expect_ReturnOrderResponseDTOList() {
+		//given
+		MemberEntity member = MemberEntity.builder()
+			.memberNo(2L)
+			.credentials(Credentials.builder().email("qkrtkdwns34102@gmail.com").password("PasswordIsHard!@#").build())
+			.address(Address.builder().addressMain("포항시 남구 연일읍 유강길 10 - 44").addressSub("김밥아파트 101동 302호").zipCode("08593").build())
+			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.role(Role.ROLE_CUSTOMER)
+			.build();
+		
+		MemberEntity savedMember = memberRepository.save(member);
+		
+		OrderEntity deletedOrder = OrderEntity.builder()
+			.id(1L)
+			.orderStatus(OrderStatus.CANCELED)
+			.member(member)
+			.deletedDate(LocalDateTime.now().minusDays(1))
+			.createdDate(LocalDateTime.now().minusDays(1))
+			.updatedDate(LocalDateTime.now().minusDays(1))
+			.build();
+		
+		orderRepository.save(deletedOrder);
+		
+		OrderEntity notDeletedOrder = OrderEntity.builder()
+			.id(2L)
+			.orderStatus(OrderStatus.ACCEPT)
+			.member(member)
+			.deletedDate(null)
+			.createdDate(LocalDateTime.now().minusDays(1))
+			.updatedDate(LocalDateTime.now().minusDays(1))
+			.build();
+		
+		OrderEntity expectedOrder = orderRepository.save(notDeletedOrder);
+		
+		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(0).pageSize(10).userNumber(savedMember.getMemberNo()).build();
+		
+		doNothing().when(authenticationService).authorizeOrdersWhenCustomer(any(Page.class), any(MemberEntity.class));
+		
+		//when
+		Page<OrderResponseDTO> ordersWithPaginationAndNotDeleted = orderService.getOrdersWithPaginationAndNotDeleted(member, dto);
+		
+		//then
+		assertThat(ordersWithPaginationAndNotDeleted).isNotNull();
+		assertThat(ordersWithPaginationAndNotDeleted.getContent()).isNotNull();
+		assertThat(ordersWithPaginationAndNotDeleted.getTotalPages()).isEqualTo(1);
+		assertThat(ordersWithPaginationAndNotDeleted.getContent().get(0).getId()).isEqualTo(expectedOrder.getId());
+		assertThat(ordersWithPaginationAndNotDeleted.getContent().get(0).getMember().getMemberNo()).isEqualTo(
+			expectedOrder.getMember().getMemberNo());
+		assertThat(ordersWithPaginationAndNotDeleted.getContent().get(0).getOrderStatus()).isEqualTo(expectedOrder.getOrderStatus());
+		assertThat(ordersWithPaginationAndNotDeleted.getContent().get(0).getOrdersProductRelations()).hasSize(0);
+	}
+	
+	@Test
+	@DisplayName("삭제되지 않은 주문 조회 시 주문 정보가 없을 경우 NotFoundException 발생")
+	void When_GetOrdersWithPaginationAndNotDeleted_Expect_ThrowNotFoundException() {
+		//given
+		MemberEntity member = MemberEntity.builder().role(Role.ROLE_CUSTOMER).build();
+		
+		OrderPageRequestDTO dto = OrderPageRequestDTO.builder().pageNum(0).pageSize(1).userNumber(1L).build();
+		
+		//when - then
+		assertThatThrownBy(() -> orderService.getOrdersWithPaginationAndNotDeleted(member, dto))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining("Not Found Order");
 	}
 }

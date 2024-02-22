@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -24,7 +24,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Credentials {
 	/**
 	 * 아이디
@@ -36,7 +35,13 @@ public class Credentials {
 	 */
 	@Column(name = "password", nullable = false)
 	private String password;
-
+	
+	@Builder
+	private Credentials(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
+	
 	public static Credentials create(String email, String password) {
 		return new Credentials(email, password);
 	}

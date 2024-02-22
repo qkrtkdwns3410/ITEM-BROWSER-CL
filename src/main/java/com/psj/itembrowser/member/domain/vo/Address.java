@@ -3,7 +3,7 @@ package com.psj.itembrowser.member.domain.vo;
 import javax.persistence.Column;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -22,7 +22,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Address {
 	/**
 	 * 주소 메인
@@ -39,7 +38,14 @@ public class Address {
 	 */
 	@Column(name = "zip_code", nullable = false)
 	private String zipCode;
-
+	
+	@Builder
+	private Address(String addressMain, String addressSub, String zipCode) {
+		this.addressMain = addressMain;
+		this.addressSub = addressSub;
+		this.zipCode = zipCode;
+	}
+	
 	public static Address create(String addressMain, String addressSub, String zipCode) {
 		return new Address(addressMain, addressSub, zipCode);
 	}

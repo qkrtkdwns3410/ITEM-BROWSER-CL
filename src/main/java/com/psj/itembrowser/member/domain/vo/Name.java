@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -24,7 +24,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Name {
 	/**
 	 * 이름
@@ -36,7 +35,13 @@ public class Name {
 	 */
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
-
+	
+	@Builder
+	private Name(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+	
 	public static Name create(String firstName, String lastName) {
 		return new Name(firstName, lastName);
 	}

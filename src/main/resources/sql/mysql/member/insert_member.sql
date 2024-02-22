@@ -13,7 +13,7 @@ VALUES (1, 'qkrtkdwns3410@naver.com', '{bcrypt}jiohioqh123!@#', 'Park', 'SangJun
 
 
 INSERT INTO MEMBER_REFRESH_TOKEN (MEMBER_NO, REFRESH_TOKEN, CREATED_DATE)
-VALUES ('qkrtkdwns3410@naver.com', 'refresh_token_1', NOW()),
-       ('qkrtkdwns34102@naver.com', 'refresh_token_2', NOW()),
-       ('akdjlkajsldjkaldj@kkk.com', 'refresh_token_3', NOW());
+VALUES (1, 'refresh_token_1', NOW()),
+       (2, 'refresh_token_2', NOW()),
+       (3, 'refresh_token_3', NOW());
 ;

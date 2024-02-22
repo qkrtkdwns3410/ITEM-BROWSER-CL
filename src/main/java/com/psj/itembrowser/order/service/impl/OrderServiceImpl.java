@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
@@ -80,25 +82,23 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public PageInfo<OrderResponseDTO> getOrdersWithPaginationAndNoCondition(Member member,
-		@NotNull OrderPageRequestDTO requestDTO) {
-		PageMethod.startPage(requestDTO.getPageNum(), requestDTO.getPageSize());
+	public Page<OrderResponseDTO> getOrdersWithPaginationAndNoCondition(MemberEntity member, @NotNull OrderPageRequestDTO requestDTO) {
+		Pageable pageRequest = PageRequest.of(requestDTO.getPageNum(), requestDTO.getPageSize());
 
-		List<Order> orders = orderPersistence.getOrdersWithPaginationAndNoCondition(requestDTO);
+		Page<OrderEntity> ordersWithPaginationAndNoCondition = orderPersistence.getOrdersWithPaginationAndNoCondition(requestDTO, pageRequest);
 
-		return new PageInfo<>(orders.stream().map(OrderResponseDTO::from).collect(Collectors.toList()));
+		return ordersWithPaginationAndNoCondition.map(OrderResponseDTO::from);
 	}
 
 	@Override
-	public PageInfo<OrderResponseDTO> getOrdersWithPaginationAndNotDeleted(Member member,
-		@NotNull OrderPageRequestDTO requestDTO) {
-		PageMethod.startPage(requestDTO.getPageNum(), requestDTO.getPageSize());
+	public Page<OrderResponseDTO> getOrdersWithPaginationAndNotDeleted(MemberEntity member, @NotNull OrderPageRequestDTO requestDTO) {
+		Pageable pageable = PageRequest.of(requestDTO.getPageNum(), requestDTO.getPageSize());
 
-		List<Order> orders = orderPersistence.getOrdersWithPaginationAndNotDeleted(requestDTO);
+		Page<OrderEntity> ordersWithPaginationAndNotDeleted = orderPersistence.getOrdersWithPaginationAndNotDeleted(requestDTO, pageable);
 
-		authenticationService.authorizeOrdersWhenCustomer(orders, member);
+		authenticationService.authorizeOrdersWhenCustomer(ordersWithPaginationAndNotDeleted, member);
 
-		return new PageInfo<>(orders.stream().map(OrderResponseDTO::from).collect(Collectors.toList()));
+		return ordersWithPaginationAndNotDeleted.map(OrderResponseDTO::from);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.domain.PageRequest;
 
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
@@ -56,7 +57,7 @@ public interface OrderMapper {
 	Order selectOrderWithNotDeleted(@Param("id") Long id);
 
 	List<Order> selectOrdersWithPaginationAndNoCondition(
-		@Param("orderPageRequestDTO") OrderPageRequestDTO requestDTO);
+		@Param("orderPageRequestDTO") OrderPageRequestDTO requestDTO, PageRequest pageRequest);
 
 	List<Order> selectOrdersWithPaginationAndNotDeleted(
 		@Param("orderPageRequestDTO") OrderPageRequestDTO requestDTO);

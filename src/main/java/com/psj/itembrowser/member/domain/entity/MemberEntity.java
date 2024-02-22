@@ -16,8 +16,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.proxy.HibernateProxy;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
@@ -34,7 +35,7 @@ import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -44,7 +45,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class MemberEntity extends BaseDateTimeEntity {
 	
 	@Id
@@ -110,15 +110,23 @@ public class MemberEntity extends BaseDateTimeEntity {
 	@ToString.Exclude
 	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
 	
-	@OneToOne(mappedBy = "member")
-	private OrderEntity order;
-	
-	public boolean isSame(MemberEntity other) {
-		if (other == null) {
-			return false;
-		}
-		
-		return Objects.equals(this, other);
+	@Builder
+	private MemberEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials,
+		Name name, String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
+		LocalDateTime lastLoginDate, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
+		super(createdDate, updatedDate, deletedDate);
+		this.memberNo = memberNo;
+		this.credentials = credentials;
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.gender = gender;
+		this.role = role;
+		this.status = status;
+		this.memberShipType = memberShipType;
+		this.address = address;
+		this.birthday = birthday;
+		this.lastLoginDate = lastLoginDate;
+		this.shippingInfos = shippingInfos;
 	}
 	
 	public boolean hasRole(Role role) {
@@ -131,52 +139,77 @@ public class MemberEntity extends BaseDateTimeEntity {
 	
 	public static MemberEntity from(MemberRequestDTO dto) {
 		MemberEntity member = new MemberEntity();
-		member.credentials = new Credentials(dto.getMemberId(), dto.getPassword());
+		member.credentials = Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build();
 		return member;
 	}
 	
 	public static MemberEntity from(MemberResponseDTO dto) {
-		MemberEntity member = new MemberEntity();
+		if (dto == null) {
+			return null;
+		}
 		
-		member.memberNo = dto.getMemberNo();
-		member.credentials = new Credentials(dto.getEmail(), dto.getPassword());
-		member.name = new Name(dto.getFirstName(), dto.getLastName());
-		member.phoneNumber = dto.getPhoneNumber();
-		member.gender = dto.getGender(); // Gender enum에 맞게 변환
-		member.role = dto.getRole(); // Role enum에 맞게 변환
-		member.status = dto.getStatus(); // Status enum에 맞게 변환
-		member.address = new Address(dto.getAddressMain(), dto.getAddressSub(), dto.getZipCode());
-		member.birthday = dto.getBirthday();
-		member.lastLoginDate = dto.getLastLoginDate();
-		
-		return member;
+		return MemberEntity.builder()
+			.memberNo(dto.getMemberNo())
+			.credentials(Credentials.builder().email(dto.getEmail()).password(dto.getPassword()).build())
+			.name(Name.builder().firstName(dto.getFirstName()).lastName(dto.getLastName()).build())
+			.phoneNumber(dto.getPhoneNumber())
+			.gender(dto.getGender())
+			.role(dto.getRole())
+			.status(dto.getStatus())
+			.address(Address.builder().addressMain(dto.getAddressMain()).addressSub(dto.getAddressSub()).zipCode(dto.getZipCode()).build())
+			.birthday(dto.getBirthday())
+			.lastLoginDate(dto.getLastLoginDate())
+			.build();
 	}
 	
-	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
+	public static MemberEntity from(Member member, List<ShippingInfoEntity> shippingInfos) {
 		if (member == null) {
 			return null;
 		}
-		MemberEntity memberEntity = new MemberEntity();
 		
-		memberEntity.credentials = member.getCredentials();
-		memberEntity.name = member.getName();
-		memberEntity.phoneNumber = member.getPhoneNumber();
-		memberEntity.gender = member.getGender();
-		memberEntity.role = member.getRole();
-		memberEntity.status = member.getStatus();
-		memberEntity.memberShipType = member.getMemberShipType();
-		memberEntity.address = member.getAddress();
-		memberEntity.birthday = member.getBirthday();
-		memberEntity.lastLoginDate = member.getLastLoginDate();
-		memberEntity.createdDate = member.getCreatedDate();
-		memberEntity.updatedDate = member.getUpdatedDate();
-		memberEntity.deletedDate = member.getDeletedDate();
+		MemberEntity memberEntity = MemberEntity.builder()
+			.credentials(member.getCredentials())
+			.name(member.getName())
+			.phoneNumber(member.getPhoneNumber())
+			.gender(member.getGender())
+			.role(member.getRole())
+			.status(member.getStatus())
+			.memberShipType(member.getMemberShipType())
+			.address(member.getAddress())
+			.birthday(member.getBirthday())
+			.lastLoginDate(member.getLastLoginDate())
+			.createdDate(member.getCreatedDate())
+			.updatedDate(member.getUpdatedDate())
+			.deletedDate(member.getDeletedDate())
+			.build();
+		
 		if (shippingInfos != null) {
 			memberEntity.shippingInfos = shippingInfos;
 		}
 		
-		memberEntity.order = order;
-		
 		return memberEntity;
+	}
+	
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		Class<?> oEffectiveClass =
+			o instanceof HibernateProxy ? ((HibernateProxy)o).getHibernateLazyInitializer().getPersistentClass() :
+				o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
+		MemberEntity member = (MemberEntity)o;
+		return getMemberNo() != null && Objects.equals(getMemberNo(), member.getMemberNo());
+	}
+	
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }

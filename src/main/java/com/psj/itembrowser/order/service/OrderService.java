@@ -1,6 +1,8 @@
 package com.psj.itembrowser.order.service;
 
-import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Page;
+
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
@@ -14,9 +16,9 @@ public interface OrderService {
 
 	OrderResponseDTO getOrderWithNoCondition(Long id);
 
-	PageInfo<OrderResponseDTO> getOrdersWithPaginationAndNoCondition(Member member, OrderPageRequestDTO requestDTO);
+	Page<OrderResponseDTO> getOrdersWithPaginationAndNoCondition(MemberEntity member, OrderPageRequestDTO requestDTO);
 
-	PageInfo<OrderResponseDTO> getOrdersWithPaginationAndNotDeleted(Member member, OrderPageRequestDTO requestDTO);
+	Page<OrderResponseDTO> getOrdersWithPaginationAndNotDeleted(MemberEntity member, OrderPageRequestDTO requestDTO);
 
 	OrderResponseDTO createOrder(Member member, OrderCreateRequestDTO orderPageRequestDTO);
 }

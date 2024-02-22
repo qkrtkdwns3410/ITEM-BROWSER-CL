@@ -6,6 +6,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.pagehelper.PageInfo;
 import com.psj.itembrowser.member.annotation.CurrentUser;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
@@ -81,9 +82,8 @@ public class OrderApiController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN')")
 	@GetMapping("/v1/api/orders/users/{userNumber}")
-	public ResponseEntity<PageInfo<OrderResponseDTO>> getOrders(
+	public ResponseEntity<Page<OrderResponseDTO>> getOrders(
 		@PathVariable Long userNumber,
 		@ModelAttribute OrderPageRequestDTO orderPageRequestDTO,
 		@CurrentUser Jwt jwt
@@ -92,11 +92,11 @@ public class OrderApiController {
 
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
 
-		Member member = Member.from(customUserDetails.getMemberResponseDTO());
+		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
 
-		PageInfo<OrderResponseDTO> orderResponseDTOPageInfo = getOrdersResponseBasedOnRole(member, orderPageRequestDTO);
+		Page<OrderResponseDTO> orderResponseDTOPage = getOrdersResponseBasedOnRole(member, orderPageRequestDTO);
 
-		return ResponseEntity.ok(orderResponseDTOPageInfo);
+		return ResponseEntity.ok(orderResponseDTOPage);
 	}
 
 	@DeleteMapping("/v1/api/orders/{orderId}")
@@ -114,9 +114,9 @@ public class OrderApiController {
 		}
 	}
 
-	private PageInfo<OrderResponseDTO> getOrdersResponseBasedOnRole(Member member, OrderPageRequestDTO pageRequestDTO) {
+	private Page<OrderResponseDTO> getOrdersResponseBasedOnRole(MemberEntity member, OrderPageRequestDTO pageRequestDTO) {
 
-		PageInfo<OrderResponseDTO> orderResponseDTOPageInfo;
+		Page<OrderResponseDTO> orderResponseDTOPageInfo;
 
 		if (member.hasRole(Role.ROLE_ADMIN)) {
 			orderResponseDTOPageInfo = orderService.getOrdersWithPaginationAndNoCondition(member, pageRequestDTO);
