@@ -64,11 +64,22 @@ public class OrderPersistence {
 	}
 	
 	public Page<OrderEntity> getOrdersWithPaginationAndNoCondition(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		return customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, null).orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
+		Page<OrderEntity> foundOrders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, null);
+		
+		if (foundOrders.getContent().isEmpty()) {
+			throw new NotFoundException(ORDER_NOT_FOUND);
+		}
+		
+		return foundOrders;
 	}
 	
 	public Page<OrderEntity> getOrdersWithPaginationAndNotDeleted(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		return customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, false)
-			.orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
+		Page<OrderEntity> foundOrders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, false);
+		
+		if (foundOrders.getContent().isEmpty()) {
+			throw new NotFoundException(ORDER_NOT_FOUND);
+		}
+		
+		return foundOrders;
 	}
 }

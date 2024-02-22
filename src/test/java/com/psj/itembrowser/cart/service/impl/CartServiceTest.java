@@ -36,12 +36,12 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
  */
 
 @ExtendWith(MockitoExtension.class)
-class CartServiceImplTest {
+class CartServiceTest {
 
 	private static final String EXIST_USER_ID = "stubbing@gmail.com";
 
 	@InjectMocks
-	private CartServiceImpl cartService;
+	private CartService cartService;
 	@Mock
 	private CartPersistence cartPersistence;
 	@Mock

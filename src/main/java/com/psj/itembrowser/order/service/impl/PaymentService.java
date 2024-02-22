@@ -4,16 +4,19 @@ import org.springframework.stereotype.Service;
 
 /**
  *packageName    : com.psj.itembrowser.order.service.impl
- * fileName       : PaymentService
+ * fileName       : PaymentServiceImpl
  * author         : ipeac
- * date           : 2024-02-13
+ * date           : 2024-02-15
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2024-02-13        ipeac       최초 생성
+ * 2024-02-15        ipeac       최초 생성
  */
 @Service
-public interface PaymentService {
-	void pay(OrderCalculationResult orderCalculationResult);
+public class PaymentService {
+	
+	public void pay(OrderCalculationResult orderCalculationResult) {
+		//TODO 결제 로직 구현
+	}
 }

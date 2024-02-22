@@ -40,7 +40,7 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
-import com.psj.itembrowser.cart.service.CartService;
+import com.psj.itembrowser.cart.service.impl.CartService;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
