@@ -3,8 +3,6 @@ package com.psj.itembrowser.order.persistence;
 import static com.psj.itembrowser.order.domain.vo.OrderStatus.*;
 import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -58,42 +56,19 @@ public class OrderPersistence {
 	}
 	
 	public OrderEntity getOrderWithNotDeleted(long id) {
-		Optional<OrderEntity> findOrder = orderRepository.findByIdAndDeletedDateIsNull(id);
-		
-		if (findOrder.isEmpty()) {
-			throw new NotFoundException(ORDER_NOT_FOUND);
-		}
-		
-		return findOrder.get();
+		return orderRepository.findByIdAndDeletedDateIsNull(id).orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
 	}
 	
 	public OrderEntity getOrderWithNoCondition(Long id) {
-		Optional<OrderEntity> findOrder = orderRepository.findById(id);
-		
-		if (findOrder.isEmpty()) {
-			throw new NotFoundException(ORDER_NOT_FOUND);
-		}
-		
-		return findOrder.get();
+		return orderRepository.findById(id).orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
 	}
 	
 	public Page<OrderEntity> getOrdersWithPaginationAndNoCondition(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, null);
-		
-		if (orders.isEmpty()) {
-			throw new NotFoundException(ORDER_NOT_FOUND);
-		}
-		
-		return orders;
+		return customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, null).orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
 	}
 	
 	public Page<OrderEntity> getOrdersWithPaginationAndNotDeleted(OrderPageRequestDTO requestDTO, Pageable pageable) {
-		Page<OrderEntity> orders = customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, false);
-		
-		if (orders.isEmpty()) {
-			throw new NotFoundException(ORDER_NOT_FOUND);
-		}
-		
-		return orders;
+		return customOrderRepository.selectOrdersWithPagination(requestDTO, pageable, false)
+			.orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND));
 	}
 }

@@ -4,6 +4,7 @@ import static com.psj.itembrowser.order.domain.entity.QOrderEntity.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -35,7 +36,7 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
 		this.qf = new JPAQueryFactory(em);
 	}
 	
-	public Page<OrderEntity> selectOrdersWithPagination(OrderPageRequestDTO dto, Pageable pageable, Boolean isDeleted) {
+	public Optional<Page<OrderEntity>> selectOrdersWithPagination(OrderPageRequestDTO dto, Pageable pageable, Boolean isDeleted) {
 		List<OrderEntity> orders = qf.selectFrom(orderEntity)
 			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)))
 			.orderBy(orderEntity.createdDate.desc())
@@ -48,7 +49,7 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
 			.fetch()
 			.size();
 		
-		return new PageImpl<>(orders, pageable, total);
+		return Optional.of(new PageImpl<>(orders, pageable, total));
 	}
 	
 	private BooleanExpression isDeletedEq(Boolean isDeleted) {
