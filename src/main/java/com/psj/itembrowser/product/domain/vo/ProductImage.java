@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.psj.itembrowser.product.domain.dto.response.ProductImageResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +49,7 @@ public class ProductImage extends BaseDateTimeEntity {
 
 	public static ProductImage from(ProductImageResponseDTO dto) {
 		if (dto == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 
 		return ProductImage.builder()

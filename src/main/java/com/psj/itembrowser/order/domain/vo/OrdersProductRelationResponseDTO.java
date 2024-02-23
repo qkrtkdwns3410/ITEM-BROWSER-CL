@@ -7,6 +7,8 @@ import javax.validation.constraints.PositiveOrZero;
 
 import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,7 +41,7 @@ public class OrdersProductRelationResponseDTO {
 
 	public static OrdersProductRelationResponseDTO from(OrdersProductRelation ordersProductRelation) {
 		if (ordersProductRelation == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
 		}
 
 		ProductResponseDTO productResponseDTO = ProductResponseDTO.from(ordersProductRelation.getProduct());
@@ -57,7 +59,7 @@ public class OrdersProductRelationResponseDTO {
 
 	public static OrdersProductRelationResponseDTO from(OrdersProductRelationEntity entity) {
 		if (entity == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
 		}
 
 		ProductResponseDTO productResponseDTO = ProductResponseDTO.from(entity.getProduct());

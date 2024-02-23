@@ -110,7 +110,6 @@ public class Member {
 
 	public static Member from(MemberResponseDTO dto) {
 		if (dto == null) {
-			;
 			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 

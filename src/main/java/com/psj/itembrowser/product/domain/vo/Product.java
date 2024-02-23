@@ -12,6 +12,8 @@ import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -159,7 +161,7 @@ public class Product extends BaseDateTimeEntity {
 	
 	public static Product from(ProductResponseDTO productResponseDTO) {
 		if (productResponseDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
 		Product product = new Product();
@@ -193,7 +195,7 @@ public class Product extends BaseDateTimeEntity {
 	
 	public static Product from(ProductRequestDTO productRequestDTO) {
 		if (productRequestDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
 		Product product = new Product();
@@ -220,7 +222,7 @@ public class Product extends BaseDateTimeEntity {
 	
 	public static Product from(ProductUpdateDTO productUpdateDTO) {
 		if (productUpdateDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
 		Product product = new Product();

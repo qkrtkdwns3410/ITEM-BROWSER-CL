@@ -19,6 +19,8 @@ import javax.validation.constraints.Size;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 
 import lombok.Builder;
@@ -87,7 +89,7 @@ public class ShippingInfoEntity extends BaseDateTimeEntity {
 
 	public static ShippingInfoEntity from(ShippingInfo shippingInfo) {
 		if (shippingInfo == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.SHIPPING_INFO_NOT_FOUND);
 		}
 
 		return ShippingInfoEntity.builder()

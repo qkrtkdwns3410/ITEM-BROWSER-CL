@@ -14,6 +14,8 @@ import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
 import lombok.AllArgsConstructor;
@@ -66,7 +68,7 @@ public class OrderResponseDTO implements Serializable {
 	
 	public static OrderResponseDTO from(OrderEntity entity) {
 		if (entity == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.ORDER_NOT_FOUND);
 		}
 		
 		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
