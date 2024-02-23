@@ -26,17 +26,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomOrderRepository {
-	
+
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	private JPAQueryFactory qf;
-	
+
 	@PostConstruct
 	public void init() {
 		this.qf = new JPAQueryFactory(em);
 	}
-	
+
 	public Page<OrderEntity> selectOrdersWithPagination(OrderPageRequestDTO dto, Pageable pageable, Boolean isDeleted) {
 		List<OrderEntity> orders = qf.selectFrom(orderEntity)
 			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)))
@@ -44,36 +44,36 @@ public class CustomOrderRepository {
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
-		
+
 		long total = qf.selectFrom(orderEntity)
 			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)))
 			.fetch()
 			.size();
-		
+
 		return new PageImpl<>(orders, pageable, total);
 	}
-	
+
 	private BooleanExpression isDeletedEq(Boolean isDeleted) {
 		if (isDeleted == null) {
 			return null;
 		}
-		
+
 		if (isDeleted) {
 			return orderEntity.deletedDate.isNotNull();
-		} else {
-			return orderEntity.deletedDate.isNull();
 		}
+
+		return orderEntity.deletedDate.isNull();
 	}
-	
+
 	private BooleanExpression requestYearEq(OrderPageRequestDTO dto) {
 		if (dto == null) {
 			return null;
 		}
-		
+
 		if (dto.getRequestYear() == null) {
 			return orderEntity.createdDate.after(LocalDateTime.now().minusMonths(6));
-		} else {
-			return orderEntity.createdDate.year().eq(dto.getRequestYear().getYear());
 		}
+
+		return orderEntity.createdDate.year().eq(dto.getRequestYear().getYear());
 	}
 }

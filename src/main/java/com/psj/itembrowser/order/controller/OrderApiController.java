@@ -109,9 +109,9 @@ public class OrderApiController {
 	private OrderResponseDTO getOrderResponseBasedOnRole(Member member, Long orderId) {
 		if (member.hasRole(Role.ROLE_ADMIN)) {
 			return orderService.getOrderWithNoCondition(orderId);
-		} else {
-			return orderService.getOrderWithNotDeleted(orderId);
 		}
+
+		return orderService.getOrderWithNotDeleted(orderId);
 	}
 
 	private Page<OrderResponseDTO> getOrdersResponseBasedOnRole(MemberEntity member, OrderPageRequestDTO pageRequestDTO) {
