@@ -24,7 +24,7 @@ import javax.persistence.Transient;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
-import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
+import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
@@ -42,28 +42,28 @@ public class OrderEntity extends BaseDateTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ORDER_STATUS", length = 200)
 	private OrderStatus orderStatus;
-	
+
 	@Column(name = "PAID_DATE")
 	private LocalDateTime paidDate;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIPPING_INFO_ID", referencedColumnName = "ID")
 	private ShippingInfoEntity shippingInfo;
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDERER_NUMBER", referencedColumnName = "MEMBER_NO")
 	private MemberEntity member;
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<OrdersProductRelationEntity> ordersProductRelations = new ArrayList<>();
-	
+
 	@Transient
 	private OrderCalculationResult orderCalculationResult;
-	
+
 	@Builder
 	private OrderEntity(Long id, OrderStatus orderStatus, LocalDateTime paidDate, ShippingInfoEntity shippingInfo, LocalDateTime createdDate,
 		LocalDateTime updatedDate,
@@ -80,10 +80,10 @@ public class OrderEntity extends BaseDateTimeEntity {
 		this.ordersProductRelations = ordersProductRelations;
 		this.orderCalculationResult = orderCalculationResult;
 	}
-	
+
 	public static OrderEntity from(Order order) {
 		OrderEntity orderEntity = new OrderEntity();
-		
+
 		orderEntity.id = order.getId();
 		orderEntity.orderStatus = order.getOrderStatus();
 		orderEntity.paidDate = order.getPaidDate();
@@ -95,7 +95,7 @@ public class OrderEntity extends BaseDateTimeEntity {
 		orderEntity.ordersProductRelations = order.getProducts().stream()
 			.map(OrdersProductRelationEntity::from)
 			.collect(Collectors.toList());
-		
+
 		return orderEntity;
 	}
 }

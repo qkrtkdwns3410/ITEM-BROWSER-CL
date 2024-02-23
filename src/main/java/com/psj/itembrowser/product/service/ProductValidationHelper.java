@@ -1,4 +1,4 @@
-package com.psj.itembrowser.product.service.impl;
+package com.psj.itembrowser.product.service;
 
 import java.util.List;
 

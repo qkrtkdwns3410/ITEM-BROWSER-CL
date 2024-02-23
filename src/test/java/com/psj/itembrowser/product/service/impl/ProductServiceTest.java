@@ -26,6 +26,7 @@ import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.product.service.FileService;
+import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 

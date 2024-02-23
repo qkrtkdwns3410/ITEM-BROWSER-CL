@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service.impl;
+package com.psj.itembrowser.order.service;
 
 import java.util.List;
 
@@ -18,18 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional(readOnly = true)
 public class ShippingPolicyService {
-	
+
 	private ShippingPolicy shippingPolicy;
-	
+
 	public ShippingPolicy getCurrentShippingPolicy() {
 		//TODO 매퍼에서 해당 쇼핑 정책에 대한 애그리거트를 호출해서 반환해야합니다  임시 STUB 상태
 		shippingPolicy = new ShippingPolicy(DeliveryFee.DEFAULT, 15000);
-		
+
 		return shippingPolicy;
 	}
-	
+
 	public double calculateShippingFee(List<OrdersProductRelationResponseDTO> totalPrice) {
-		
+
 		return 0;
 	}
 }

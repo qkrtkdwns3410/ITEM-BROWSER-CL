@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
-import com.psj.itembrowser.product.domain.vo.ProductImage;
-import com.psj.itembrowser.product.service.FileStoreService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +25,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
+import com.psj.itembrowser.product.domain.vo.ProductImage;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
+import com.psj.itembrowser.product.service.FileStoreService;
+import com.psj.itembrowser.product.service.FileUtil;
 
 @ExtendWith(MockitoExtension.class)
 class FileServiceImplTest {

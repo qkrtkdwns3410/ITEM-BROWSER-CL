@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service.impl;
+package com.psj.itembrowser.order.service;
 
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PaymentService {
-	
+
 	public void pay(OrderCalculationResult orderCalculationResult) {
 		//TODO 결제 로직 구현
 	}

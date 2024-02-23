@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service.impl;
+package com.psj.itembrowser.order.service;
 
 import java.util.Objects;
 

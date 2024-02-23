@@ -1,4 +1,4 @@
-package com.psj.itembrowser.cart.service.impl;
+package com.psj.itembrowser.cart.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,52 +29,52 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CartService {
-	
+
 	private final CartPersistence cartPersistence;
 	private final CartMapper cartMapper;
-	
+
 	public CartResponseDTO getCart(String userId) {
 		return cartPersistence.getCart(userId);
 	}
-	
+
 	public CartResponseDTO getCart(Long cartId) {
 		return cartPersistence.getCart(cartId);
 	}
-	
+
 	public void addCart(@NonNull String userId) {
 		cartPersistence.addCart(userId);
 	}
-	
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void addCartProduct(CartProductRequestDTO requestDTO) {
 		CartResponseDTO cart = null;
-		
+
 		try {
 			cart = getCart(requestDTO.getUserId());
 		} catch (NotFoundException e) {
 			log.info("cart not found, add cart");
 		}
-		
+
 		if (cart == null) {
 			addCart(requestDTO.getUserId());
 		}
-		
+
 		CartProductRelation findCartProduct = cartMapper.getCartProductRelation(requestDTO.getCartId(), requestDTO.getProductId());
-		
+
 		if (findCartProduct != null) {
 			findCartProduct.addProductQuantity(requestDTO.getQuantity());
 			cartPersistence.modifyCartProduct(CartProductUpdateRequestDTO.from(findCartProduct));
 			return;
 		}
-		
+
 		cartPersistence.insertCartProduct(requestDTO);
 	}
-	
+
 	@Transactional(readOnly = false)
 	public void modifyCartProduct(CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		cartPersistence.modifyCartProduct(cartProductUpdateRequestDTO);
 	}
-	
+
 	@Transactional(readOnly = false)
 	public void removeCart(@NonNull CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {
 		cartPersistence.deleteCart(cartProductDeleteRequestDTO);

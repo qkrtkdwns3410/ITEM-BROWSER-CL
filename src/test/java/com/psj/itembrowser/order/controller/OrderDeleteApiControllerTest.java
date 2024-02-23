@@ -28,7 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.psj.itembrowser.order.service.impl.OrderService;
+import com.psj.itembrowser.order.service.OrderService;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;

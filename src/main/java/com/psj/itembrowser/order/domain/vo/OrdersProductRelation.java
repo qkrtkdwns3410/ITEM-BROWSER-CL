@@ -2,7 +2,7 @@ package com.psj.itembrowser.order.domain.vo;
 
 import java.time.LocalDateTime;
 
-import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
+import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.product.domain.vo.Product;
 
 import lombok.AccessLevel;
@@ -21,27 +21,27 @@ public class OrdersProductRelation {
 	 * 주문그룹ID
 	 */
 	private Long groupId;
-	
+
 	/**
 	 * 상품ID
 	 */
 	private Long productId;
-	
+
 	/**
 	 * 상품수량
 	 */
 	private Integer productQuantity;
-	
+
 	private OrderCalculationResult orderCalculationResult;
-	
+
 	private LocalDateTime createdDate;
-	
+
 	private LocalDateTime updatedDate;
-	
+
 	private LocalDateTime deletedDate;
-	
+
 	private Product product;
-	
+
 	@Builder
 	public OrdersProductRelation(Long groupId, Long productId, Integer productQuantity, OrderCalculationResult orderCalculationResult,
 		LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Product product) {
@@ -54,7 +54,7 @@ public class OrdersProductRelation {
 		this.deletedDate = deletedDate;
 		this.product = product;
 	}
-	
+
 	public static OrdersProductRelation of(
 		Long groupId,
 		Long productId,
@@ -65,7 +65,7 @@ public class OrdersProductRelation {
 		Product product
 	) {
 		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-		
+
 		ordersProductRelation.groupId = groupId;
 		ordersProductRelation.productId = productId;
 		ordersProductRelation.productQuantity = productQuantity;
@@ -73,20 +73,20 @@ public class OrdersProductRelation {
 		ordersProductRelation.updatedDate = updatedDate;
 		ordersProductRelation.deletedDate = deletedDate;
 		ordersProductRelation.product = product;
-		
+
 		return ordersProductRelation;
 	}
-	
+
 	public static OrdersProductRelation of(OrdersProductRelationResponseDTO ordersProductRelationResponseDTO) {
 		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-		
+
 		ordersProductRelation.groupId = ordersProductRelationResponseDTO.getGroupId();
 		ordersProductRelation.productId = ordersProductRelationResponseDTO.getProductId();
 		ordersProductRelation.productQuantity = ordersProductRelationResponseDTO.getProductQuantity();
 		ordersProductRelation.createdDate = ordersProductRelationResponseDTO.getCreatedDate();
 		ordersProductRelation.updatedDate = ordersProductRelationResponseDTO.getUpdatedDate();
 		ordersProductRelation.deletedDate = ordersProductRelationResponseDTO.getDeletedDate();
-		
+
 		return ordersProductRelation;
 	}
 }

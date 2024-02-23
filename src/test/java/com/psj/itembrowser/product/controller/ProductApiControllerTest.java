@@ -34,7 +34,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
-import com.psj.itembrowser.product.service.impl.ProductService;
+import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;

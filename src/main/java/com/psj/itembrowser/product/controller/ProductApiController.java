@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
-import com.psj.itembrowser.product.service.impl.ProductService;
+import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.security.common.message.MessageDTO;
 
 import lombok.RequiredArgsConstructor;
