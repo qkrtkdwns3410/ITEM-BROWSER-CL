@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.psj.itembrowser.security.common.exception.CustomAuthenticationException;
-import com.psj.itembrowser.security.common.exception.CustomIllegalStateException;
-import com.psj.itembrowser.security.common.exception.CustomRuntimeException;
+import com.psj.itembrowser.security.common.exception.ancestor.CustomAuthenticationException;
+import com.psj.itembrowser.security.common.exception.ancestor.CustomIllegalStateException;
+import com.psj.itembrowser.security.common.exception.ancestor.CustomRuntimeException;
 
 @RestControllerAdvice
 public class ControllerAdvice {

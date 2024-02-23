@@ -1,5 +1,7 @@
 package com.psj.itembrowser.security.common.exception;
 
+import com.psj.itembrowser.security.common.exception.ancestor.CustomAuthenticationException;
+
 import lombok.NonNull;
 
 /**

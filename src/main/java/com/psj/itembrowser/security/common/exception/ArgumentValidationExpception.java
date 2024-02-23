@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class NotFoundException extends CustomRuntimeException {
-
-	public NotFoundException(@NonNull ErrorCode e) {
+public class ArgumentValidationExpception extends CustomRuntimeException {
+	public ArgumentValidationExpception(@NonNull ErrorCode e) {
 		super(e);
 	}
-
 }
