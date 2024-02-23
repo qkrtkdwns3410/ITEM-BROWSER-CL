@@ -1,5 +1,7 @@
 package com.psj.itembrowser.product.domain.entity;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import javax.validation.constraints.Positive;
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
+import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
@@ -211,12 +214,16 @@ public class ProductEntity extends BaseDateTimeEntity {
 		return this.quantity >= quantity;
 	}
 	
-	public double calculateTotalPrice() {
-		return (double)this.unitPrice * (double)this.quantity;
+	public BigDecimal calculateTotalPrice() {
+		return BigDecimal.valueOf(this.unitPrice).multiply(BigDecimal.valueOf(this.quantity));
 	}
 	
-	public double calculateDiscount(int quantity, int discountRate) {
-		return (this.unitPrice * quantity) * ((double)discountRate / 100);
+	public BigDecimal calculateDiscount(int quantity, int discountRate) {
+		BigDecimal unitPrice = BigDecimal.valueOf(this.unitPrice);
+		BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
+		BigDecimal discountRateDecimal = BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);
+		
+		return unitPrice.multiply(quantityDecimal).multiply(discountRateDecimal);
 	}
 	
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {
@@ -272,6 +279,32 @@ public class ProductEntity extends BaseDateTimeEntity {
 		product.returnCenterCode = productUpdateDTO.getReturnCenterCode();
 		
 		return product;
+	}
+	
+	public static ProductEntity from(ProductResponseDTO dto) {
+		if (dto == null) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
+		return ProductEntity.builder()
+			.id(dto.getId())
+			.name(dto.getName())
+			.category(dto.getCategory())
+			.detail(dto.getDetail())
+			.status(dto.getStatus())
+			.quantity(dto.getQuantity())
+			.unitPrice(dto.getUnitPrice())
+			.sellerId(dto.getSellerId())
+			.sellStartDatetime(dto.getSellStartDatetime())
+			.sellEndDatetime(dto.getSellEndDatetime())
+			.displayName(dto.getDisplayName())
+			.brand(dto.getBrand())
+			.deliveryFeeType(dto.getDeliveryFeeType())
+			.deliveryMethod(dto.getDeliveryMethod())
+			.deliveryDefaultFee(dto.getDeliveryDefaultFee())
+			.freeShipOverAmount(dto.getFreeShipOverAmount())
+			.returnCenterCode(dto.getReturnCenterCode())
+			.build();
 	}
 	
 	public static ProductEntity from(Product product) {

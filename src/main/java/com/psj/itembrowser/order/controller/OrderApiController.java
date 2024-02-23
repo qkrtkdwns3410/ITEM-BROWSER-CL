@@ -70,7 +70,7 @@ public class OrderApiController {
 		
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
 		
-		Member member = Member.from(customUserDetails.getMemberResponseDTO());
+		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
 		
 		OrderResponseDTO createdOrder = orderService.createOrder(member, orderCreateRequestDTO);
 		

@@ -33,6 +33,9 @@ public enum ErrorCode {
 	ORDER_IS_NOT_MATCH_CURRENT_MEMBER(HttpStatus.BAD_REQUEST, "ORDER_005",
 		"Order is not match current member"),
 	ORDER_PRODUCTS_EMPTY(HttpStatus.BAD_REQUEST, "ORDER_006", "Order Products is empty"),
+	ORDER_CALCULATION_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_007",
+		"Not Found Order Calculation Result"),
+	ORDER_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "ORDER_008", "Order Validation Error"),
 	
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),

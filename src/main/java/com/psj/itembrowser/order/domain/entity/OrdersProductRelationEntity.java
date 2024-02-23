@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
+import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -31,26 +32,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders_product_relation")
 public class OrdersProductRelationEntity extends BaseDateTimeEntity {
-
+	
 	@Id
 	@Column(name = "GROUP_ID", nullable = false)
 	private Long groupId;
-
+	
 	@Id
 	@Column(name = "PRODUCT_ID", nullable = false)
 	private Long productId;
-
+	
 	@Column(name = "PRODUCT_QUANTITY")
 	private Integer productQuantity;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private OrderEntity order;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private ProductEntity product;
-
+	
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@AllArgsConstructor
 	@EqualsAndHashCode
@@ -58,7 +59,7 @@ public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 		private Long groupId;
 		private Long productId;
 	}
-
+	
 	@Builder
 	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity,
 		LocalDateTime deletedDate, OrderEntity order, ProductEntity product) {
@@ -69,12 +70,12 @@ public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 		this.product = product;
 		this.deletedDate = deletedDate;
 	}
-
+	
 	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {
 		if (ordersProductRelation == null) {
 			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
 		}
-
+		
 		return OrdersProductRelationEntity.builder()
 			.groupId(ordersProductRelation.getGroupId())
 			.productId(ordersProductRelation.getProductId())
@@ -82,5 +83,18 @@ public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 			.product(ProductEntity.from(ordersProductRelation.getProduct()))
 			.build();
 	}
-
+	
+	public static OrdersProductRelationEntity from(OrdersProductRelationResponseDTO dto) {
+		if (dto == null) {
+			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
+		}
+		
+		return OrdersProductRelationEntity.builder()
+			.groupId(dto.getGroupId())
+			.productId(dto.getProductId())
+			.productQuantity(dto.getProductQuantity())
+			.product(ProductEntity.from(dto.getProductResponseDTO()))
+			.build();
+	}
+	
 }

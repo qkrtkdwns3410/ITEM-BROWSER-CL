@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -44,6 +45,8 @@ public class ProductResponseDTO {
 	private String brand;
 	
 	private String deliveryMethod;
+	
+	private DeliveryFeeType deliveryFeeType;
 	
 	private Integer deliveryDefaultFee;
 	
