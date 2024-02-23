@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.psj.itembrowser.config.annotation.RepositoryTest;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
@@ -41,7 +40,6 @@ import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
-@ActiveProfiles("test")
 @RepositoryTest
 public class OrderSelectWithDBServiceTest {
 

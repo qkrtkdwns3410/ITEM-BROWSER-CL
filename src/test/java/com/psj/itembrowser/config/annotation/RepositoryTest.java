@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.psj.itembrowser.config.TestQueryDslConfig;
 
@@ -31,5 +32,6 @@ import com.psj.itembrowser.config.TestQueryDslConfig;
 @AutoConfigureTestDatabase(replace = ANY)
 @Import(TestQueryDslConfig.class)
 @DataJpaTest
+@ActiveProfiles("test")
 public @interface RepositoryTest {
 }
