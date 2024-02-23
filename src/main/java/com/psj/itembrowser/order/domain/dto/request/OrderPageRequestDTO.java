@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,8 +33,8 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 	
 	@Builder
 	private OrderPageRequestDTO(
-		@Positive(message = "pageNum must be positive number") int pageNum,
-		@Positive(message = "pageSize must be positive number") int pageSize,
+		@PositiveOrZero(message = "pageNum must be positive number") int pageNum,
+		@PositiveOrZero(message = "pageSize must be positive number") int pageSize,
 		Long userNumber,
 		LocalDate requestYear
 	) {
