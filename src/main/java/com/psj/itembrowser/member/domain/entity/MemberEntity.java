@@ -153,29 +153,13 @@ public class MemberEntity extends BaseDateTimeEntity {
 
 		return MemberEntity.builder()
 			.memberNo(dto.getMemberNo())
-			.credentials(
-				Credentials.builder()
-					.email(dto.getEmail())
-					.password(dto.getPassword())
-					.build()
-			)
-			.name(
-				Name.builder()
-					.firstName(dto.getFirstName())
-					.lastName(dto.getLastName())
-					.build()
-			)
+			.credentials(dto.getCredentials())
+			.name(dto.getName())
 			.phoneNumber(dto.getPhoneNumber())
 			.gender(dto.getGender())
 			.role(dto.getRole())
 			.status(dto.getStatus())
-			.address(
-				Address.builder()
-					.addressMain(dto.getAddressMain())
-					.addressSub(dto.getAddressSub())
-					.zipCode(dto.getZipCode())
-					.build()
-			)
+			.address(dto.getAddress())
 			.birthday(dto.getBirthday())
 			.lastLoginDate(dto.getLastLoginDate())
 			.build();
