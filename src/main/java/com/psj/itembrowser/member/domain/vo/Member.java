@@ -7,6 +7,8 @@ import java.util.Objects;
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -101,7 +103,8 @@ public class Member extends BaseDateTimeEntity {
 
 	public static Member from(MemberResponseDTO dto) {
 		if (dto == null) {
-			return null;
+			;
+			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 
 		return Member.builder()
@@ -136,7 +139,7 @@ public class Member extends BaseDateTimeEntity {
 
 	public boolean isSame(Member other) {
 		if (other == null) {
-			return false;
+			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 
 		return Objects.equals(this, other);
