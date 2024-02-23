@@ -42,6 +42,7 @@ public enum ErrorCode {
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_001", "Not Found Member"),
 	MEMBER_INSERT_FAIL(HttpStatus.BAD_REQUEST, "MEMBER_002", "Fail to insert Member"),
 	NOT_ACTIVATED_MEMBER(HttpStatus.UNAUTHORIZED, "MEMBER_003", "Not Activated Member"),
+	CREDENTIALS_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_004", "Not Found Credentials"),
 	
 	// Product
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_001", "Not Found Product"),
@@ -75,7 +76,10 @@ public enum ErrorCode {
 	INVALID_MEMBER_ROLE(HttpStatus.UNAUTHORIZED, "AUTH_005", "Invalid Member Role"),
 	
 	//Payment
-	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment");
+	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment"),
+	
+	//ShippingInfo
+	SHIPPING_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SHIPPING_INFO_001", "Not Found Shipping Info");
 	
 	private final HttpStatus status;
 	private final String code;

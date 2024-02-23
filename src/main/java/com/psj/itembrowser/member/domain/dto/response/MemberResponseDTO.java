@@ -3,11 +3,13 @@ package com.psj.itembrowser.member.domain.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.member.domain.vo.Address;
+import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Gender;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
+import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -27,15 +29,10 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberResponseDTO {
 	private Long memberNo;
-	private String email;
-	@JsonIgnore
-	private String password;
-	private String firstName;
-	private String lastName;
+	private Credentials credentials;
+	private Name name;
 	private String phoneNumber;
-	private String addressMain;
-	private String addressSub;
-	private String zipCode;
+	private Address address;
 	private Gender gender;
 	private Role role;
 	private Status status;
@@ -45,20 +42,15 @@ public class MemberResponseDTO {
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
 	private LocalDateTime deletedDate;
-	
+
 	@Builder
-	private MemberResponseDTO(Long memberNo, String email, String password, String firstName, String lastName, String phoneNumber, String addressMain,
-		String addressSub, String zipCode, Gender gender, Role role, Status status, MemberShipType memberShipType, LocalDate birthday,
-		LocalDateTime lastLoginDate, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate) {
+	private MemberResponseDTO(Long memberNo, Credentials credentials, Name name, String phoneNumber, Address address, Gender gender, Role role, Status status,
+		MemberShipType memberShipType, LocalDate birthday, LocalDateTime lastLoginDate, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate) {
 		this.memberNo = memberNo;
-		this.email = email;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.credentials = credentials;
+		this.name = name;
 		this.phoneNumber = phoneNumber;
-		this.addressMain = addressMain;
-		this.addressSub = addressSub;
-		this.zipCode = zipCode;
+		this.address = address;
 		this.gender = gender;
 		this.role = role;
 		this.status = status;
@@ -69,47 +61,41 @@ public class MemberResponseDTO {
 		this.updatedDate = updatedDate;
 		this.deletedDate = deletedDate;
 	}
-	
+
 	public static MemberResponseDTO from(Member member) {
-		MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
-		
-		memberResponseDTO.setMemberNo(member.getMemberNo());
-		memberResponseDTO.setPassword(member.getCredentials().getPassword());
-		memberResponseDTO.setEmail(member.getCredentials().getEmail());
-		memberResponseDTO.setFirstName(member.getName().getFirstName());
-		memberResponseDTO.setLastName(member.getName().getLastName());
-		memberResponseDTO.setPhoneNumber(member.getPhoneNumber());
-		memberResponseDTO.setAddressMain(member.getAddress().getAddressMain());
-		memberResponseDTO.setAddressSub(member.getAddress().getAddressSub());
-		memberResponseDTO.setZipCode(member.getAddress().getZipCode());
-		memberResponseDTO.setGender(member.getGender());
-		memberResponseDTO.setRole(member.getRole());
-		memberResponseDTO.setStatus(member.getStatus());
-		memberResponseDTO.setMemberShipType(member.getMemberShipType());
-		memberResponseDTO.setBirthday(member.getBirthday());
-		memberResponseDTO.setLastLoginDate(member.getLastLoginDate());
-		memberResponseDTO.setCreatedDate(member.getCreatedDate());
-		memberResponseDTO.setUpdatedDate(member.getUpdatedDate());
-		memberResponseDTO.setDeletedDate(member.getDeletedDate());
-		
-		return memberResponseDTO;
+		if (member == null) {
+			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+
+		return MemberResponseDTO.builder()
+			.memberNo(member.getMemberNo())
+			.credentials(member.getCredentials())
+			.name(member.getName())
+			.phoneNumber(member.getPhoneNumber())
+			.address(member.getAddress())
+			.gender(member.getGender())
+			.role(member.getRole())
+			.status(member.getStatus())
+			.memberShipType(member.getMemberShipType())
+			.birthday(member.getBirthday())
+			.lastLoginDate(member.getLastLoginDate())
+			.createdDate(member.getCreatedDate())
+			.updatedDate(member.getUpdatedDate())
+			.deletedDate(member.getDeletedDate())
+			.build();
 	}
-	
+
 	public static MemberResponseDTO from(MemberEntity entity) {
 		if (entity == null) {
 			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
-		
+
 		return MemberResponseDTO.builder()
 			.memberNo(entity.getMemberNo())
-			.email(entity.getCredentials().getEmail())
-			.password(entity.getCredentials().getPassword())
-			.firstName(entity.getName().getFirstName())
-			.lastName(entity.getName().getLastName())
+			.credentials(entity.getCredentials())
+			.name(entity.getName())
 			.phoneNumber(entity.getPhoneNumber())
-			.addressMain(entity.getAddress().getAddressMain())
-			.addressSub(entity.getAddress().getAddressSub())
-			.zipCode(entity.getAddress().getZipCode())
+			.address(entity.getAddress())
 			.gender(entity.getGender())
 			.role(entity.getRole())
 			.status(entity.getStatus())

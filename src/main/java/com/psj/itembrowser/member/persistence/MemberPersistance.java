@@ -31,6 +31,7 @@ public class MemberPersistance {
 
 	public MemberResponseDTO findByEmail(@NonNull String email) {
 		Member member = memberMapper.findByEmail(email);
+
 		if (member == null) {
 			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
@@ -40,6 +41,7 @@ public class MemberPersistance {
 
 	public MemberResponseDTO findById(@NonNull Long id) {
 		Member member = memberMapper.findById(id);
+
 		if (member == null) {
 			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 		}
@@ -48,11 +50,13 @@ public class MemberPersistance {
 	}
 
 	public Long insertMember(MemberSignUpRequestDTO requestDTO) {
-		boolean affected = memberMapper.insertMember(requestDTO);
-		if (affected) {
-			return requestDTO.getMemberNo();
+		boolean notInserted = !memberMapper.insertMember(requestDTO);
+
+		if (notInserted) {
+			throw new BadRequestException(ErrorCode.MEMBER_NOT_FOUND);
 		}
-		throw new BadRequestException(ErrorCode.MEMBER_NOT_FOUND);
+
+		return requestDTO.getMemberNo();
 	}
 
 }

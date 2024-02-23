@@ -14,6 +14,9 @@ import javax.persistence.Table;
 
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders_product_relation")
-public class OrdersProductRelationEntity {
+public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 
 	@Id
 	@Column(name = "GROUP_ID", nullable = false)
@@ -39,15 +42,6 @@ public class OrdersProductRelationEntity {
 
 	@Column(name = "PRODUCT_QUANTITY")
 	private Integer productQuantity;
-
-	@Column(name = "CREATED_DATE")
-	private LocalDateTime createdDate;
-
-	@Column(name = "UPDATED_DATE")
-	private LocalDateTime updatedDate;
-
-	@Column(name = "DELETED_DATE")
-	private LocalDateTime deletedDate;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
@@ -66,29 +60,27 @@ public class OrdersProductRelationEntity {
 	}
 
 	@Builder
-	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity, LocalDateTime createdDate, LocalDateTime updatedDate,
+	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity,
 		LocalDateTime deletedDate, OrderEntity order, ProductEntity product) {
 		this.groupId = groupId;
 		this.productId = productId;
 		this.productQuantity = productQuantity;
-		this.createdDate = createdDate;
-		this.updatedDate = updatedDate;
-		this.deletedDate = deletedDate;
 		this.order = order;
 		this.product = product;
+		this.deletedDate = deletedDate;
 	}
 
 	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {
-		return new OrdersProductRelationEntity(
-			ordersProductRelation.getGroupId(),
-			ordersProductRelation.getProductId(),
-			ordersProductRelation.getProductQuantity(),
-			ordersProductRelation.getCreatedDate(),
-			ordersProductRelation.getUpdatedDate(),
-			ordersProductRelation.getDeletedDate(),
-			null,
-			null
-		);
+		if (ordersProductRelation == null) {
+			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
+		}
+
+		return OrdersProductRelationEntity.builder()
+			.groupId(ordersProductRelation.getGroupId())
+			.productId(ordersProductRelation.getProductId())
+			.productQuantity(ordersProductRelation.getProductQuantity())
+			.product(ProductEntity.from(ordersProductRelation.getProduct()))
+			.build();
 	}
 
 }

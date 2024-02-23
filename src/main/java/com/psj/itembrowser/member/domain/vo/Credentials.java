@@ -3,6 +3,8 @@ package com.psj.itembrowser.member.domain.vo;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,15 +35,16 @@ public class Credentials {
 	/**
 	 * 비밀번호
 	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "password", nullable = false)
 	private String password;
-	
+
 	@Builder
 	private Credentials(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}
-	
+
 	public static Credentials create(String email, String password) {
 		return new Credentials(email, password);
 	}

@@ -2,6 +2,8 @@ package com.psj.itembrowser.shippingInfos.domain.vo;
 
 import java.time.LocalDateTime;
 
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoResponseDTO;
 
 import lombok.AccessLevel;
@@ -80,7 +82,7 @@ public class ShippingInfo {
 
 	public static ShippingInfo from(ShippingInfoResponseDTO shippingInfoResponseDTO) {
 		if (shippingInfoResponseDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.SHIPPING_INFO_NOT_FOUND);
 		}
 		ShippingInfo shippingInfo = new ShippingInfo();
 

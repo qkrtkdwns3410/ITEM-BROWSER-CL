@@ -60,9 +60,9 @@ public class CustomOrderRepository {
 		
 		if (isDeleted) {
 			return orderEntity.deletedDate.isNotNull();
-		} else {
-			return orderEntity.deletedDate.isNull();
 		}
+		
+		return orderEntity.deletedDate.isNull();
 	}
 	
 	private BooleanExpression requestYearEq(OrderPageRequestDTO dto) {
@@ -72,8 +72,8 @@ public class CustomOrderRepository {
 		
 		if (dto.getRequestYear() == null) {
 			return orderEntity.createdDate.after(LocalDateTime.now().minusMonths(6));
-		} else {
-			return orderEntity.createdDate.year().eq(dto.getRequestYear().getYear());
 		}
+		
+		return orderEntity.createdDate.year().eq(dto.getRequestYear().getYear());
 	}
 }

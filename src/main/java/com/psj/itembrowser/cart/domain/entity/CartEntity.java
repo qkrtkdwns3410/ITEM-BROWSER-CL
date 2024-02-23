@@ -29,19 +29,18 @@ public class CartEntity extends BaseDateTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
-	
+
 	@Column(name = "user_id")
 	private String userId;
-	
+
 	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.PERSIST)
 	private List<CartProductRelationEntity> cartProductRelations = new ArrayList<>();
-	
+
 	@Builder
-	private CartEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long id,
-		String userId, List<CartProductRelationEntity> cartProductRelations) {
-		super(createdDate, updatedDate, deletedDate);
+	private CartEntity(Long id, String userId, List<CartProductRelationEntity> cartProductRelations, LocalDateTime deletedDate) {
 		this.id = id;
 		this.userId = userId;
 		this.cartProductRelations = cartProductRelations;
+		this.deletedDate = deletedDate;
 	}
 }

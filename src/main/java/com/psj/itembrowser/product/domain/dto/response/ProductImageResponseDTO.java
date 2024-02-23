@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.psj.itembrowser.product.domain.vo.ProductImage;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +31,7 @@ public class ProductImageResponseDTO {
 
 	public static ProductImageResponseDTO from(ProductImage vo) {
 		if (vo == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_IMAGE_NOT_FOUND);
 		}
 
 		ProductImageResponseDTO dto = new ProductImageResponseDTO();
@@ -49,7 +51,7 @@ public class ProductImageResponseDTO {
 
 	public static ProductImageResponseDTO from(ProductImageEntity entity) {
 		if (entity == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_IMAGE_NOT_FOUND);
 		}
 
 		ProductImageResponseDTO dto = new ProductImageResponseDTO();

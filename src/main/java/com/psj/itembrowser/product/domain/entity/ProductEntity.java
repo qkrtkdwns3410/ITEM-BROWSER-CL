@@ -19,9 +19,12 @@ import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
+import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -148,12 +151,11 @@ public class ProductEntity extends BaseDateTimeEntity {
 	private List<ProductImageEntity> productImages;
 	
 	@Builder
-	private ProductEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long id, String name, Integer category,
+	private ProductEntity(LocalDateTime deletedDate, Long id, String name, Integer category,
 		String detail, ProductStatus status, Integer quantity, Integer unitPrice, String sellerId, LocalDateTime sellStartDatetime,
 		LocalDateTime sellEndDatetime, String displayName, String brand, DeliveryFeeType deliveryFeeType, String deliveryMethod,
 		Integer deliveryDefaultFee, Integer freeShipOverAmount, String returnCenterCode, List<CartProductRelationEntity> cartProductRelations,
 		List<ProductImageEntity> productImages) {
-		super(createdDate, updatedDate, deletedDate);
 		this.id = id;
 		this.name = name;
 		this.category = category;
@@ -173,6 +175,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.returnCenterCode = returnCenterCode;
 		this.cartProductRelations = cartProductRelations;
 		this.productImages = productImages;
+		this.deletedDate = deletedDate;
 	}
 	
 	public void validateSellDates() {
@@ -218,7 +221,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 	
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {
 		if (productRequestDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
 		ProductEntity product = new ProductEntity();
@@ -245,7 +248,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 	
 	public static ProductEntity from(ProductUpdateDTO productUpdateDTO) {
 		if (productUpdateDTO == null) {
-			return null;
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
 		ProductEntity product = new ProductEntity();
@@ -269,5 +272,31 @@ public class ProductEntity extends BaseDateTimeEntity {
 		product.returnCenterCode = productUpdateDTO.getReturnCenterCode();
 		
 		return product;
+	}
+	
+	public static ProductEntity from(Product product) {
+		if (product == null) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
+		return ProductEntity.builder()
+			.id(product.getId())
+			.name(product.getName())
+			.category(product.getCategory())
+			.detail(product.getDetail())
+			.status(product.getStatus())
+			.quantity(product.getQuantity())
+			.unitPrice(product.getUnitPrice())
+			.sellerId(product.getSellerId())
+			.sellStartDatetime(product.getSellStartDatetime())
+			.sellEndDatetime(product.getSellEndDatetime())
+			.displayName(product.getDisplayName())
+			.brand(product.getBrand())
+			.deliveryFeeType(product.getDeliveryFeeType())
+			.deliveryMethod(product.getDeliveryMethod())
+			.deliveryDefaultFee(product.getDeliveryDefaultFee())
+			.freeShipOverAmount(product.getFreeShipOverAmount())
+			.returnCenterCode(product.getReturnCenterCode())
+			.build();
 	}
 }

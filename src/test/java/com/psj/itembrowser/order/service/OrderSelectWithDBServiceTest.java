@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.psj.itembrowser.config.annotation.RepositoryTest;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
@@ -41,7 +40,6 @@ import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
-@ActiveProfiles("test")
 @RepositoryTest
 public class OrderSelectWithDBServiceTest {
 
@@ -118,8 +116,6 @@ public class OrderSelectWithDBServiceTest {
 			.groupId(1L)
 			.productId(1L)
 			.productQuantity(1)
-			.createdDate(LocalDateTime.now())
-			.updatedDate(LocalDateTime.now())
 			.deletedDate(null)
 			.product(productEntity)
 			.build();
@@ -131,8 +127,6 @@ public class OrderSelectWithDBServiceTest {
 			.paidDate(LocalDateTime.now())
 			.shippingInfo(expectedShippingInfoEntity)
 			.ordersProductRelations(List.of(expectedOrderRelation))
-			.createdDate(LocalDateTime.now())
-			.updatedDate(LocalDateTime.now())
 			.deletedDate(null)
 			.build();
 
@@ -267,8 +261,6 @@ public class OrderSelectWithDBServiceTest {
 			.orderStatus(OrderStatus.CANCELED)
 			.member(member)
 			.deletedDate(LocalDateTime.now().minusDays(1))
-			.createdDate(LocalDateTime.now().minusDays(1))
-			.updatedDate(LocalDateTime.now().minusDays(1))
 			.build();
 
 		orderRepository.save(deletedOrder);
@@ -278,8 +270,6 @@ public class OrderSelectWithDBServiceTest {
 			.orderStatus(OrderStatus.ACCEPT)
 			.member(member)
 			.deletedDate(null)
-			.createdDate(LocalDateTime.now().minusDays(1))
-			.updatedDate(LocalDateTime.now().minusDays(1))
 			.build();
 
 		OrderEntity expectedOrder = orderRepository.save(notDeletedOrder);

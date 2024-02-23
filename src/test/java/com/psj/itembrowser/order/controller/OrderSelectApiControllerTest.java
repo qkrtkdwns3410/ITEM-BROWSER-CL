@@ -96,9 +96,17 @@ class OrderSelectApiControllerTest {
 
 		Member expectedAdminMember = Member.builder()
 			.memberNo(1L)
-			.credentials(Credentials.builder()
-				.email("qkrtkdwns3410@gmail.com").password("3410").build())
-			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.credentials(
+				Credentials.builder()
+					.email("qkrtkdwns3410@gmail.com")
+					.build()
+			)
+			.name(
+				Name.builder()
+					.firstName("홍")
+					.lastName("길동")
+					.build()
+			)
 			.phoneNumber("010-1234-1234")
 			.gender(Gender.MEN)
 			.role(Role.ROLE_ADMIN)
@@ -115,9 +123,17 @@ class OrderSelectApiControllerTest {
 
 		Member expectedCustomerMember = Member.builder()
 			.memberNo(1L)
-			.credentials(Credentials.builder()
-				.email("qkrtkdwns3410@gmail.com").password("3410").build())
-			.name(Name.builder().firstName("홍").lastName("길동").build())
+			.credentials(
+				Credentials.builder()
+					.email("qkrtkdwns3410@gmail.com")
+					.build()
+			)
+			.name(
+				Name.builder()
+					.firstName("홍")
+					.lastName("길동")
+					.build()
+			)
 			.phoneNumber("010-1234-1234")
 			.gender(Gender.MEN)
 			.role(Role.ROLE_CUSTOMER)
@@ -127,7 +143,9 @@ class OrderSelectApiControllerTest {
 				Address.builder()
 					.addressMain("서울시 강남구")
 					.addressSub("김밥빌딩 101동 302호")
-					.zipCode("01012").build())
+					.zipCode("01012")
+					.build()
+			)
 			.birthday(LocalDate.of(1995, 11, 3))
 			.lastLoginDate(LocalDateTime.now())
 			.build();
@@ -249,7 +267,7 @@ class OrderSelectApiControllerTest {
 				jsonPath("$.ordererNumber").value(expectedOrderResponseDTO.getOrdererNumber()))
 			.andExpect(jsonPath("$.member.memberNo").value(expectedOrderResponseDTO.getMember().getMemberNo()))
 			.andExpect(
-				jsonPath("$.member.email").value(expectedOrderResponseDTO.getMember().getEmail()))
+				jsonPath("$.member.credentials.email").value(expectedOrderResponseDTO.getMember().getCredentials().getEmail()))
 			.andExpect(jsonPath("$.member.role").value(Role.ROLE_CUSTOMER.name()));
 
 		response
@@ -274,13 +292,13 @@ class OrderSelectApiControllerTest {
 						fieldWithPath("deletedDate").description("삭제 일자"),
 						fieldWithPath("member").description("주문자 정보"),
 						fieldWithPath("member.memberNo").description("주문자 번호"),
-						fieldWithPath("member.email").description("이메일"),
-						fieldWithPath("member.firstName").description("이름"),
-						fieldWithPath("member.lastName").description("성"),
+						fieldWithPath("member.credentials.email").description("이메일"),
+						fieldWithPath("member.name.firstName").description("이름"),
+						fieldWithPath("member.name.lastName").description("성"),
 						fieldWithPath("member.phoneNumber").description("전화번호"),
-						fieldWithPath("member.addressMain").description("주소"),
-						fieldWithPath("member.addressSub").description("상세주소"),
-						fieldWithPath("member.zipCode").description("우편번호"),
+						fieldWithPath("member.address.addressMain").description("주소"),
+						fieldWithPath("member.address.addressSub").description("상세주소"),
+						fieldWithPath("member.address.zipCode").description("우편번호"),
 						fieldWithPath("member.gender").description("성별"),
 						fieldWithPath("member.memberShipType").description("회원의 멤버십 유형"),
 						fieldWithPath("member.role").description("역할"),
@@ -328,7 +346,7 @@ class OrderSelectApiControllerTest {
 			.andExpect(jsonPath("$.member.memberNo").value(
 				expectedOrderResponseDTO.getMember().getMemberNo()))
 			.andExpect(
-				jsonPath("$.member.email").value(expectedOrderResponseDTO.getMember().getEmail()))
+				jsonPath("$.member.credentials.email").value(expectedOrderResponseDTO.getMember().getCredentials().getEmail()))
 			.andExpect(jsonPath("$.member.role").value(Role.ROLE_ADMIN.name()));
 
 		response
@@ -353,13 +371,13 @@ class OrderSelectApiControllerTest {
 						fieldWithPath("deletedDate").description("삭제 일자"),
 						fieldWithPath("member").description("주문자 정보"),
 						fieldWithPath("member.memberNo").description("주문자 번호"),
-						fieldWithPath("member.email").description("이메일"),
-						fieldWithPath("member.firstName").description("이름"),
-						fieldWithPath("member.lastName").description("성"),
+						fieldWithPath("member.credentials.email").description("이메일"),
+						fieldWithPath("member.name.firstName").description("이름"),
+						fieldWithPath("member.name.lastName").description("성"),
 						fieldWithPath("member.phoneNumber").description("전화번호"),
-						fieldWithPath("member.addressMain").description("주소"),
-						fieldWithPath("member.addressSub").description("상세주소"),
-						fieldWithPath("member.zipCode").description("우편번호"),
+						fieldWithPath("member.address.addressMain").description("주소"),
+						fieldWithPath("member.address.addressSub").description("상세주소"),
+						fieldWithPath("member.address.zipCode").description("우편번호"),
 						fieldWithPath("member.gender").description("성별"),
 						fieldWithPath("member.role").description("역할"),
 						fieldWithPath("member.status").description("상태"),
@@ -526,13 +544,13 @@ class OrderSelectApiControllerTest {
 						// member
 						fieldWithPath("content[].member").description("주문자 정보"),
 						fieldWithPath("content[].member.memberNo").description("회원 번호"),
-						fieldWithPath("content[].member.email").description("이메일"),
-						fieldWithPath("content[].member.firstName").description("이름"),
-						fieldWithPath("content[].member.lastName").description("성"),
+						fieldWithPath("content[].member.credentials.email").description("이메일"),
+						fieldWithPath("content[].member.name.firstName").description("이름"),
+						fieldWithPath("content[].member.name.lastName").description("성"),
 						fieldWithPath("content[].member.phoneNumber").description("전화번호"),
-						fieldWithPath("content[].member.addressMain").description("주소"),
-						fieldWithPath("content[].member.addressSub").description("상세주소"),
-						fieldWithPath("content[].member.zipCode").description("우편번호"),
+						fieldWithPath("content[].member.address.addressMain").description("주소"),
+						fieldWithPath("content[].member.address.addressSub").description("상세주소"),
+						fieldWithPath("content[].member.address.zipCode").description("우편번호"),
 						fieldWithPath("content[].member.gender").description("성별"),
 						fieldWithPath("content[].member.memberShipType").description("멤버십 유형"),
 						fieldWithPath("content[].member.role").description("역할"),
@@ -695,13 +713,13 @@ class OrderSelectApiControllerTest {
 						// member
 						fieldWithPath("content[].member").description("주문자 정보"),
 						fieldWithPath("content[].member.memberNo").description("회원 번호"),
-						fieldWithPath("content[].member.email").description("이메일"),
-						fieldWithPath("content[].member.firstName").description("이름"),
-						fieldWithPath("content[].member.lastName").description("성"),
+						fieldWithPath("content[].member.credentials.email").description("이메일"),
+						fieldWithPath("content[].member.name.firstName").description("이름"),
+						fieldWithPath("content[].member.name.lastName").description("성"),
 						fieldWithPath("content[].member.phoneNumber").description("전화번호"),
-						fieldWithPath("content[].member.addressMain").description("주소"),
-						fieldWithPath("content[].member.addressSub").description("상세주소"),
-						fieldWithPath("content[].member.zipCode").description("우편번호"),
+						fieldWithPath("content[].member.address.addressMain").description("주소"),
+						fieldWithPath("content[].member.address.addressSub").description("상세주소"),
+						fieldWithPath("content[].member.address.zipCode").description("우편번호"),
 						fieldWithPath("content[].member.gender").description("성별"),
 						fieldWithPath("content[].member.memberShipType").description("멤버십 유형"),
 						fieldWithPath("content[].member.role").description("역할"),
