@@ -26,11 +26,12 @@ import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.product.service.FileService;
+import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceImplTest {
+class ProductServiceTest {
 
 	@Mock
 	private ProductPersistence productPersistence;
@@ -39,7 +40,7 @@ class ProductServiceImplTest {
 	private FileService fileService;
 
 	@InjectMocks
-	private ProductServiceImpl productService;
+	private ProductService productService;
 
 	@Nested
 	class CreateProduct {

@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
-import com.psj.itembrowser.security.auth.service.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
-import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationService {
 	
-	private final UserDetailsServiceImpl userDetailsService;
-	
-	@Override
 	public void authorizeOrdersWhenCustomer(final Page<OrderEntity> orders, MemberEntity currentMember) {
 		log.info("AuthenticationServiceImpl#authorizeOrders started");
 		

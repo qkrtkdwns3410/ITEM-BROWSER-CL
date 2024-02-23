@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service.impl;
+package com.psj.itembrowser.order.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class OrderCalculationServiceImpl implements OrderCalculationService {
+public class OrderCalculationService {
 
 	private final ProductService productService;
 	private final PercentageDiscountService percentageDiscountService;
 	private final ShippingPolicyService shippingPolicyService;
 
-	@Override
 	public OrderCalculationResult calculateOrderDetails(@NonNull OrderCreateRequestDTO orderCreateRequestDTO, @NonNull Member member) {
 		validateOrderProduct(orderCreateRequestDTO);
 

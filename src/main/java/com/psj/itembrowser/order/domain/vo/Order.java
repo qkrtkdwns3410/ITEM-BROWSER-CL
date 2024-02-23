@@ -8,7 +8,7 @@ import javax.validation.Valid;
 
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
-import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
+import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;

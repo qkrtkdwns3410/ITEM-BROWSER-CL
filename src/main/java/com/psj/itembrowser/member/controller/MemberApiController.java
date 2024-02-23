@@ -35,10 +35,12 @@ public class MemberApiController {
 	@PostMapping("/register")
 	public MessageDTO register(MemberSignUpRequestDTO dto) {
 		Optional<MemberResponseDTO> register = memberService.register(dto);
+
 		if (register.isEmpty()) {
 			log.error("member register fail");
 			return new MessageDTO("member register fail");
 		}
+
 		log.info("member register success");
 		return new MessageDTO("member register success");
 	}

@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.mapper;
+package com.psj.itembrowser.order.domain.dto.request;
 
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 

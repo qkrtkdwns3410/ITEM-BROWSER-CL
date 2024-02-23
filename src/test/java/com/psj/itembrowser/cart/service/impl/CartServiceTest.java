@@ -25,6 +25,7 @@ import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.cart.persistance.CartPersistence;
+import com.psj.itembrowser.cart.service.CartService;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -36,12 +37,12 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
  */
 
 @ExtendWith(MockitoExtension.class)
-class CartServiceImplTest {
+class CartServiceTest {
 
 	private static final String EXIST_USER_ID = "stubbing@gmail.com";
 
 	@InjectMocks
-	private CartServiceImpl cartService;
+	private CartService cartService;
 	@Mock
 	private CartPersistence cartPersistence;
 	@Mock

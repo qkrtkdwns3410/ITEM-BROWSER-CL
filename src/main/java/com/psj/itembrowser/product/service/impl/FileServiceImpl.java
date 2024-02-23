@@ -1,15 +1,9 @@
 package com.psj.itembrowser.product.service.impl;
 
-import com.psj.itembrowser.product.service.FileStoreService;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +12,8 @@ import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.vo.ProductImage;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.product.service.FileService;
+import com.psj.itembrowser.product.service.FileStoreService;
+import com.psj.itembrowser.product.service.FileUtil;
 
 import lombok.RequiredArgsConstructor;
 

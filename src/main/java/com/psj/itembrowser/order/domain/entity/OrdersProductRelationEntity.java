@@ -28,35 +28,35 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders_product_relation")
 public class OrdersProductRelationEntity {
-	
+
 	@Id
 	@Column(name = "GROUP_ID", nullable = false)
 	private Long groupId;
-	
+
 	@Id
 	@Column(name = "PRODUCT_ID", nullable = false)
 	private Long productId;
-	
+
 	@Column(name = "PRODUCT_QUANTITY")
 	private Integer productQuantity;
-	
+
 	@Column(name = "CREATED_DATE")
 	private LocalDateTime createdDate;
-	
+
 	@Column(name = "UPDATED_DATE")
 	private LocalDateTime updatedDate;
-	
+
 	@Column(name = "DELETED_DATE")
 	private LocalDateTime deletedDate;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private OrderEntity order;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false, insertable = false, updatable = false, referencedColumnName = "ID")
 	private ProductEntity product;
-	
+
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@AllArgsConstructor
 	@EqualsAndHashCode
@@ -64,7 +64,7 @@ public class OrdersProductRelationEntity {
 		private Long groupId;
 		private Long productId;
 	}
-	
+
 	@Builder
 	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity, LocalDateTime createdDate, LocalDateTime updatedDate,
 		LocalDateTime deletedDate, OrderEntity order, ProductEntity product) {
@@ -77,7 +77,7 @@ public class OrdersProductRelationEntity {
 		this.order = order;
 		this.product = product;
 	}
-	
+
 	public static OrdersProductRelationEntity from(OrdersProductRelation ordersProductRelation) {
 		return new OrdersProductRelationEntity(
 			ordersProductRelation.getGroupId(),
@@ -90,4 +90,5 @@ public class OrdersProductRelationEntity {
 			null
 		);
 	}
+
 }

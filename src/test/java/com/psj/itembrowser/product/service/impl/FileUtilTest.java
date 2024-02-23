@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.psj.itembrowser.product.service.FileUtil;
+
 class FileUtilTest {
 
 	@Test

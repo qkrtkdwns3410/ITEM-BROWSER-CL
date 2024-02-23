@@ -37,17 +37,12 @@ import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.domain.vo.PaymentStatus;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
-import com.psj.itembrowser.order.service.impl.OrderCalculationResult;
-import com.psj.itembrowser.order.service.impl.OrderCalculationServiceImpl;
-import com.psj.itembrowser.order.service.impl.OrderServiceImpl;
-import com.psj.itembrowser.order.service.impl.PaymentService;
-import com.psj.itembrowser.order.service.impl.ShppingInfoValidationService;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.product.service.ProductService;
-import com.psj.itembrowser.product.service.impl.ProductValidationHelper;
-import com.psj.itembrowser.security.auth.service.AuthenticationService;
+import com.psj.itembrowser.product.service.ProductValidationHelper;
+import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
@@ -64,7 +59,7 @@ class OrderInsertServiceTest {
 	private OrderMapper orderMapper;
 
 	@Mock
-	private OrderCalculationServiceImpl orderCalculationService;
+	private OrderCalculationService orderCalculationService;
 
 	@Mock
 	private AuthenticationService authenticationService;
@@ -82,7 +77,7 @@ class OrderInsertServiceTest {
 	private ProductService productService;
 
 	@InjectMocks
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 
 	private Member member;
 	private OrderCreateRequestDTO orderCreateRequestDTO;

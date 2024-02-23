@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.vo.Cart;
-import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -46,13 +45,8 @@ public class CartResponseDTO implements Serializable {
 			.updatedDate(cart.getUpdatedDate())
 			.products(cart.getCartProductRelations()
 				.stream()
-				.map(cartProductRelation -> CartProductRelationResponseDTO.of(
-					cartProductRelation.getCartId(),
-					cartProductRelation.getProductId(),
-					cartProductRelation.getProductQuantity(),
-					ProductResponseDTO.from(cartProductRelation.getProduct())
-				)).collect(Collectors.toList()))
-			
+				.map(CartProductRelationResponseDTO::from)
+				.collect(Collectors.toList()))
 			.build();
 	}
 	

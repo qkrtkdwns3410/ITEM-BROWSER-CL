@@ -1,4 +1,4 @@
-package com.psj.itembrowser.product.service.impl;
+package com.psj.itembrowser.product.service;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.product.domain.vo.Product;
-import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 

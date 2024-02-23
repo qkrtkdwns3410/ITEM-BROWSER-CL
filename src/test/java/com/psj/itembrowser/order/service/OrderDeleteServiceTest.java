@@ -20,7 +20,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
-import com.psj.itembrowser.order.service.impl.OrderServiceImpl;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -29,7 +28,7 @@ import com.psj.itembrowser.security.common.exception.ErrorCode;
 public class OrderDeleteServiceTest {
 
 	@InjectMocks
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 
 	@Mock
 	private OrderPersistence orderPersistence;

@@ -3,6 +3,7 @@ package com.psj.itembrowser.cart.domain.dto.response;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
+import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -56,6 +57,19 @@ public class CartProductRelationResponseDTO {
 			.productId(entity.getProductId())
 			.productQuantity(entity.getProductQuantity())
 			.product(ProductResponseDTO.from(entity.getProduct()))
+			.build();
+	}
+	
+	public static CartProductRelationResponseDTO from(CartProductRelation vo) {
+		if (vo == null) {
+			throw new NotFoundException(ErrorCode.CART_PRODUCT_NOT_FOUND);
+		}
+		
+		return CartProductRelationResponseDTO.builder()
+			.cartId(vo.getCartId())
+			.productId(vo.getProductId())
+			.productQuantity(vo.getProductQuantity())
+			.product(ProductResponseDTO.from(vo.getProduct()))
 			.build();
 	}
 }

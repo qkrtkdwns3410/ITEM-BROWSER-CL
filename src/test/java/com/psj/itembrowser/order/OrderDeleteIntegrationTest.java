@@ -23,7 +23,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.psj.itembrowser.order.service.impl.OrderServiceImpl;
+import com.psj.itembrowser.order.service.OrderService;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 
@@ -33,7 +33,7 @@ import com.psj.itembrowser.security.common.exception.ErrorCode;
 class OrderDeleteIntegrationTest {
 
 	@Autowired
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
