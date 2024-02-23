@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -53,12 +55,20 @@ public class MemberEntity extends BaseDateTimeEntity {
 	private Long memberNo;
 
 	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "email", column = @Column(name = "email", nullable = false, unique = true)),
+		@AttributeOverride(name = "password", column = @Column(name = "password", nullable = false))
+	})
 	private Credentials credentials;
 
 	/**
 	 * 성. 이름
 	 */
 	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "firstName", column = @Column(name = "first_name", nullable = false)),
+		@AttributeOverride(name = "lastName", column = @Column(name = "last_name", nullable = false))
+	})
 	private Name name;
 
 	/**
@@ -92,6 +102,11 @@ public class MemberEntity extends BaseDateTimeEntity {
 	 * 주소
 	 */
 	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "addressMain", column = @Column(name = "address_main", nullable = false, columnDefinition = "VARCHAR(255)")),
+		@AttributeOverride(name = "addressSub", column = @Column(name = "address_sub", nullable = true)),
+		@AttributeOverride(name = "zipCode", column = @Column(name = "zip_code", nullable = false))
+	})
 	private Address address;
 
 	/**
