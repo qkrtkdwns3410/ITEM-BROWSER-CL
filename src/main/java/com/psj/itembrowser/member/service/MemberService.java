@@ -39,12 +39,14 @@ public class MemberService {
 		String encodedPassword = passwordEncoder.encode(requestDTO.getCredentialsPassword());
 		requestDTO.setCredentialsPassword(encodedPassword);
 		requestDTO.setMemberShipType(MemberShipType.REGULAR);
+
 		try {
 			Long insertedMemberno = memberPersistance.insertMember(requestDTO);
 			return Optional.of(memberPersistance.findById(insertedMemberno));
 		} catch (BadRequestException e) {
 			log.error("BadRequestException : MemberServiceImpl.register() : {}", e.getMessage());
 		}
+
 		return Optional.empty();
 	}
 }

@@ -112,7 +112,7 @@ public class OrderSelectWithDBServiceTest {
 			.memberNo(savedMember.getMemberNo())
 			.build();
 
-		em.persist(expectedShippingInfoEntity);
+		ProductEntity productEntity = ProductEntity.builder().name("섬유유연제").unitPrice(1000).quantity(10).build();
 
 		OrdersProductRelationEntity expectedOrderRelation = OrdersProductRelationEntity.builder()
 			.groupId(1L)
@@ -121,6 +121,7 @@ public class OrderSelectWithDBServiceTest {
 			.createdDate(LocalDateTime.now())
 			.updatedDate(LocalDateTime.now())
 			.deletedDate(null)
+			.product(productEntity)
 			.build();
 
 		this.validOrder = OrderEntity.builder()
@@ -135,9 +136,8 @@ public class OrderSelectWithDBServiceTest {
 			.deletedDate(null)
 			.build();
 
-		ProductEntity productEntity = ProductEntity.builder().name("섬유유연제").unitPrice(1000).quantity(10).build();
-
 		em.persist(productEntity);
+		em.persist(expectedShippingInfoEntity);
 
 		em.flush();
 	}
