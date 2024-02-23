@@ -8,26 +8,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 import com.psj.itembrowser.config.annotation.RepositoryTest;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Name;
+import com.psj.itembrowser.security.common.config.audit.JpaAuditingConfiguration;
 
 @RepositoryTest
 @DisplayName("BaseTimeEntity 클래스 테스트")
+@Import(JpaAuditingConfiguration.class)
 class BaseTimeEntityTest {
-
+	
 	@Autowired
 	private TestEntityManager em;
-
+	
 	@Test
-	@DisplayName("생성일자, 수정일자, 삭제일자가 정상적으로 생성되는지 확인한다.")
+	@DisplayName("생성일자, 수정일자가 정상적으로 생성되는지 확인한다.")
 	void When_CreatedDate_UpdatedDate_DeletedDate_Then_Success() {
 		// given
 		LocalDateTime now = LocalDateTime.now();
-
+		
 		MemberEntity member = MemberEntity.builder()
 			.address(
 				Address.builder()
@@ -51,7 +54,7 @@ class BaseTimeEntityTest {
 			.build();
 		// when
 		MemberEntity flushedMember = em.persistFlushFind(member);
-
+		
 		// then
 		assertThat(flushedMember.getCreatedDate()).isNotNull().isAfter(now);
 		assertThat(flushedMember.getUpdatedDate()).isNotNull().isAfter(now);
