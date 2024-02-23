@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * packageName    : com.psj.itembrowser.common.domain
@@ -27,23 +28,18 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BaseDateTimeEntity {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseDateTimeEntity {
 	@CreatedDate
 	@Column(name = "created_date", updatable = false)
 	protected LocalDateTime createdDate;
-	
+
 	@LastModifiedDate
 	@Column(name = "updated_date")
 	protected LocalDateTime updatedDate;
-	
+
 	@Column(name = "deleted_date")
 	protected LocalDateTime deletedDate;
-	
-	protected BaseDateTimeEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate) {
-		this.createdDate = createdDate;
-		this.updatedDate = updatedDate;
-		this.deletedDate = deletedDate;
-	}
 }

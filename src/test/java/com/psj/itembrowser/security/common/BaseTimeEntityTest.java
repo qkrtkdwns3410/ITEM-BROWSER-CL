@@ -16,6 +16,7 @@ import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Name;
 
 @RepositoryTest
+@DisplayName("BaseTimeEntity 클래스 테스트")
 class BaseTimeEntityTest {
 
 	@Autowired

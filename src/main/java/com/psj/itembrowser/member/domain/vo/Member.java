@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import com.psj.itembrowser.member.domain.dto.request.MemberRequestDTO;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
-import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -22,7 +21,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"memberNo", "credentials"}, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member extends BaseDateTimeEntity {
+public class Member {
 
 	private Long memberNo;
 
@@ -73,11 +72,16 @@ public class Member extends BaseDateTimeEntity {
 	 */
 	private LocalDateTime lastLoginDate;
 
+	private LocalDateTime createdDate;
+
+	private LocalDateTime updatedDate;
+
+	private LocalDateTime deletedDate;
+
 	@Builder
 	private Member(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials, Name name,
 		String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
 		LocalDateTime lastLoginDate) {
-		super(createdDate, updatedDate, deletedDate);
 		this.memberNo = memberNo;
 		this.credentials = credentials;
 		this.name = name;
@@ -89,6 +93,9 @@ public class Member extends BaseDateTimeEntity {
 		this.address = address;
 		this.birthday = birthday;
 		this.lastLoginDate = lastLoginDate;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.deletedDate = deletedDate;
 	}
 
 	public static Member from(MemberRequestDTO dto) {

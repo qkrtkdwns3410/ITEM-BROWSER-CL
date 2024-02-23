@@ -116,8 +116,6 @@ public class OrderSelectWithDBServiceTest {
 			.groupId(1L)
 			.productId(1L)
 			.productQuantity(1)
-			.createdDate(LocalDateTime.now())
-			.updatedDate(LocalDateTime.now())
 			.deletedDate(null)
 			.product(productEntity)
 			.build();
@@ -129,8 +127,6 @@ public class OrderSelectWithDBServiceTest {
 			.paidDate(LocalDateTime.now())
 			.shippingInfo(expectedShippingInfoEntity)
 			.ordersProductRelations(List.of(expectedOrderRelation))
-			.createdDate(LocalDateTime.now())
-			.updatedDate(LocalDateTime.now())
 			.deletedDate(null)
 			.build();
 
@@ -265,8 +261,6 @@ public class OrderSelectWithDBServiceTest {
 			.orderStatus(OrderStatus.CANCELED)
 			.member(member)
 			.deletedDate(LocalDateTime.now().minusDays(1))
-			.createdDate(LocalDateTime.now().minusDays(1))
-			.updatedDate(LocalDateTime.now().minusDays(1))
 			.build();
 
 		orderRepository.save(deletedOrder);
@@ -276,8 +270,6 @@ public class OrderSelectWithDBServiceTest {
 			.orderStatus(OrderStatus.ACCEPT)
 			.member(member)
 			.deletedDate(null)
-			.createdDate(LocalDateTime.now().minusDays(1))
-			.updatedDate(LocalDateTime.now().minusDays(1))
 			.build();
 
 		OrderEntity expectedOrder = orderRepository.save(notDeletedOrder);

@@ -65,16 +65,13 @@ public class OrderEntity extends BaseDateTimeEntity {
 	private OrderCalculationResult orderCalculationResult;
 
 	@Builder
-	private OrderEntity(Long id, OrderStatus orderStatus, LocalDateTime paidDate, ShippingInfoEntity shippingInfo, LocalDateTime createdDate,
-		LocalDateTime updatedDate,
+	private OrderEntity(Long id, OrderStatus orderStatus, LocalDateTime paidDate, ShippingInfoEntity shippingInfo,
 		LocalDateTime deletedDate, MemberEntity member, List<OrdersProductRelationEntity> ordersProductRelations,
 		OrderCalculationResult orderCalculationResult) {
 		this.id = id;
 		this.orderStatus = orderStatus;
 		this.paidDate = paidDate;
 		this.shippingInfo = shippingInfo;
-		this.createdDate = createdDate;
-		this.updatedDate = updatedDate;
 		this.deletedDate = deletedDate;
 		this.member = member;
 		this.ordersProductRelations = ordersProductRelations;

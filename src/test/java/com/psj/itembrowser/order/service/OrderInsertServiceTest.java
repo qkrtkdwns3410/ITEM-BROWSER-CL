@@ -98,7 +98,8 @@ class OrderInsertServiceTest {
 			Status.ACTIVE,
 			MemberShipType.REGULAR,
 			Address.create("서울시 강남구 역삼동", "김밥천국 101동", "01111"),
-			LocalDate.of(1993, 10, 10), LocalDateTime.now());
+			LocalDate.of(1993, 10, 10), LocalDateTime.now()
+			, LocalDateTime.now(), LocalDateTime.now(), null);
 
 		ordersProductRelation = new OrdersProductRelation(
 			1L,

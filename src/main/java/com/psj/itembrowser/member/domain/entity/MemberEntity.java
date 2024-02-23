@@ -32,7 +32,6 @@ import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.member.domain.vo.Status;
-import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 
@@ -126,10 +125,9 @@ public class MemberEntity extends BaseDateTimeEntity {
 	private List<ShippingInfoEntity> shippingInfos = new ArrayList<>();
 
 	@Builder
-	private MemberEntity(LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Long memberNo, Credentials credentials,
-		Name name, String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType, Address address, LocalDate birthday,
-		LocalDateTime lastLoginDate, List<ShippingInfoEntity> shippingInfos, OrderEntity order) {
-		super(createdDate, updatedDate, deletedDate);
+	private MemberEntity(Long memberNo, Credentials credentials, Name name, String phoneNumber, Gender gender, Role role, Status status, MemberShipType memberShipType,
+		Address address, LocalDate birthday,
+		LocalDateTime lastLoginDate, List<ShippingInfoEntity> shippingInfos, LocalDateTime deletedDate) {
 		this.memberNo = memberNo;
 		this.credentials = credentials;
 		this.name = name;
@@ -142,6 +140,7 @@ public class MemberEntity extends BaseDateTimeEntity {
 		this.birthday = birthday;
 		this.lastLoginDate = lastLoginDate;
 		this.shippingInfos = shippingInfos;
+		this.deletedDate = deletedDate;
 	}
 
 	public boolean hasRole(Role role) {
@@ -196,9 +195,6 @@ public class MemberEntity extends BaseDateTimeEntity {
 			.address(member.getAddress())
 			.birthday(member.getBirthday())
 			.lastLoginDate(member.getLastLoginDate())
-			.createdDate(member.getCreatedDate())
-			.updatedDate(member.getUpdatedDate())
-			.deletedDate(member.getDeletedDate())
 			.build();
 
 		if (shippingInfos != null) {
