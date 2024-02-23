@@ -28,7 +28,7 @@ import com.psj.itembrowser.config.TestQueryDslConfig;
 // 테스트용 어노테이션 생성
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@AutoConfigureTestDatabase(replace = NONE)
+@AutoConfigureTestDatabase(replace = ANY)
 @Import(TestQueryDslConfig.class)
 @DataJpaTest
 public @interface RepositoryTest {
