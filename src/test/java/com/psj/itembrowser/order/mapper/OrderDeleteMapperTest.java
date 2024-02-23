@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.order.domain.dto.request.OrderDeleteRequestDTO;
 import com.psj.itembrowser.order.domain.vo.Order;
@@ -24,7 +23,6 @@ import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.vo.Product;
 
 @MybatisTest
-@Transactional
 @AutoConfigureTestDatabase(replace = Replace.AUTO_CONFIGURED)
 @ActiveProfiles("test")
 @Sql(scripts = {"classpath:drop-table.sql", "classpath:custom-schema.sql",
