@@ -79,12 +79,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		@Override
 		public String getPassword() {
-			return memberResponseDTO.getPassword();
+			return memberResponseDTO.getCredentials().getPassword();
 		}
 
 		@Override
 		public String getUsername() {
-			return memberResponseDTO.getEmail();
+			return memberResponseDTO.getCredentials().getEmail();
 		}
 
 		@Override

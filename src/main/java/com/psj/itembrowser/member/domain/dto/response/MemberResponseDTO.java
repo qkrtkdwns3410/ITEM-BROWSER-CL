@@ -62,22 +62,6 @@ public class MemberResponseDTO {
 		this.deletedDate = deletedDate;
 	}
 
-	public String getEmail() {
-		if (this.credentials == null) {
-			throw new NotFoundException(ErrorCode.CREDENTIALS_NOT_FOUND);
-		}
-
-		return this.credentials.getEmail();
-	}
-
-	public String getPassword() {
-		if (this.credentials == null) {
-			throw new NotFoundException(ErrorCode.CREDENTIALS_NOT_FOUND);
-		}
-
-		return this.credentials.getPassword();
-	}
-
 	public static MemberResponseDTO from(Member member) {
 		if (member == null) {
 			throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
