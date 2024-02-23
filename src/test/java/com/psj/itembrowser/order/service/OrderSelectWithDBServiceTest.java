@@ -33,12 +33,14 @@ import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.CustomOrderRepository;
 import com.psj.itembrowser.order.repository.OrderRepository;
+import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
+import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
 
 @RepositoryTest
 public class OrderSelectWithDBServiceTest {

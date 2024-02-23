@@ -24,6 +24,7 @@ import com.psj.itembrowser.order.domain.vo.Order;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
+import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.ProductValidationHelper;
@@ -32,6 +33,7 @@ import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
+import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

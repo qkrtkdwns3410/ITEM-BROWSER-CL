@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.discount.service;
 
 import org.springframework.stereotype.Service;
 

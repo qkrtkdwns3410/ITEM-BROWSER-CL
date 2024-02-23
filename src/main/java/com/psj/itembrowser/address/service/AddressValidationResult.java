@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.address.service;
 
 import com.psj.itembrowser.security.common.openfeign.dto.AddressResponseDto;
 

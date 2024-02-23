@@ -37,6 +37,7 @@ import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.domain.vo.PaymentStatus;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
+import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
@@ -48,6 +49,7 @@ import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.dto.response.ShippingInfoResponseDTO;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
+import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
 
 @ExtendWith(MockitoExtension.class)
 class OrderInsertServiceTest {

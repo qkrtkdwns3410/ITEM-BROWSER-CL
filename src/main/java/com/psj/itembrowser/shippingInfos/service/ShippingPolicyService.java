@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.shippingInfos.service;
 
 import java.util.List;
 
