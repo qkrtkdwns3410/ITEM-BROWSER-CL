@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 
-import com.psj.itembrowser.config.annotation.RepositoryTest;
+import com.psj.itembrowser.config.annotation.ServiceWithDBTest;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
@@ -42,7 +42,7 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
 
-@RepositoryTest
+@ServiceWithDBTest
 public class OrderSelectWithDBServiceTest {
 	
 	@Autowired

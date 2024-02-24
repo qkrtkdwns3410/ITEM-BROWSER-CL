@@ -34,5 +34,5 @@ import com.psj.itembrowser.security.common.config.audit.JpaAuditingConfiguration
 @Import({TestQueryDslConfig.class, JpaAuditingConfiguration.class})
 @DataJpaTest
 @ActiveProfiles("test")
-public @interface RepositoryTest {
+public @interface ServiceWithDBTest {
 }
