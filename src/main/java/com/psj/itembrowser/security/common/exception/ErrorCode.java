@@ -55,6 +55,7 @@ public enum ErrorCode {
 	PRODUCT_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "PRODUCT_005", "Validation Error"),
 	PRODUCT_IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "PRODUCT_006", "Not Found Product IMAGE"),
 	PRODUCT_QUANTITY_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "PRODUCT_007", "Product Quantity is not enough"),
+	PRODUCT_QUANTITY_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "PRODUCT_008", "Product Quantity is less than zero"),
 	
 	// FileStore
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),

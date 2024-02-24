@@ -26,11 +26,11 @@ import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "product")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class ProductEntity extends BaseDateTimeEntity {
 	
 	/**
@@ -178,7 +177,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.returnCenterCode = returnCenterCode;
 		this.cartProductRelations = cartProductRelations;
 		this.productImages = productImages;
-		this.deletedDate = deletedDate;
+		super.deletedDate = deletedDate;
 	}
 	
 	public void validateSellDates() {
@@ -207,11 +206,16 @@ public class ProductEntity extends BaseDateTimeEntity {
 	}
 	
 	// 상품 재고가 충분한지 확인하는 메서드
-	public boolean isEnoughStock(int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
+	public boolean isEnoughStock(ProductEntity orderProduct) {
+		if (orderProduct == null) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
-		return this.quantity >= quantity;
+		
+		if (orderProduct.quantity < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
+		}
+		
+		return this.quantity >= orderProduct.getQuantity();
 	}
 	
 	public BigDecimal calculateTotalPrice() {

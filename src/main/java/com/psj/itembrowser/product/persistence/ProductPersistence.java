@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImage;
 import com.psj.itembrowser.product.mapper.ProductMapper;
+import com.psj.itembrowser.product.repository.ProductRepository;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -24,6 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class ProductPersistence {
 	
 	private final ProductMapper productMapper;
+	private final ProductRepository productRepository;
+	
+	public ProductEntity findWithPessimisticLockById(Long productId) {
+		return productRepository.findWithPessimisticLockById(productId).orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
 	
 	public Product findProductById(Long productId) {
 		Product productById = productMapper.findProductById(productId);

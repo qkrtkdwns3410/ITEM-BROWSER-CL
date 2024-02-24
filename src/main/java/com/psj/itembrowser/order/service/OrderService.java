@@ -25,7 +25,7 @@ import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
-import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
@@ -105,9 +105,9 @@ public class OrderService {
 		}
 		
 		//해당 주문상품이 존재하는지 확인 && 각 상품에 대한 재고확인 수행
-		List<Product> orderProducts = orderCreateRequestDTO.getProducts().stream()
+		List<ProductEntity> orderProducts = orderCreateRequestDTO.getProducts().stream()
 			.map(OrdersProductRelationResponseDTO::getProductResponseDTO)
-			.map(Product::from)
+			.map(ProductEntity::from)
 			.collect(Collectors.toList());
 		
 		productValidationHelper.validateProduct(orderProducts);
