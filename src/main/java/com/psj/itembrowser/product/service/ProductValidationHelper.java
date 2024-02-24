@@ -28,11 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductValidationHelper {
 	private final ProductService productService;
-
+	
 	public void validateProduct(List<Product> products) {
+		if (products == null || products.isEmpty()) {
+			throw new BadRequestException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
 		products.forEach(product -> {
 			ProductResponseDTO productResponseDTO = productService.getProduct(product.getId());
-
+			
 			if (product.isEnoughStock(productResponseDTO.getQuantity()) == false) {
 				throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH);
 			}
