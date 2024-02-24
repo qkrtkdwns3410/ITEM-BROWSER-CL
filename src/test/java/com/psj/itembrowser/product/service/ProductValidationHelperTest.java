@@ -55,7 +55,7 @@ class ProductValidationHelperTest {
 	
 	@Test
 	@DisplayName("상품 검증 성공적으로 수행되는지 테스트")
-	void test() {
+	void When_validateProduct_Expect_Success() {
 		//given
 		ProductEntity orderTargetProduct = ProductEntity.builder()
 			.quantity(10)
@@ -75,7 +75,7 @@ class ProductValidationHelperTest {
 	
 	@Test
 	@DisplayName("상품 검증 중 상품이 없을 경우 BadRequestException이 발생하는지 테스트")
-	void test2() {
+	void When_validateProductNotFound_Expect_BadRequestException() {
 		//when & then
 		assertThrows(BadRequestException.class, () -> productValidationHelper.validateProduct(Collections.emptyList()),
 			ErrorCode.PRODUCT_NOT_FOUND.getMessage());
@@ -83,7 +83,7 @@ class ProductValidationHelperTest {
 	
 	@Test
 	@DisplayName("상품 검증 중 상품의 재고가 부족할 경우 BadRequestException이 발생하는지 테스트")
-	void test3() {
+	void When_validateProductNotEnough_Expect_BadRequestException() {
 		//given
 		ProductEntity orderTargetProduct = ProductEntity.builder()
 			.quantity(5)
