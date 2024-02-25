@@ -89,7 +89,7 @@ public class OrderResponseDTO {
 			orderResponseDTO.setShippingInfoId(shippingInfo.getId());
 		}
 		
-		if (vo.getProducts() != null && !vo.getProducts().isEmpty()) {
+		if (!CollectionUtils.isEmpty(vo.getProducts())) {
 			vo.getProducts().stream()
 				.map(OrdersProductRelationResponseDTO::from)
 				.forEach(orderResponseDTO.getOrdersProductRelations()::add);

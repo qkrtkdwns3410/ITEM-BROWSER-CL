@@ -4,10 +4,12 @@ import javax.validation.constraints.PositiveOrZero;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartProductRequestDTO {
 	Long cartId;
