@@ -51,9 +51,9 @@ public class OrderCalculationService {
 			totalDiscount = totalDiscount.add(discount);
 		}
 		
-		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice).getFee();
+		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice,member).getFee();
 		
-		BigDecimal totalNetPrice = totalPrice.add(totalDiscount).add(BigDecimal.valueOf(shippingFee));
+		BigDecimal totalNetPrice = totalPrice.subtract(totalDiscount).add(BigDecimal.valueOf(shippingFee));
 		
 		return OrderCalculationResult.of(totalPrice, totalDiscount, shippingFee, totalNetPrice);
 	}
