@@ -45,15 +45,13 @@ public class OrderCreateRequestDTO {
 		this.shippingInfo = shippingInfo;
 	}
 	
-	public static OrderCreateRequestDTO create(Long ordererNumber, List<OrdersProductRelationResponseDTO> products,
+	public static OrderCreateRequestDTO of(Long ordererNumber, List<OrdersProductRelationResponseDTO> products,
 		MemberResponseDTO member, ShippingInfoResponseDTO shippingInfo) {
-		OrderCreateRequestDTO orderCreateRequestDTO = new OrderCreateRequestDTO();
-		
-		orderCreateRequestDTO.setOrdererNumber(ordererNumber);
-		orderCreateRequestDTO.setProducts(products);
-		orderCreateRequestDTO.setMember(member);
-		orderCreateRequestDTO.setShippingInfo(shippingInfo);
-		
-		return orderCreateRequestDTO;
+		return OrderCreateRequestDTO.builder()
+			.ordererNumber(ordererNumber)
+			.products(products)
+			.member(member)
+			.shippingInfo(shippingInfo)
+			.build();
 	}
 }

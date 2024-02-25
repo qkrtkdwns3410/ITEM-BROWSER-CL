@@ -67,14 +67,14 @@ public class OrderResponseDTO {
 			throw new NotFoundException(ErrorCode.ORDER_NOT_FOUND);
 		}
 		
-		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-		
-		orderResponseDTO.setId(vo.getId());
-		orderResponseDTO.setOrderStatus(vo.getOrderStatus());
-		orderResponseDTO.setPaidDate(vo.getPaidDate());
-		orderResponseDTO.setCreatedDate(vo.getCreatedDate());
-		orderResponseDTO.setUpdatedDate(vo.getUpdatedDate());
-		orderResponseDTO.setDeletedDate(vo.getDeletedDate());
+		OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+			.id(vo.getId())
+			.orderStatus(vo.getOrderStatus())
+			.paidDate(vo.getPaidDate())
+			.createdDate(vo.getCreatedDate())
+			.updatedDate(vo.getUpdatedDate())
+			.deletedDate(vo.getDeletedDate())
+			.build();
 		
 		Member member = vo.getMember();
 		
@@ -103,14 +103,14 @@ public class OrderResponseDTO {
 			throw new NotFoundException(ErrorCode.ORDER_NOT_FOUND);
 		}
 		
-		OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-		
-		orderResponseDTO.setId(entity.getId());
-		orderResponseDTO.setOrderStatus(entity.getOrderStatus());
-		orderResponseDTO.setPaidDate(entity.getPaidDate());
-		orderResponseDTO.setCreatedDate(entity.getCreatedDate());
-		orderResponseDTO.setUpdatedDate(entity.getUpdatedDate());
-		orderResponseDTO.setDeletedDate(entity.getDeletedDate());
+		OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+			.id(entity.getId())
+			.orderStatus(entity.getOrderStatus())
+			.paidDate(entity.getPaidDate())
+			.createdDate(entity.getCreatedDate())
+			.updatedDate(entity.getUpdatedDate())
+			.deletedDate(entity.getDeletedDate())
+			.build();
 		
 		MemberEntity member = entity.getMember();
 		

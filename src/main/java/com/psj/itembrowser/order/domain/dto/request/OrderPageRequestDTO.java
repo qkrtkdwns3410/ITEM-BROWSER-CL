@@ -43,12 +43,12 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 		this.requestYear = requestYear;
 	}
 	
-	public static OrderPageRequestDTO create(PageRequestDTO pageRequestDTO, Long userNumber, String requestYearString) {
-		OrderPageRequestDTO orderPageRequestDTO = new OrderPageRequestDTO();
-		
-		orderPageRequestDTO.setPageNum(pageRequestDTO.getPageNum());
-		orderPageRequestDTO.setPageSize(pageRequestDTO.getPageSize());
-		orderPageRequestDTO.setUserNumber(userNumber);
+	public static OrderPageRequestDTO of(PageRequestDTO pageRequestDTO, Long userNumber, String requestYearString) {
+		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.builder()
+			.pageNum(pageRequestDTO.getPageNum())
+			.pageSize(pageRequestDTO.getPageSize())
+			.userNumber(userNumber)
+			.build();
 		
 		if (Objects.nonNull(requestYearString)) {
 			try {

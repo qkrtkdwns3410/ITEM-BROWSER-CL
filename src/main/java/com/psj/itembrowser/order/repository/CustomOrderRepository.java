@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -38,15 +39,16 @@ public class CustomOrderRepository {
 	}
 	
 	public Page<OrderEntity> selectOrdersWithPagination(OrderPageRequestDTO dto, Pageable pageable, Boolean isDeleted) {
-		List<OrderEntity> orders = qf.selectFrom(orderEntity)
-			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)))
+		JPAQuery<OrderEntity> query = qf.selectFrom(orderEntity)
+			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)));
+		
+		List<OrderEntity> orders = query
 			.orderBy(orderEntity.createdDate.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 		
-		long total = qf.selectFrom(orderEntity)
-			.where(requestYearEq(dto).and(isDeletedEq(isDeleted)))
+		long total = query
 			.fetch()
 			.size();
 		

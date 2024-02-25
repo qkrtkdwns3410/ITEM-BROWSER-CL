@@ -608,8 +608,8 @@ class OrderSelectApiControllerTest {
 		String requestYear = "2024";
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithCUSTOMERUser.getMember()));
-
-		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize),
+		
+		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.of(PageRequestDTO.create(pageNum, pageSize),
 			1L, requestYear);
 
 		given(orderService.getOrdersWithPaginationAndNotDeleted(any(MemberEntity.class), any(OrderPageRequestDTO.class))).willThrow(
@@ -774,8 +774,8 @@ class OrderSelectApiControllerTest {
 		int pageNum = 100;
 		int pageSize = 0;
 		String requestYear = "2024";
-
-		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.create(PageRequestDTO.create(pageNum, pageSize),
+		
+		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.of(PageRequestDTO.create(pageNum, pageSize),
 			1L, requestYear);
 
 		Member member = Member.from(MemberResponseDTO.from(expectedOrderWithADMINUser.getMember()));
