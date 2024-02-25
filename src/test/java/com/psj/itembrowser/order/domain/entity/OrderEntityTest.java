@@ -28,10 +28,10 @@ public class OrderEntityTest {
 	@Test
 	@DisplayName("결제 완료 시 주문 상태가 완료로 변경")
 	public void When_CompletePayment_Expect_OrderStatusIsComplete() {
-		// Act
+		// when
 		orderEntity.completePayment();
 		
-		// Assert
+		// then
 		assertThat(orderEntity.getPaymentStatus()).isEqualTo(PaymentStatus.COMPLETE);
 		assertThat(orderEntity.getPaidDate()).isAfter(NOW);
 	}
@@ -39,14 +39,15 @@ public class OrderEntityTest {
 	@Test
 	@DisplayName("결제 완료 시 주문 상태가 완료가 아니면 BadRequestException")
 	public void When_CompletePaymentAndPaymentStatusIsComplete_Expect_BadRequestException() {
-		// Arrange
+		// given
 		orderEntity = OrderEntity.builder()
 			.orderStatus(OrderStatus.PENDING)
 			.paymentStatus(PaymentStatus.COMPLETE)
 			.build();
 		
-		// Act & Assert
+		//when
 		assertThatThrownBy(orderEntity::completePayment)
+			//then
 			.isInstanceOf(BadRequestException.class)
 			.hasMessage(ErrorCode.ALREADY_COMPLETE_PAYMENT.getMessage());
 	}

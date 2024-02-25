@@ -130,7 +130,7 @@ public class OrderService {
 		//DB 주문추가
 		OrderEntity savedOrder = orderRepository.save(order);
 		
-		//상품 재고 수량을 감소시킨다. - 락이 필요하다.
+		//TODO 상품 재고 수량을 감소시킨다. - 락이 필요하다.
 		orderProducts.forEach(productService::decreaseStock);
 		
 		//결제 히스토리를 DB에 기록한다.
