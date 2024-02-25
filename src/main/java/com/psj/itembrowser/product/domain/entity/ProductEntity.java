@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -219,10 +220,23 @@ public class ProductEntity extends BaseDateTimeEntity {
 	}
 	
 	public BigDecimal calculateTotalPrice() {
+		Objects.requireNonNull(this.unitPrice, "unitPrice must not be null");
+		Objects.requireNonNull(this.quantity, "quantity must not be null");
+		
+		if (this.unitPrice < 0 || this.quantity < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
+		}
+		
 		return BigDecimal.valueOf(this.unitPrice).multiply(BigDecimal.valueOf(this.quantity));
 	}
 	
 	public BigDecimal calculateDiscount(int quantity, int discountRate) {
+		Objects.requireNonNull(this.unitPrice, "unitPrice must not be null");
+		
+		if (this.unitPrice < 0 || quantity < 0 || !(0 <= discountRate && discountRate <= 100)) {
+			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
+		}
+		
 		BigDecimal unitPrice = BigDecimal.valueOf(this.unitPrice);
 		BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
 		BigDecimal discountRateDecimal = BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);

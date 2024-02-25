@@ -10,7 +10,7 @@ import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
-import com.psj.itembrowser.product.service.ProductService;
+import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.shippingInfos.service.ShippingPolicyService;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class OrderCalculationService {
 	
-	private final ProductService productService;
+	private final ProductPersistence productPersistence;
 	private final PercentageDiscountService percentageDiscountService;
 	private final ShippingPolicyService shippingPolicyService;
 	
@@ -40,13 +40,13 @@ public class OrderCalculationService {
 		long shippingFee = 0;
 		
 		for (OrdersProductRelationResponseDTO ordersProductRelationResponseDTO : orderCreateRequestDTO.getProducts()) {
-			ProductEntity product = ProductEntity.from(productService.getProduct(ordersProductRelationResponseDTO.getProductId()));
+			ProductEntity foundProduct = productPersistence.findWithPessimisticLockById(ordersProductRelationResponseDTO.getProductId());
 			
-			BigDecimal productPrice = product.calculateTotalPrice();
+			BigDecimal productPrice = foundProduct.calculateTotalPrice();
 			
 			totalPrice = totalPrice.add(productPrice);
 			
-			BigDecimal discount = percentageDiscountService.calculateDiscount(product, member);
+			BigDecimal discount = percentageDiscountService.calculateDiscount(foundProduct, member);
 			
 			totalDiscount = totalDiscount.add(discount);
 		}
@@ -59,7 +59,7 @@ public class OrderCalculationService {
 	}
 	
 	private static void validateOrderProduct(OrderCreateRequestDTO orderCreateRequestDTO) {
-		if (orderCreateRequestDTO.getProducts().isEmpty()) {
+		if (orderCreateRequestDTO.getProducts() == null || orderCreateRequestDTO.getProducts().isEmpty()) {
 			throw new BadRequestException(ErrorCode.ORDER_PRODUCTS_EMPTY);
 		}
 	}
