@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.psj.itembrowser.discount.service.PercentageDiscountService;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
@@ -51,7 +52,7 @@ public class OrderCalculationService {
 			totalDiscount = totalDiscount.add(discount);
 		}
 		
-		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice,member).getFee();
+		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice, member).getFee();
 		
 		BigDecimal totalNetPrice = totalPrice.subtract(totalDiscount).add(BigDecimal.valueOf(shippingFee));
 		
@@ -59,7 +60,7 @@ public class OrderCalculationService {
 	}
 	
 	private static void validateOrderProduct(OrderCreateRequestDTO orderCreateRequestDTO) {
-		if (orderCreateRequestDTO.getProducts() == null || orderCreateRequestDTO.getProducts().isEmpty()) {
+		if (CollectionUtils.isEmpty(orderCreateRequestDTO.getProducts())) {
 			throw new BadRequestException(ErrorCode.ORDER_PRODUCTS_EMPTY);
 		}
 	}
