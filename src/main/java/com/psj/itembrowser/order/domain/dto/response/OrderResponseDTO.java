@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.CollectionUtils;
+
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
@@ -123,7 +125,7 @@ public class OrderResponseDTO {
 			orderResponseDTO.setShippingInfoId(shippingInfo.getId());
 		}
 		
-		if (entity.getOrdersProductRelations() != null && !entity.getOrdersProductRelations().isEmpty()) {
+		if (!CollectionUtils.isEmpty(entity.getOrdersProductRelations())) {
 			entity.getOrdersProductRelations().stream()
 				.map(OrdersProductRelationResponseDTO::from)
 				.forEach(orderResponseDTO.getOrdersProductRelations()::add);
