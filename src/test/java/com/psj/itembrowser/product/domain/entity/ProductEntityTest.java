@@ -71,7 +71,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateTotalPrice  unitPrice 와 quantity 가 음수이 경우 BadRequestException 발생")
-	void test1() {
+	void When_unitPriceAndQuantityIsNegative_Expect_BadRequestException() {
 		//given
 		ReflectionTestUtils.setField(productEntity, "unitPrice", -1);
 		ReflectionTestUtils.setField(productEntity, "quantity", -1);
@@ -87,7 +87,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateTotalPrice unitPrice 와 quantity 가 INTEGER 범위는 넘는 연산의 경우 정상 처리")
-	void test2() {
+	void When_unitPriceAndQuantityIsMaxValue_Expect_Success() {
 		//given
 		BigDecimal expectedTotalPrice = BigDecimal.valueOf(Integer.MAX_VALUE).multiply(BigDecimal.valueOf(Integer.MAX_VALUE));
 		
@@ -103,7 +103,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateTotalPrice unitPrice 및 quantity 가 null 인 경우 NPE 발생")
-	void test3() {
+	void When_unitPriceAndQuantityIsNull_Expect_NullPointerException() {
 		//given
 		ReflectionTestUtils.setField(productEntity, "unitPrice", null);
 		ReflectionTestUtils.setField(productEntity, "quantity", null);
@@ -119,7 +119,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount 정상케이스")
-	void test4() {
+	void When_calculateDiscount_Expect_Success() {
 		//given
 		final int requestQuantity = 10;
 		final int requestDiscountRate = 50;
@@ -135,7 +135,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount unitPrice 가 null 인 경우 NPE 발생")
-	void test5() {
+	void When_unitPriceIsNull_Expect_NullPointerException() {
 		//given
 		final int requestQuantity = 10;
 		final int requestDiscountRate = 50;
@@ -153,7 +153,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount requestQuantity 가 음수인 경우 BadRequestException 발생")
-	void test6() {
+	void When_requestQuantityIsNegative_Expect_BadRequestException() {
 		//given
 		final int requestQuantity = -10;
 		final int requestDiscountRate = 50;
@@ -171,7 +171,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount requestDiscountRate 가 음수인 경우 BadRequestException 발생")
-	void test7() {
+	void When_requestDiscountRateIsNegative_Expect_BadRequestException() {
 		//given
 		final int requestQuantity = 10;
 		final int requestDiscountRate = -50;
@@ -189,7 +189,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount discountRate 가 100 초과인 경우 BadRequestException 발생")
-	void test8() {
+	void When_requestDiscountRateIsOver100_Expect_BadRequestException() {
 		//given
 		final int requestQuantity = 10;
 		final int requestDiscountRate = 101;
@@ -207,7 +207,7 @@ public class ProductEntityTest {
 	
 	@Test
 	@DisplayName("calculateDiscount unitPrice 와 quantityDecimal 가 INTEGER 범위를 넘는 경우 정상 처리")
-	void test9() {
+	void When_CalculateDiscountUnitPriceAndQuantityIsMaxValue_Expect_Success() {
 		//given
 		final int requestQuantity = Integer.MAX_VALUE;
 		final int requestDiscountRate = 50;
