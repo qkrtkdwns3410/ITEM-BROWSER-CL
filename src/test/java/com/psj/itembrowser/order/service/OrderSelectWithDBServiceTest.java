@@ -6,14 +6,12 @@ import static org.mockito.BDDMockito.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 
@@ -77,8 +75,8 @@ public class OrderSelectWithDBServiceTest {
 	
 	private OrderService orderService;
 	
-	@PersistenceContext
-	EntityManager em;
+	@Autowired
+	TestEntityManager em;
 	
 	private Long validOrderId;
 	
@@ -249,23 +247,21 @@ public class OrderSelectWithDBServiceTest {
 	void When_GetOrdersWithPaginationAndNotDeleted_Expect_ReturnOrderResponseDTOList() {
 		//given
 		MemberEntity member = MemberEntity.builder()
-			.memberNo(2L)
 			.credentials(Credentials.builder().email("qkrtkdwns34102@gmail.com").password("PasswordIsHard!@#").build())
 			.address(Address.builder().addressMain("포항시 남구 연일읍 유강길 10 - 44").addressSub("김밥아파트 101동 302호").zipCode("08593").build())
 			.name(Name.builder().firstName("홍").lastName("길동").build())
 			.role(Role.ROLE_CUSTOMER)
 			.build();
 		
-		MemberEntity savedMember = memberRepository.save(member);
+		em.persist(member);
 		
 		OrderEntity deletedOrder = OrderEntity.builder()
-			.id(1L)
 			.orderStatus(OrderStatus.CANCELED)
 			.member(member)
 			.deletedDate(LocalDateTime.now().minusDays(1))
 			.build();
 		
-		orderRepository.save(deletedOrder);
+		em.persist(deletedOrder);
 		
 		OrderEntity notDeletedOrder = OrderEntity.builder()
 			.id(2L)
