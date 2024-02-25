@@ -1,6 +1,7 @@
 package com.psj.itembrowser.cart.domain.vo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -39,7 +40,7 @@ public class Cart {
 		List<CartProductRelation> cartProductRelations) {
 		this.id = id;
 		this.userId = userId;
-		this.cartProductRelations = cartProductRelations;
+		this.cartProductRelations = cartProductRelations == null ? new ArrayList<>() : cartProductRelations;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
 		this.deletedDate = deletedDate;

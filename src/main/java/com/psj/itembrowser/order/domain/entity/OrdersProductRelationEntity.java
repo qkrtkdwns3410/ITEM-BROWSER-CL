@@ -61,8 +61,8 @@ public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 	}
 	
 	@Builder
-	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity,
-		LocalDateTime deletedDate, OrderEntity order, ProductEntity product) {
+	private OrdersProductRelationEntity(Long groupId, Long productId, Integer productQuantity, LocalDateTime deletedDate, OrderEntity order,
+		ProductEntity product) {
 		this.groupId = groupId;
 		this.productId = productId;
 		this.productQuantity = productQuantity;

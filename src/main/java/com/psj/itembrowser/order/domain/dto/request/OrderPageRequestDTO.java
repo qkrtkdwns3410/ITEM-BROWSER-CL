@@ -12,15 +12,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.psj.itembrowser.security.common.pagination.PageRequestDTO;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 @Slf4j
 public class OrderPageRequestDTO extends PageRequestDTO {
 	
@@ -31,7 +32,6 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate requestYear;
 	
-	@Builder
 	private OrderPageRequestDTO(
 		@PositiveOrZero(message = "pageNum must be positive number") int pageNum,
 		@PositiveOrZero(message = "pageSize must be positive number") int pageSize,

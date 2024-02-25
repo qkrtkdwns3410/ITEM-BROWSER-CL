@@ -59,7 +59,7 @@ public class OrderResponseDTO {
 		this.updatedDate = updatedDate;
 		this.deletedDate = deletedDate;
 		this.member = member;
-		this.ordersProductRelations = ordersProductRelations;
+		this.ordersProductRelations = ordersProductRelations == null ? new ArrayList<>() : ordersProductRelations;
 	}
 	
 	public static OrderResponseDTO from(Order vo) {

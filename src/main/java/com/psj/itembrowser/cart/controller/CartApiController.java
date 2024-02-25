@@ -2,6 +2,8 @@ package com.psj.itembrowser.cart.controller;
 
 import java.text.MessageFormat;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,41 +41,41 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1/api/cart")
 public class CartApiController {
 	private final CartService cartService;
-
+	
 	@GetMapping("/{userId}/carts")
 	public ResponseEntity<CartResponseDTO> getCart(@PathVariable String userId) {
 		CartResponseDTO cart = cartService.getCart(userId);
-
+		
 		return ResponseEntity.ok(cart);
 	}
-
+	
 	@PostMapping("/add")
 	public MessageDTO addCart(@RequestBody CartProductRequestDTO cartProductRequestDTO) {
-
+		
 		cartService.addCartProduct(cartProductRequestDTO);
-
+		
 		return new MessageDTO(MessageFormat.format(
 			"cart add affected : {0} / {1}",
 			cartProductRequestDTO.getCartId(),
 			cartProductRequestDTO.getProductId()
 		));
 	}
-
+	
 	@PutMapping("/update")
 	public MessageDTO modifyCart(@RequestBody CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		cartService.modifyCartProduct(cartProductUpdateRequestDTO);
-
+		
 		return new MessageDTO(MessageFormat.format(
 			"cart update affected : {0} / {1}",
 			cartProductUpdateRequestDTO.getCartId(),
 			cartProductUpdateRequestDTO.getProductId()
 		));
 	}
-
+	
 	@DeleteMapping("/delete")
-	public MessageDTO removeCart(@RequestBody CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {
+	public MessageDTO removeCart(@Valid @RequestBody CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {
 		cartService.removeCart(cartProductDeleteRequestDTO);
-
+		
 		return new MessageDTO(MessageFormat.format(
 			"cart delete affected : {0} / {1}",
 			cartProductDeleteRequestDTO.getCartId(),

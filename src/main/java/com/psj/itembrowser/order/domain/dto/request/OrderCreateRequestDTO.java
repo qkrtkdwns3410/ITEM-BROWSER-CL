@@ -1,5 +1,6 @@
 package com.psj.itembrowser.order.domain.dto.request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
@@ -40,7 +41,7 @@ public class OrderCreateRequestDTO {
 	private OrderCreateRequestDTO(Long ordererNumber, List<OrdersProductRelationResponseDTO> products, MemberResponseDTO member,
 		ShippingInfoResponseDTO shippingInfo) {
 		this.ordererNumber = ordererNumber;
-		this.products = products;
+		this.products = products == null ? new ArrayList<>() : products;
 		this.member = member;
 		this.shippingInfo = shippingInfo;
 	}

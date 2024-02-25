@@ -11,23 +11,17 @@ import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
-import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
-@ToString
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class Product extends BaseDateTimeEntity {
+public class Product {
 	
 	/**
 	 * pk값
@@ -117,6 +111,42 @@ public class Product extends BaseDateTimeEntity {
 	private List<CartProductRelation> cartProductRelations;
 	
 	private List<ProductImage> productImages;
+	
+	private LocalDateTime createdDate;
+	
+	private LocalDateTime updatedDate;
+	
+	private LocalDateTime deletedDate;
+	
+	@Builder
+	private Product(Long id, String name, Integer category, String detail, ProductStatus status, Integer quantity, Integer unitPrice, String sellerId,
+		LocalDateTime sellStartDatetime, LocalDateTime sellEndDatetime, String displayName, String brand, DeliveryFeeType deliveryFeeType,
+		String deliveryMethod, Integer deliveryDefaultFee, Integer freeShipOverAmount, String returnCenterCode,
+		List<CartProductRelation> cartProductRelations, List<ProductImage> productImages, LocalDateTime createdDate, LocalDateTime updatedDate,
+		LocalDateTime deletedDate) {
+		this.id = id;
+		this.name = name;
+		this.category = category;
+		this.detail = detail;
+		this.status = status;
+		this.quantity = quantity;
+		this.unitPrice = unitPrice;
+		this.sellerId = sellerId;
+		this.sellStartDatetime = sellStartDatetime;
+		this.sellEndDatetime = sellEndDatetime;
+		this.displayName = displayName;
+		this.brand = brand;
+		this.deliveryFeeType = deliveryFeeType;
+		this.deliveryMethod = deliveryMethod;
+		this.deliveryDefaultFee = deliveryDefaultFee;
+		this.freeShipOverAmount = freeShipOverAmount;
+		this.returnCenterCode = returnCenterCode;
+		this.cartProductRelations = cartProductRelations == null ? List.of() : cartProductRelations;
+		this.productImages = productImages == null ? List.of() : productImages;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.deletedDate = deletedDate;
+	}
 	
 	public void validateSellDates() {
 		if (this.sellStartDatetime != null && this.sellEndDatetime != null

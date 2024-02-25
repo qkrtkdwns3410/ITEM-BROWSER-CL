@@ -83,7 +83,7 @@ public class OrderEntity extends BaseDateTimeEntity {
 		this.paidDate = paidDate;
 		this.shippingInfo = shippingInfo;
 		this.member = member;
-		this.ordersProductRelations = ordersProductRelations;
+		this.ordersProductRelations = ordersProductRelations == null ? new ArrayList<>() : ordersProductRelations;
 		this.orderCalculationResult = orderCalculationResult;
 		super.deletedDate = deletedDate;
 	}

@@ -176,8 +176,8 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.cartProductRelations = cartProductRelations;
-		this.productImages = productImages;
+		this.cartProductRelations = cartProductRelations == null ? List.of() : cartProductRelations;
+		this.productImages = productImages == null ? List.of() : productImages;
 		super.deletedDate = deletedDate;
 	}
 	

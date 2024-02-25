@@ -84,7 +84,7 @@ public class ShippingInfoEntity extends BaseDateTimeEntity {
 		this.alternativeNumber = alternativeNumber;
 		this.shippingRequestMsg = shippingRequestMsg;
 		this.deletedDate = deletedDate;
-		this.orders = orders;
+		this.orders = orders == null ? new ArrayList<>() : orders;
 		this.member = member;
 	}
 	
