@@ -1,6 +1,7 @@
 package com.psj.itembrowser.order.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -120,7 +121,7 @@ public class OrderDeleteWithDBServiceTest {
 		
 		em.persist(member);
 		
-		product = ProductEntity.builder().build();
+		product = ProductEntity.builder().quantity(10).build();
 		
 		em.persist(product);
 		
@@ -159,11 +160,15 @@ public class OrderDeleteWithDBServiceTest {
 		//then
 		OrderEntity foundOrder = em.find(OrderEntity.class, removableOrder.getId());
 		
-		assertThat(foundOrder.getDeletedDate()).isNotNull().isAfter(NOW);
-		assertThat(foundOrder.getOrderStatus()).isEqualTo(OrderStatus.CANCELED);
-		assertThat(foundOrder.getOrdersProductRelations()).isNotNull()
-			.extracting(OrdersProductRelationEntity::getDeletedDate)
-			.allSatisfy(deletedDate -> assertThat(deletedDate).isNotNull().isAfter(NOW));
+		assertAll(
+			() -> assertThat(foundOrder.getDeletedDate()).isNotNull().isAfter(NOW),
+			() -> assertThat(foundOrder.getOrderStatus()).isEqualTo(OrderStatus.CANCELED),
+			() -> assertThat(foundOrder.getOrdersProductRelations()).isNotNull()
+				.extracting(OrdersProductRelationEntity::getDeletedDate)
+				.allSatisfy(deletedDate -> assertThat(deletedDate).isNotNull().isAfter(NOW))
+		);
+		
+		assertThat(foundOrder.getOrdersProductRelations().get(0).getProduct().getQuantity()).isEqualTo(11);
 	}
 	
 	@ParameterizedTest

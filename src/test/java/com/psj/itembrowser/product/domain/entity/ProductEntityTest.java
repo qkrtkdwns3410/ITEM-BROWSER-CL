@@ -220,4 +220,87 @@ class ProductEntityTest {
 		//then
 		assertThat(actualDiscount).isNotNull().isEqualTo("2305843007066210304.5");
 	}
+	
+	@Test
+	@DisplayName("increaseStock 정상케이스")
+	void When_increaseStock_Expect_Success() {
+		//given
+		final int increaseQuantity = 10;
+		final int expectedQuantity = 20;
+		
+		ReflectionTestUtils.setField(productEntity, "quantity", 10);
+		
+		//when
+		productEntity.increaseStock(increaseQuantity);
+		
+		//then
+		assertThat(productEntity.getQuantity()).isEqualTo(expectedQuantity);
+	}
+	
+	@Test
+	@DisplayName("increaseStock increaseQuantity 가 음수인 경우 BadRequestException 발생")
+	void When_increaseQuantityIsNegative_Expect_BadRequestException() {
+		//given
+		final int increaseQuantity = -10;
+		
+		ReflectionTestUtils.setField(productEntity, "quantity", 10);
+		
+		//when
+		assertThatThrownBy(() -> {
+			productEntity.increaseStock(increaseQuantity);
+		})
+			//then
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO.getMessage());
+	}
+	
+	@Test
+	@DisplayName("decreaseStock 정상케이스")
+	void When_decreaseStock_Expect_Success() {
+		//given
+		final int decreaseQuantity = 5;
+		final int expectedQuantity = 5;
+		
+		ReflectionTestUtils.setField(productEntity, "quantity", 10);
+		
+		//when
+		productEntity.decreaseStock(decreaseQuantity);
+		
+		//then
+		assertThat(productEntity.getQuantity()).isEqualTo(expectedQuantity);
+	}
+	
+	@Test
+	@DisplayName("decreaseStock decreaseQuantity 가 음수인 경우 BadRequestException 발생")
+	void When_decreaseQuantityIsNegative_Expect_BadRequestException() {
+		//given
+		final int decreaseQuantity = -5;
+		
+		ReflectionTestUtils.setField(productEntity, "quantity", 10);
+		
+		//when
+		assertThatThrownBy(() -> {
+			productEntity.decreaseStock(decreaseQuantity);
+		})
+			//then
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO.getMessage());
+	}
+	
+	@Test
+	@DisplayName("decreaseStock restStock 이 음수인 경우 BadRequestException 발생")
+	void When_restStockIsNegative_Expect_BadRequestException() {
+		//given
+		final int decreaseQuantity = 15;
+		
+		ReflectionTestUtils.setField(productEntity, "quantity", 10);
+		
+		//when
+		assertThatThrownBy(() -> {
+			productEntity.decreaseStock(decreaseQuantity);
+		})
+			//then
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO.getMessage());
+	}
 }
