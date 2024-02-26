@@ -89,7 +89,7 @@ public class OrderSelectWithDBServiceTest {
 	@BeforeEach
 	void init() {
 		OrderPersistence orderPersistence = new OrderPersistence(orderMapper, orderRepository, customOrderRepository);
-		orderService = new OrderService(orderRepository, orderPersistence, orderMapper, orderCalculationService, authenticationService,
+		orderService = new OrderService(orderRepository, orderPersistence, orderCalculationService, authenticationService,
 			productValidationHelper, shppingInfoValidationService, paymentService, productService);
 	}
 	
