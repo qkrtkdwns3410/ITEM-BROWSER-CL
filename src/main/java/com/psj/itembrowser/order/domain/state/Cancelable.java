@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.domain.vo;
+package com.psj.itembrowser.order.domain.state;
 
 @FunctionalInterface
 public interface Cancelable {

@@ -97,4 +97,7 @@ public class OrdersProductRelationEntity extends BaseDateTimeEntity {
 			.build();
 	}
 	
+	public void cancel() {
+		this.deletedDate = LocalDateTime.now();
+	}
 }

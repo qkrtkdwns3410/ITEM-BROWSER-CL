@@ -8,7 +8,7 @@ import javax.validation.Valid;
 
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
-import com.psj.itembrowser.order.service.OrderCalculationResult;
+import com.psj.itembrowser.order.domain.state.Cancelable;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
@@ -83,8 +83,8 @@ public class Order implements Cancelable {
 	
 	@Override
 	public boolean isNotCancelable() {
-		List<OrderStatus> cancelableStatus = List.of(OrderStatus.PENDING, OrderStatus.ACCEPT,
-			OrderStatus.INSTRUCT);
+		List<OrderStatus> cancelableStatus = List.of(OrderStatus.PENDING, OrderStatus.ACCEPT, OrderStatus.INSTRUCT);
+		
 		return cancelableStatus.stream()
 			.noneMatch(orderStatus::equals);
 	}
@@ -94,6 +94,7 @@ public class Order implements Cancelable {
 		if (this.paymentStatus == PaymentStatus.COMPLETE) {
 			throw new BadRequestException(ErrorCode.ALREADY_COMPLETE_PAYMENT);
 		}
+		
 		this.paymentStatus = PaymentStatus.COMPLETE;
 		this.paidDate = LocalDateTime.now();
 	}

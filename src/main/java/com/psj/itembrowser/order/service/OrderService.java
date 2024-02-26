@@ -1,7 +1,5 @@
 package com.psj.itembrowser.order.service;
 
-import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +17,8 @@ import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
-import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
-import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
@@ -29,7 +26,6 @@ import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
-import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
@@ -46,7 +42,6 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	
 	private final OrderPersistence orderPersistence;
-	private final OrderMapper orderMapper;
 	private final OrderCalculationService orderCalculationService;
 	
 	private final AuthenticationService authenticationService;
@@ -57,15 +52,9 @@ public class OrderService {
 	
 	@Transactional(readOnly = false, timeout = 4)
 	public void removeOrder(long orderId) {
-		Order findOrder = orderPersistence.findOrderStatusForUpdate(orderId);
-		boolean isNotCancelableOrder = findOrder.isNotCancelable();
+		OrderEntity foundOrder = orderPersistence.findOrderById(orderId);
 		
-		if (isNotCancelableOrder) {
-			throw new BadRequestException(ORDER_NOT_CANCELABLE);
-		}
-		
-		orderPersistence.removeOrder(orderId);
-		orderPersistence.removeOrderProducts(orderId);
+		foundOrder.cancel();
 	}
 	
 	public OrderResponseDTO getOrderWithNotDeleted(Long id) {
