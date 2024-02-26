@@ -237,11 +237,11 @@ public class ProductEntity extends BaseDateTimeEntity {
 			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
 		}
 		
-		BigDecimal unitPrice = BigDecimal.valueOf(this.unitPrice);
+		BigDecimal unitPriceDecimal = BigDecimal.valueOf(this.unitPrice);
 		BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
 		BigDecimal discountRateDecimal = BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);
 		
-		return unitPrice.multiply(quantityDecimal).multiply(discountRateDecimal);
+		return unitPriceDecimal.multiply(quantityDecimal).multiply(discountRateDecimal);
 	}
 	
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {
