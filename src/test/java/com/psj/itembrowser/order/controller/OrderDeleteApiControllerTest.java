@@ -36,27 +36,27 @@ import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(OrderApiController.class)
 @AutoConfigureRestDocs
-public class OrderDeleteApiControllerTest {
+class OrderDeleteApiControllerTest {
 	private final String BASE_URL = "/v1/api/orders";
-
+	
 	@Autowired
 	private MockMvc mockMvc;
-
+	
 	@MockBean
 	private OrderService orderService;
-
+	
 	@MockBean
 	private UserDetailsServiceImpl userDetailsService;
-
+	
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(webApplicationContext)
 			.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
 			.build();
 	}
-
+	
 	@Test
 	@DisplayName("주문 삭제 성공에 대해 200 성공 메시지가 반환되는지 확인합니다.")
 	void When_DeleteOrder_Expect_Status200() throws Exception {
@@ -64,7 +64,7 @@ public class OrderDeleteApiControllerTest {
 		long orderId = 1L;
 		String message = format("Order record for {0} has been deleted.", orderId);
 		// when
-
+		
 		// then
 		mockMvc.perform(RestDocumentationRequestBuilders.delete(BASE_URL + "/{orderId}", orderId)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class OrderDeleteApiControllerTest {
 				)
 			));
 	}
-
+	
 	@Test
 	@DisplayName("주문 삭제 실패가 발생시 주문 삭제에 예외가 발생되는지 체크해야합니다.")
 	void When_DeleteOrder_Expect_Status400() throws Exception {
@@ -98,9 +98,9 @@ public class OrderDeleteApiControllerTest {
 		doThrow(new DatabaseOperationException(ErrorCode.ORDER_DELETE_FAIL))
 			.when(orderService)
 			.removeOrder(orderId);
-
+		
 		// when
-
+		
 		// then
 		mockMvc.perform(RestDocumentationRequestBuilders.delete(BASE_URL + "/{orderId}", orderId))
 			.andExpect(status().isBadRequest())

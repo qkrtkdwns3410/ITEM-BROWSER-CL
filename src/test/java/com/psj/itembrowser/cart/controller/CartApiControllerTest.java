@@ -71,7 +71,7 @@ class CartApiControllerTest {
 	private CartService cartService;
 	
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(webApplicationContext)
@@ -233,7 +233,7 @@ class CartApiControllerTest {
 			// given + then
 			doThrow(new DatabaseOperationException(CART_PRODUCT_INSERT_FAIL))
 				.when(cartService)
-				.addCartProduct(mock);
+				.addCartProduct(any(CartProductRequestDTO.class));
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders

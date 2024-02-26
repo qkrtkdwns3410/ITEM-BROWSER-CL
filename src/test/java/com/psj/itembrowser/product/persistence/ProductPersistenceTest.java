@@ -31,7 +31,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 생성 성공")
-	public void createProduct() {
+	void createProduct() {
 		// given
 		Product product = mock(Product.class);
 		productPersistence.createProduct(product);
@@ -42,7 +42,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 수정 성공")
-	public void updateProduct() {
+	void updateProduct() {
 		// given
 		Product product = mock(Product.class);
 		
@@ -55,7 +55,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 수량 업데이트 성공")
-	public void updateProductQuantity() {
+	void updateProductQuantity() {
 		// given
 		ProductQuantityUpdateRequestDTO dto = ProductQuantityUpdateRequestDTO.builder().build();
 		when(productMapper.updateProductQuantity(dto)).thenReturn(true);
@@ -70,7 +70,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 이미지 생성 성공")
-	public void testCreateProductImages() {
+	void testCreateProductImages() {
 		// 테스트용 상품 이미지 리스트 생성
 		List<ProductImage> productImages = List.of(
 			ProductImage.builder()
@@ -108,7 +108,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 이미지 조회 성공")
-	public void findProductImagesByImageIds() {
+	void findProductImagesByImageIds() {
 		// given
 		List<Long> imageIds = List.of(1L, 2L, 3L);
 		List<ProductImage> productImages = List.of(
@@ -150,7 +150,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 이미지 ID로 이미지 조회 실패 - NotFoundException 발생")
-	public void findProductImagesByImageIdsFailure() {
+	void findProductImagesByImageIdsFailure() {
 		// given
 		List<Long> imageIds = List.of(1L, 2L, 3L);
 		when(productMapper.findProductImagesByImageIds(imageIds)).thenReturn(List.of());
@@ -163,7 +163,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 ID로 이미지 조회 실패 - NotFoundException 발생")
-	public void findProductImagesByProductIdsFailure() {
+	void findProductImagesByProductIdsFailure() {
 		// given
 		Long productId = 1L;
 		when(productMapper.findProductImagesByProductId(productId)).thenReturn(List.of());
@@ -176,7 +176,7 @@ class ProductPersistenceTest {
 	
 	@Test
 	@DisplayName("상품 이미지 삭제 성공")
-	public void deleteProductImages() {
+	void deleteProductImages() {
 		// given
 		List<Long> imageIds = List.of(1L, 2L, 3L);
 		productPersistence.deleteProductImages(imageIds);
@@ -190,7 +190,7 @@ class ProductPersistenceTest {
 		
 		@Test
 		@DisplayName("상품 삭제 성공")
-		public void deleteProductSuccess() {
+		void deleteProductSuccess() {
 			// given
 			Long productIdToDelete = 1L;
 			
@@ -203,7 +203,7 @@ class ProductPersistenceTest {
 		
 		@Test
 		@DisplayName("존재하지 않는 상품 삭제 시도 - 예외 발생하지 않음")
-		public void deleteNonExistentProductNoException() {
+		void deleteNonExistentProductNoException() {
 			// given
 			Long nonExistentProductId = 999L;
 			

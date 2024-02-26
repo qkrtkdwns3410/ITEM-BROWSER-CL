@@ -79,7 +79,7 @@ class FileUtilTest {
 
 	@Test
 	@DisplayName("이미지 파일이 3개 미만 검증 실패")
-	public void validateNumberOfImageFiles() {
+	void validateNumberOfImageFiles() {
 		// given
 		List<MultipartFile> files = List.of(
 			new MockMultipartFile("file", "filename", "image/jpeg", new byte[] {1}));

@@ -13,12 +13,12 @@ import com.psj.itembrowser.order.domain.vo.PaymentStatus;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 
-public class OrderEntityTest {
+class OrderEntityTest {
 	private OrderEntity orderEntity;
 	private static final LocalDateTime NOW = LocalDateTime.now();
 	
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		orderEntity = OrderEntity.builder()
 			.orderStatus(OrderStatus.PENDING)
 			.paymentStatus(PaymentStatus.PENDING)
@@ -27,7 +27,7 @@ public class OrderEntityTest {
 	
 	@Test
 	@DisplayName("결제 완료 시 주문 상태가 완료로 변경")
-	public void When_CompletePayment_Expect_OrderStatusIsComplete() {
+	void When_CompletePayment_Expect_OrderStatusIsComplete() {
 		// when
 		orderEntity.completePayment();
 		
@@ -38,7 +38,7 @@ public class OrderEntityTest {
 	
 	@Test
 	@DisplayName("결제 완료 시 주문 상태가 완료가 아니면 BadRequestException")
-	public void When_CompletePaymentAndPaymentStatusIsComplete_Expect_BadRequestException() {
+	void When_CompletePaymentAndPaymentStatusIsComplete_Expect_BadRequestException() {
 		// given
 		orderEntity = OrderEntity.builder()
 			.orderStatus(OrderStatus.PENDING)

@@ -99,7 +99,7 @@ public class OrderInsertWithDBServiceTest {
 	}
 	
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		member = MemberEntity.builder()
 			.address(
 				Address.builder()
@@ -151,7 +151,7 @@ public class OrderInsertWithDBServiceTest {
 	
 	@Test
 	@DisplayName("주문 생성 - 모든 하위 서비스가 정상적으로 동작하는 경우 - 주문 생성 성공")
-	public void When_AllSubServiceIsCorrectlyWork_Expect_200() {
+	void When_AllSubServiceIsCorrectlyWork_Expect_200() {
 		// given
 		OrderCalculationResult orderResult = OrderCalculationResult.of(
 			BigDecimal.valueOf(1000),
@@ -184,7 +184,7 @@ public class OrderInsertWithDBServiceTest {
 	
 	@Test
 	@DisplayName("주문 생성시 회원이 비활성화 상태인 경우 - 주문 생성 실패")
-	public void When_MemberIsNotActivated_Expect_400() {
+	void When_MemberIsNotActivated_Expect_400() {
 		// given
 		ReflectionTestUtils.setField(member, "status", Status.DISABLED);
 		
@@ -220,7 +220,7 @@ public class OrderInsertWithDBServiceTest {
 	
 	@Test
 	@DisplayName("주문 생성중에 주문상품 재고에 대한 검증이 실패하는 경우")
-	public void When_ProductValidationFailed_Expect_400() {
+	void When_ProductValidationFailed_Expect_400() {
 		// given
 		doThrow(new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH))
 			.when(productValidationHelper).validateProduct(anyList());

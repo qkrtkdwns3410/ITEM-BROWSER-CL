@@ -94,7 +94,7 @@ public class OrderSelectWithDBServiceTest {
 	}
 	
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		validOrderId = 1L;
 		invalidOrderId = 99L;
 		

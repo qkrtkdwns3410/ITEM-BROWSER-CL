@@ -87,7 +87,7 @@ class OrderSelectApiControllerTest {
 	private Order expectedOrderWithCUSTOMERUser;
 	
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(webApplicationContext)

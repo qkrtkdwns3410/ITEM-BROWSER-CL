@@ -110,7 +110,7 @@ class ProductMapperTest {
 	
 	@Test
 	@DisplayName("상품을 저장 성공")
-	public void insertProductTest() {
+	void insertProductTest() {
 		// given
 		LocalDateTime now = LocalDateTime.now().withNano(0);
 		Product product = Product.builder()
@@ -281,7 +281,7 @@ class ProductMapperTest {
 		
 		@Test
 		@DisplayName("이미지 삭제 성공")
-		public void deleteProductImagesTest() {
+		void deleteProductImagesTest() {
 			// given
 			List<Long> deleteImageIds = List.of(1L, 2L, 3L);
 			

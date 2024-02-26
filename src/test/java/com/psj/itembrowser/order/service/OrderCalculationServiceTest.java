@@ -53,7 +53,7 @@ class OrderCalculationServiceTest {
 	private OrderCalculationService orderCalculationService;
 	
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		productPersistence = new ProductPersistence(productMapper, productRepository);
 		orderCalculationService = new OrderCalculationService(productPersistence, percentageDiscountService, shippingPolicyService);
 	}

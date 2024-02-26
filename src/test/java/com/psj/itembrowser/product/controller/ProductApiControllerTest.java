@@ -52,7 +52,7 @@ class ProductApiControllerTest {
 	private ProductService productService;
 	
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(webApplicationContext)
