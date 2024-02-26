@@ -146,6 +146,10 @@ public class MemberEntity extends BaseDateTimeEntity {
 		this.deletedDate = deletedDate;
 	}
 	
+	public boolean isWowMember() {
+		return this.memberShipType == MemberShipType.WOW;
+	}
+	
 	public boolean hasRole(Role role) {
 		return this.role == role;
 	}

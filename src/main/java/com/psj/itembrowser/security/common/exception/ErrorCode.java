@@ -33,6 +33,9 @@ public enum ErrorCode {
 	ORDER_IS_NOT_MATCH_CURRENT_MEMBER(HttpStatus.BAD_REQUEST, "ORDER_005",
 		"Order is not match current member"),
 	ORDER_PRODUCTS_EMPTY(HttpStatus.BAD_REQUEST, "ORDER_006", "Order Products is empty"),
+	ORDER_CALCULATION_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_007",
+		"Not Found Order Calculation Result"),
+	ORDER_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "ORDER_008", "Order Validation Error"),
 	
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),
@@ -52,6 +55,7 @@ public enum ErrorCode {
 	PRODUCT_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "PRODUCT_005", "Validation Error"),
 	PRODUCT_IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "PRODUCT_006", "Not Found Product IMAGE"),
 	PRODUCT_QUANTITY_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "PRODUCT_007", "Product Quantity is not enough"),
+	PRODUCT_QUANTITY_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "PRODUCT_008", "Product Quantity is less than zero"),
 	
 	// FileStore
 	FILE_STORE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_001", "File Store Exception"),

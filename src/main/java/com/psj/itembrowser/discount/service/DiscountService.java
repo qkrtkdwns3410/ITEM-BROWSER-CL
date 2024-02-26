@@ -1,9 +1,11 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.discount.service;
+
+import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 
-import com.psj.itembrowser.member.domain.vo.Member;
-import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
 
 /**
  *packageName    : com.psj.itembrowser.order.service.impl
@@ -18,5 +20,5 @@ import com.psj.itembrowser.product.domain.vo.Product;
  */
 @Service
 public interface DiscountService {
-	double calculateDiscount(Product product, Member member);
+	BigDecimal calculateDiscount(ProductEntity product, MemberEntity member);
 }

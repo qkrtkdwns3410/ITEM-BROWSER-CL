@@ -1,4 +1,6 @@
-package com.psj.itembrowser.security.common.exception;
+package com.psj.itembrowser.security.common.exception.ancestor;
+
+import com.psj.itembrowser.security.common.exception.ErrorCode;
 
 import lombok.Getter;
 

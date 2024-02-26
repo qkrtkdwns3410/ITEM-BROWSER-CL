@@ -7,16 +7,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
+@Setter
+@Getter
 public class ProductResponseDTO {
 	
 	private Long id;
@@ -45,6 +47,8 @@ public class ProductResponseDTO {
 	
 	private String deliveryMethod;
 	
+	private DeliveryFeeType deliveryFeeType;
+	
 	private Integer deliveryDefaultFee;
 	
 	private Integer freeShipOverAmount;
@@ -52,6 +56,31 @@ public class ProductResponseDTO {
 	private String returnCenterCode;
 	
 	private List<ProductImageResponseDTO> productImages;
+	
+	@Builder
+	private ProductResponseDTO(Long id, String name, Integer category, String detail, ProductStatus status, Integer quantity, Integer unitPrice,
+		String sellerId, LocalDateTime sellStartDatetime, LocalDateTime sellEndDatetime, String displayName, String brand, String deliveryMethod,
+		DeliveryFeeType deliveryFeeType, Integer deliveryDefaultFee, Integer freeShipOverAmount, String returnCenterCode,
+		List<ProductImageResponseDTO> productImages) {
+		this.id = id;
+		this.name = name;
+		this.category = category;
+		this.detail = detail;
+		this.status = status;
+		this.quantity = quantity;
+		this.unitPrice = unitPrice;
+		this.sellerId = sellerId;
+		this.sellStartDatetime = sellStartDatetime;
+		this.sellEndDatetime = sellEndDatetime;
+		this.displayName = displayName;
+		this.brand = brand;
+		this.deliveryMethod = deliveryMethod;
+		this.deliveryFeeType = deliveryFeeType;
+		this.deliveryDefaultFee = deliveryDefaultFee;
+		this.freeShipOverAmount = freeShipOverAmount;
+		this.returnCenterCode = returnCenterCode;
+		this.productImages = productImages == null ? List.of() : productImages;
+	}
 	
 	public static ProductResponseDTO from(Product product) {
 		if (product == null) {

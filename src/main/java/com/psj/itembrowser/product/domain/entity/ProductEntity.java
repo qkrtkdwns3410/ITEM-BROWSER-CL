@@ -1,7 +1,10 @@
 package com.psj.itembrowser.product.domain.entity;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,16 +21,17 @@ import javax.validation.constraints.Positive;
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
+import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.product.domain.vo.DeliveryFeeType;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.product.domain.vo.ProductImageEntity;
 import com.psj.itembrowser.product.domain.vo.ProductStatus;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
+import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +40,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "product")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class ProductEntity extends BaseDateTimeEntity {
 	
 	/**
@@ -173,9 +176,9 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.cartProductRelations = cartProductRelations;
-		this.productImages = productImages;
-		this.deletedDate = deletedDate;
+		this.cartProductRelations = cartProductRelations == null ? List.of() : cartProductRelations;
+		this.productImages = productImages == null ? List.of() : productImages;
+		super.deletedDate = deletedDate;
 	}
 	
 	public void validateSellDates() {
@@ -204,19 +207,41 @@ public class ProductEntity extends BaseDateTimeEntity {
 	}
 	
 	// 상품 재고가 충분한지 확인하는 메서드
-	public boolean isEnoughStock(int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
+	public boolean isEnoughStock(ProductEntity orderProduct) {
+		if (orderProduct == null) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
-		return this.quantity >= quantity;
+		
+		if (orderProduct.quantity < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
+		}
+		
+		return this.quantity >= orderProduct.getQuantity();
 	}
 	
-	public double calculateTotalPrice() {
-		return (double)this.unitPrice * (double)this.quantity;
+	public BigDecimal calculateTotalPrice() {
+		Objects.requireNonNull(this.unitPrice, "unitPrice must not be null");
+		Objects.requireNonNull(this.quantity, "quantity must not be null");
+		
+		if (this.unitPrice < 0 || this.quantity < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
+		}
+		
+		return BigDecimal.valueOf(this.unitPrice).multiply(BigDecimal.valueOf(this.quantity));
 	}
 	
-	public double calculateDiscount(int quantity, int discountRate) {
-		return (this.unitPrice * quantity) * ((double)discountRate / 100);
+	public BigDecimal calculateDiscount(int quantity, int discountRate) {
+		Objects.requireNonNull(this.unitPrice, "unitPrice must not be null");
+		
+		if (this.unitPrice < 0 || quantity < 0 || !(0 <= discountRate && discountRate <= 100)) {
+			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
+		}
+		
+		BigDecimal unitPriceDecimal = BigDecimal.valueOf(this.unitPrice);
+		BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
+		BigDecimal discountRateDecimal = BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);
+		
+		return unitPriceDecimal.multiply(quantityDecimal).multiply(discountRateDecimal);
 	}
 	
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {
@@ -272,6 +297,32 @@ public class ProductEntity extends BaseDateTimeEntity {
 		product.returnCenterCode = productUpdateDTO.getReturnCenterCode();
 		
 		return product;
+	}
+	
+	public static ProductEntity from(ProductResponseDTO dto) {
+		if (dto == null) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
+		return ProductEntity.builder()
+			.id(dto.getId())
+			.name(dto.getName())
+			.category(dto.getCategory())
+			.detail(dto.getDetail())
+			.status(dto.getStatus())
+			.quantity(dto.getQuantity())
+			.unitPrice(dto.getUnitPrice())
+			.sellerId(dto.getSellerId())
+			.sellStartDatetime(dto.getSellStartDatetime())
+			.sellEndDatetime(dto.getSellEndDatetime())
+			.displayName(dto.getDisplayName())
+			.brand(dto.getBrand())
+			.deliveryFeeType(dto.getDeliveryFeeType())
+			.deliveryMethod(dto.getDeliveryMethod())
+			.deliveryDefaultFee(dto.getDeliveryDefaultFee())
+			.freeShipOverAmount(dto.getFreeShipOverAmount())
+			.returnCenterCode(dto.getReturnCenterCode())
+			.build();
 	}
 	
 	public static ProductEntity from(Product product) {

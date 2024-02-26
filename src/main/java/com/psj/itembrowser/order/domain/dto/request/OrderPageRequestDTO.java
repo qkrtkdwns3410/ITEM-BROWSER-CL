@@ -5,22 +5,23 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.psj.itembrowser.security.common.pagination.PageRequestDTO;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 @Slf4j
 public class OrderPageRequestDTO extends PageRequestDTO {
 	
@@ -31,10 +32,9 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate requestYear;
 	
-	@Builder
 	private OrderPageRequestDTO(
-		@Positive(message = "pageNum must be positive number") int pageNum,
-		@Positive(message = "pageSize must be positive number") int pageSize,
+		@PositiveOrZero(message = "pageNum must be positive number") int pageNum,
+		@PositiveOrZero(message = "pageSize must be positive number") int pageSize,
 		Long userNumber,
 		LocalDate requestYear
 	) {
@@ -43,12 +43,12 @@ public class OrderPageRequestDTO extends PageRequestDTO {
 		this.requestYear = requestYear;
 	}
 	
-	public static OrderPageRequestDTO create(PageRequestDTO pageRequestDTO, Long userNumber, String requestYearString) {
-		OrderPageRequestDTO orderPageRequestDTO = new OrderPageRequestDTO();
-		
-		orderPageRequestDTO.setPageNum(pageRequestDTO.getPageNum());
-		orderPageRequestDTO.setPageSize(pageRequestDTO.getPageSize());
-		orderPageRequestDTO.setUserNumber(userNumber);
+	public static OrderPageRequestDTO of(PageRequestDTO pageRequestDTO, Long userNumber, String requestYearString) {
+		OrderPageRequestDTO orderPageRequestDTO = OrderPageRequestDTO.builder()
+			.pageNum(pageRequestDTO.getPageNum())
+			.pageSize(pageRequestDTO.getPageSize())
+			.userNumber(userNumber)
+			.build();
 		
 		if (Objects.nonNull(requestYearString)) {
 			try {

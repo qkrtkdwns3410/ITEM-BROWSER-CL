@@ -1,10 +1,11 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.shippingInfos.service;
 
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.psj.itembrowser.address.service.AddressValidationResult;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.openfeign.dto.AddressResponseDto;

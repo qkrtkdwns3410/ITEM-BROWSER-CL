@@ -38,10 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class OrderApiController {
-
+	
 	private final OrderService orderService;
 	private final UserDetailsServiceImpl userDetailsService;
-
+	
 	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN')")
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_CUSTOMER') and returnObject.body.member.email == principal.username)")
 	@GetMapping("/v1/api/orders/{orderId}")
@@ -50,16 +50,16 @@ public class OrderApiController {
 		@CurrentUser Jwt jwt
 	) {
 		log.info("getOrders orderId : {}", orderId);
-
+		
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-
+		
 		Member member = Member.from(customUserDetails.getMemberResponseDTO());
-
+		
 		OrderResponseDTO dto = getOrderResponseBasedOnRole(member, orderId);
-
+		
 		return ResponseEntity.ok(dto);
 	}
-
+	
 	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
 	@PostMapping("/v1/api/orders")
 	public ResponseEntity<OrderResponseDTO> createOrder(
@@ -67,64 +67,64 @@ public class OrderApiController {
 		@CurrentUser Jwt jwt
 	) {
 		log.info("createOrder orderCreateRequestDTO : {}", orderCreateRequestDTO);
-
+		
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-
-		Member member = Member.from(customUserDetails.getMemberResponseDTO());
-
+		
+		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
+		
 		OrderResponseDTO createdOrder = orderService.createOrder(member, orderCreateRequestDTO);
-
+		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 			.path("/{id}")
 			.buildAndExpand(createdOrder.getId())
 			.toUri();
-
+		
 		return ResponseEntity.created(location).build();
 	}
-
+	
 	@GetMapping("/v1/api/orders/users/{userNumber}")
 	public ResponseEntity<Page<OrderResponseDTO>> getOrders(
 		@PathVariable Long userNumber,
-		@ModelAttribute OrderPageRequestDTO orderPageRequestDTO,
+		@Valid @ModelAttribute OrderPageRequestDTO orderPageRequestDTO,
 		@CurrentUser Jwt jwt
 	) {
 		log.info("getOrders userNumber : {}", userNumber);
-
+		
 		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-
+		
 		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
-
+		
 		Page<OrderResponseDTO> orderResponseDTOPage = getOrdersResponseBasedOnRole(member, orderPageRequestDTO);
-
+		
 		return ResponseEntity.ok(orderResponseDTOPage);
 	}
-
+	
 	@DeleteMapping("/v1/api/orders/{orderId}")
 	public MessageDTO removeOrder(@PathVariable Long orderId) {
 		orderService.removeOrder(orderId);
-
+		
 		return new MessageDTO(format("Order record for {0} has been deleted.", orderId));
 	}
-
+	
 	private OrderResponseDTO getOrderResponseBasedOnRole(Member member, Long orderId) {
 		if (member.hasRole(Role.ROLE_ADMIN)) {
 			return orderService.getOrderWithNoCondition(orderId);
 		}
-
+		
 		return orderService.getOrderWithNotDeleted(orderId);
 	}
-
+	
 	private Page<OrderResponseDTO> getOrdersResponseBasedOnRole(MemberEntity member, OrderPageRequestDTO pageRequestDTO) {
-
+		
 		Page<OrderResponseDTO> orderResponseDTOPageInfo;
-
+		
 		if (member.hasRole(Role.ROLE_ADMIN)) {
 			orderResponseDTOPageInfo = orderService.getOrdersWithPaginationAndNoCondition(member, pageRequestDTO);
 		} else {
 			orderResponseDTOPageInfo = orderService.getOrdersWithPaginationAndNotDeleted(member, pageRequestDTO);
 		}
-
+		
 		return orderResponseDTOPageInfo;
 	}
-
+	
 }

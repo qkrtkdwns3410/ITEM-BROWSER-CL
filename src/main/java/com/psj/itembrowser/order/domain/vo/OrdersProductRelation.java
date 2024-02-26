@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,29 +23,29 @@ public class OrdersProductRelation {
 	 * 주문그룹ID
 	 */
 	private Long groupId;
-
+	
 	/**
 	 * 상품ID
 	 */
 	private Long productId;
-
+	
 	/**
 	 * 상품수량
 	 */
 	private Integer productQuantity;
-
+	
 	private OrderCalculationResult orderCalculationResult;
-
+	
 	private LocalDateTime createdDate;
-
+	
 	private LocalDateTime updatedDate;
-
+	
 	private LocalDateTime deletedDate;
-
+	
 	private Product product;
-
+	
 	@Builder
-	public OrdersProductRelation(Long groupId, Long productId, Integer productQuantity, OrderCalculationResult orderCalculationResult,
+	private OrdersProductRelation(Long groupId, Long productId, Integer productQuantity, OrderCalculationResult orderCalculationResult,
 		LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime deletedDate, Product product) {
 		this.groupId = groupId;
 		this.productId = productId;
@@ -54,7 +56,7 @@ public class OrdersProductRelation {
 		this.deletedDate = deletedDate;
 		this.product = product;
 	}
-
+	
 	public static OrdersProductRelation of(
 		Long groupId,
 		Long productId,
@@ -64,29 +66,30 @@ public class OrdersProductRelation {
 		LocalDateTime deletedDate,
 		Product product
 	) {
-		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-
-		ordersProductRelation.groupId = groupId;
-		ordersProductRelation.productId = productId;
-		ordersProductRelation.productQuantity = productQuantity;
-		ordersProductRelation.createdDate = createdDate;
-		ordersProductRelation.updatedDate = updatedDate;
-		ordersProductRelation.deletedDate = deletedDate;
-		ordersProductRelation.product = product;
-
-		return ordersProductRelation;
+		return OrdersProductRelation.builder()
+			.groupId(groupId)
+			.productId(productId)
+			.productQuantity(productQuantity)
+			.createdDate(createdDate)
+			.updatedDate(updatedDate)
+			.deletedDate(deletedDate)
+			.product(product)
+			.build();
 	}
-
+	
 	public static OrdersProductRelation of(OrdersProductRelationResponseDTO ordersProductRelationResponseDTO) {
-		OrdersProductRelation ordersProductRelation = new OrdersProductRelation();
-
-		ordersProductRelation.groupId = ordersProductRelationResponseDTO.getGroupId();
-		ordersProductRelation.productId = ordersProductRelationResponseDTO.getProductId();
-		ordersProductRelation.productQuantity = ordersProductRelationResponseDTO.getProductQuantity();
-		ordersProductRelation.createdDate = ordersProductRelationResponseDTO.getCreatedDate();
-		ordersProductRelation.updatedDate = ordersProductRelationResponseDTO.getUpdatedDate();
-		ordersProductRelation.deletedDate = ordersProductRelationResponseDTO.getDeletedDate();
-
-		return ordersProductRelation;
+		if (ordersProductRelationResponseDTO == null) {
+			throw new NotFoundException(ErrorCode.ORDER_PRODUCTS_EMPTY);
+		}
+		
+		return OrdersProductRelation.builder()
+			.groupId(ordersProductRelationResponseDTO.getGroupId())
+			.productId(ordersProductRelationResponseDTO.getProductId())
+			.productQuantity(ordersProductRelationResponseDTO.getProductQuantity())
+			.createdDate(ordersProductRelationResponseDTO.getCreatedDate())
+			.updatedDate(ordersProductRelationResponseDTO.getUpdatedDate())
+			.deletedDate(ordersProductRelationResponseDTO.getDeletedDate())
+			.product(Product.from(ordersProductRelationResponseDTO.getProductResponseDTO()))
+			.build();
 	}
 }

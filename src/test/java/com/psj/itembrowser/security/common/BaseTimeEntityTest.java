@@ -8,18 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 
-import com.psj.itembrowser.config.annotation.RepositoryTest;
+import com.psj.itembrowser.config.annotation.ServiceWithDBTest;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Name;
-import com.psj.itembrowser.security.common.config.audit.JpaAuditingConfiguration;
 
-@RepositoryTest
+@ServiceWithDBTest
 @DisplayName("BaseTimeEntity 클래스 테스트")
-@Import(JpaAuditingConfiguration.class)
 class BaseTimeEntityTest {
 	
 	@Autowired

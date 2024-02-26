@@ -56,42 +56,44 @@ import com.psj.itembrowser.security.common.exception.NotFoundException;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class CartApiControllerTest {
-
+	
 	private final String BASE_URL = "/v1/api/cart";
-
+	
 	private final String USER_EMAIL = "test@test.com";
-
+	
 	@Autowired
 	MockMvc mockMvc;
-
+	
 	@Autowired
 	ObjectMapper objectMapper;
-
+	
 	@MockBean
 	private CartService cartService;
-
+	
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(webApplicationContext)
 			.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
 			.build();
 	}
-
+	
 	@Nested
 	class SelectTest {
-
+		
 		@Test
 		@DisplayName("장바구니 목록 조회 API 테스트 -> 정상 조회 테스트")
 		void given_GetCart_Expect_Success() throws Exception {
 			// given
-			CartResponseDTO cartResponseDTO = new CartResponseDTO();
-			cartResponseDTO.setUserId(USER_EMAIL);
-			cartResponseDTO.setProducts(List.of(CartProductRelationResponseDTO.builder().build()));
-
+			CartResponseDTO cartResponseDTO = CartResponseDTO
+				.builder()
+				.userId(USER_EMAIL)
+				.products(List.of(CartProductRelationResponseDTO.builder().build()))
+				.build();
+			
 			given(cartService.getCart(anyString())).willReturn(cartResponseDTO);
-
+			
 			// when + then
 			mockMvc
 				.perform(
@@ -133,14 +135,14 @@ class CartApiControllerTest {
 					)
 				));
 		}
-
+		
 		@Test
 		@DisplayName("장바구니 빈값 조회시 API 오류 발생")
 		void given_CartIsNull_Expect_Exception() throws Exception {
 			// given
 			given(cartService.getCart(anyString())).willThrow(
 				new NotFoundException(ErrorCode.CART_NOT_FOUND));
-
+			
 			// given + then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
@@ -172,12 +174,12 @@ class CartApiControllerTest {
 				));
 		}
 	}
-
+	
 	@Nested
 	class InsertTest {
-
+		
 		CartProductRequestDTO mock;
-
+		
 		@BeforeEach
 		void setUp() {
 			// given
@@ -189,7 +191,7 @@ class CartApiControllerTest {
 				.userId(USER_EMAIL)
 				.build();
 		}
-
+		
 		@Test
 		@DisplayName("장바구니에 상품을 올바르게 삽입시, 정상 응답 테스트")
 		void given_CorrectInsertProductInCart_Expect_Success() throws Exception {
@@ -206,7 +208,7 @@ class CartApiControllerTest {
 					"add-cart",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
+					
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")
@@ -224,15 +226,15 @@ class CartApiControllerTest {
 					)
 				));
 		}
-
+		
 		@Test
 		@DisplayName("장바구니에 상품을 잘못 삽입시, 오류 응답 테스트")
 		void given_IncorrectInsertProductInCart_Expect_Exception() throws Exception {
 			// given + then
 			doThrow(new DatabaseOperationException(CART_PRODUCT_INSERT_FAIL))
 				.when(cartService)
-				.addCartProduct(mock);
-
+				.addCartProduct(any(CartProductRequestDTO.class));
+			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
 					.post(BASE_URL + "/add")
@@ -244,7 +246,7 @@ class CartApiControllerTest {
 					"add-cart-fail",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
+					
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")
@@ -267,12 +269,12 @@ class CartApiControllerTest {
 				));
 		}
 	}
-
+	
 	@Nested
 	class UpdateTest {
-
+		
 		CartProductUpdateRequestDTO mock;
-
+		
 		@BeforeEach
 		void setUp() {
 			// given
@@ -283,7 +285,7 @@ class CartApiControllerTest {
 				.quantity(10)
 				.build();
 		}
-
+		
 		@Test
 		@DisplayName("장바구니 상품 수정 API -> 정상 응답 테스트")
 		void given_UpdateProductInCart_Expect_Success() throws Exception {
@@ -300,7 +302,7 @@ class CartApiControllerTest {
 					"update-cart",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
+					
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")
@@ -317,7 +319,7 @@ class CartApiControllerTest {
 					)
 				));
 		}
-
+		
 		@Test
 		@DisplayName("장바구니 상품 수정 API -> 장바구니 상품이 존재하지 않을 경우 오류 발생")
 		void given_UpdateProductInCart_Expect_Exception() throws Exception {
@@ -328,12 +330,12 @@ class CartApiControllerTest {
 				.productId(1L)
 				.quantity(10)
 				.build();
-
+			
 			//when -  then
 			doThrow(new NotFoundException(CART_PRODUCT_UPDATE_FAIL))
 				.when(cartService)
 				.modifyCartProduct(any(CartProductUpdateRequestDTO.class));
-
+			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
 					.put(BASE_URL + "/update")
@@ -346,7 +348,7 @@ class CartApiControllerTest {
 					"update-cart-fail",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
+					
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")
@@ -368,12 +370,12 @@ class CartApiControllerTest {
 				));
 		}
 	}
-
+	
 	@Nested
 	class DeleteTest {
-
+		
 		CartProductDeleteRequestDTO mock;
-
+		
 		@BeforeEach
 		void setUp() {
 			// given
@@ -383,7 +385,7 @@ class CartApiControllerTest {
 				.productId(1L)
 				.build();
 		}
-
+		
 		@Test
 		@DisplayName("장바구니에서 상품 삭제 API -> 정상 응답 테스트")
 		void given_DeleteProductInCart_Expect_Success() throws Exception {
@@ -400,7 +402,7 @@ class CartApiControllerTest {
 					"delete-cart",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
+					
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")
@@ -416,15 +418,15 @@ class CartApiControllerTest {
 					)
 				));
 		}
-
+		
 		@Test
 		@DisplayName("장바구니 상품 삭제 API -> 장바구니 상품이 존재하지 않을 경우 오류 발생")
 		void given_DeleteProductInCart_Expect_Exception() throws Exception {
 			// given + then
 			doThrow(new NotFoundException(CART_PRODUCT_DELETE_FAIL))
 				.when(cartService)
-				.removeCart(mock);
-
+				.removeCart(any(CartProductDeleteRequestDTO.class));
+			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
 					.delete(BASE_URL + "/delete")
@@ -437,7 +439,6 @@ class CartApiControllerTest {
 					"delete-cart-fail",
 					preprocessRequest(prettyPrint()),
 					preprocessResponse(prettyPrint()),
-
 					ResourceDocumentation.resource(
 						ResourceSnippetParameters.builder()
 							.tag("cart")

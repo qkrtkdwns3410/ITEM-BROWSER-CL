@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
-import com.psj.itembrowser.product.domain.vo.Product;
+import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 
@@ -27,13 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductValidationHelper {
-	private final ProductService productService;
-
-	public void validateProduct(List<Product> products) {
-		products.forEach(product -> {
-			ProductResponseDTO productResponseDTO = productService.getProduct(product.getId());
-
-			if (product.isEnoughStock(productResponseDTO.getQuantity()) == false) {
+	private final ProductPersistence productPersistence;
+	
+	public void validateProduct(List<ProductEntity> orderProducts) {
+		if (orderProducts == null || orderProducts.isEmpty()) {
+			throw new BadRequestException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
+		orderProducts.forEach(orderProduct -> {
+			ProductEntity foundProduct = productPersistence.findWithPessimisticLockById(orderProduct.getId());
+			
+			if (foundProduct.isEnoughStock(orderProduct) == false) {
 				throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH);
 			}
 		});
