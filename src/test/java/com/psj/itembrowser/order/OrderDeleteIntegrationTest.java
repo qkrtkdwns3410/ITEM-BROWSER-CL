@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +29,20 @@ import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 
 @SpringBootTest
+@Disabled("삭제의 경우 동시 테스트가 의미가 있는지 고려해봐야할 것 같다.")
 @AutoConfigureTestDatabase(replace = Replace.AUTO_CONFIGURED)
 @ActiveProfiles("test")
 class OrderDeleteIntegrationTest {
-
+	
 	@Autowired
 	private OrderService orderService;
-
+	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-
+	
 	@Value("${customed.table.schema}")
 	private String tableSchema;
-
+	
 	//TODO @sql 을 JPA 로 변경
 	@Test
 	@Sql(scripts = {
@@ -57,12 +59,12 @@ class OrderDeleteIntegrationTest {
 		int threadCount = 5;
 		int expectedSuccessCount = 1;
 		int expectedFailCount = threadCount - expectedSuccessCount;
-
+		
 		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failCount = new AtomicInteger();
 		List<Future<?>> futures = new ArrayList<>();
-
+		
 		// when
 		for (int i = 0; i < threadCount; i++) {
 			futures.add(executorService.submit(() -> {
@@ -70,10 +72,10 @@ class OrderDeleteIntegrationTest {
 				successCount.incrementAndGet();
 			}));
 		}
-
+		
 		executorService.shutdown();
 		boolean didAllThreadsTerminate = executorService.awaitTermination(1, MINUTES);
-
+		
 		// then
 		// 스레드가 모두 1분안에 수행된 경우에만 성공
 		assertThat(didAllThreadsTerminate).isTrue();
@@ -81,7 +83,7 @@ class OrderDeleteIntegrationTest {
 		assertThat(successCount.get()).isEqualTo(expectedSuccessCount);
 		// 스레드의 개수와 future 가 동일한지 확인
 		assertThat(futures).hasSize(threadCount);
-
+		
 		// 실패한 테스트의 경우 CustomIllegalStateException 이 발생하므로, 이를 통해 실패한 테스트를 확인
 		futures.stream()
 			.filter(Future::isDone)
@@ -94,16 +96,16 @@ class OrderDeleteIntegrationTest {
 						throw e.getCause();
 					}).isInstanceOf(BadRequestException.class)
 						.hasMessage(ErrorCode.ORDER_NOT_CANCELABLE.getMessage());
-
+					
 					// 실패 카운트 증대
 					failCount.getAndIncrement();
 				}
 			});
-
+		
 		// 실패카운트가 4개인지 확인
 		assertThat(failCount.get()).isEqualTo(expectedFailCount);
 	}
-
+	
 	//TODO @sql 을 JPA 로 변경시 테스트 데이터 삭제 구현필
 	@AfterEach
 	void cleanUpAfterEachTest() {

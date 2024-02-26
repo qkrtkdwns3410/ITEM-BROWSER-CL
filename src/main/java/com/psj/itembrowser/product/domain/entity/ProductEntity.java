@@ -16,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Positive;
 
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
@@ -190,19 +189,26 @@ public class ProductEntity extends BaseDateTimeEntity {
 	}
 	
 	// 상품 재고를 줄이는 메서드
-	public void decreaseStock(@Positive int quantity) {
-		int restStock = this.quantity - quantity;
-		if (restStock < 0) {
-			throw new IllegalStateException("need more stock");
+	public void decreaseStock(int quantity) {
+		if (quantity < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
 		}
+		
+		int restStock = this.quantity - quantity;
+		
+		if (restStock < 0) {
+			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
+		}
+		
 		this.quantity = restStock;
 	}
 	
 	// 상품 재고를 늘리는 메서드
 	public void increaseStock(int quantity) {
 		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
+			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
 		}
+		
 		this.quantity += quantity;
 	}
 	

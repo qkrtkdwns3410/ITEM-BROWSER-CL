@@ -1,4 +1,4 @@
-package com.psj.itembrowser.order.service;
+package com.psj.itembrowser.order.domain.vo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

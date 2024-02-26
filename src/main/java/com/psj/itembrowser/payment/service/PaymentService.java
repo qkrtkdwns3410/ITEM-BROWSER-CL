@@ -2,7 +2,7 @@ package com.psj.itembrowser.payment.service;
 
 import org.springframework.stereotype.Service;
 
-import com.psj.itembrowser.order.service.OrderCalculationResult;
+import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 
 /**
  *packageName    : com.psj.itembrowser.order.service.impl

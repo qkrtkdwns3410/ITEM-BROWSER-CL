@@ -19,6 +19,7 @@ import com.psj.itembrowser.discount.service.PercentageDiscountService;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.MemberShipType;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
+import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.mapper.ProductMapper;

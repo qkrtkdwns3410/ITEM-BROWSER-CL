@@ -2,7 +2,6 @@ package com.psj.itembrowser.order.domain.vo;
 
 import java.time.LocalDateTime;
 
-import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;

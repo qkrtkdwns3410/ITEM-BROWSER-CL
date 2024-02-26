@@ -26,6 +26,7 @@ import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.member.repository.MemberRepository;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
+import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.mapper.OrderMapper;
@@ -94,7 +95,7 @@ public class OrderInsertWithDBServiceTest {
 	@BeforeEach
 	void init() {
 		OrderPersistence orderPersistence = new OrderPersistence(orderMapper, orderRepository, customOrderRepository);
-		orderService = new OrderService(orderRepository, orderPersistence, orderMapper, orderCalculationService, authenticationService,
+		orderService = new OrderService(orderRepository, orderPersistence, orderCalculationService, authenticationService,
 			productValidationHelper, shppingInfoValidationService, paymentService, productService);
 	}
 	

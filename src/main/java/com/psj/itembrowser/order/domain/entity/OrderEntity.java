@@ -3,6 +3,7 @@ package com.psj.itembrowser.order.domain.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -21,12 +22,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.proxy.HibernateProxy;
+import org.springframework.util.CollectionUtils;
+
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
+import com.psj.itembrowser.order.domain.state.Cancelable;
 import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.domain.vo.PaymentStatus;
-import com.psj.itembrowser.order.service.OrderCalculationResult;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -42,7 +47,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderEntity extends BaseDateTimeEntity {
+public class OrderEntity extends BaseDateTimeEntity implements Cancelable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
@@ -134,5 +139,55 @@ public class OrderEntity extends BaseDateTimeEntity {
 		
 		this.paymentStatus = PaymentStatus.COMPLETE;
 		this.paidDate = LocalDateTime.now();
+	}
+	
+	@Override
+	public boolean isNotCancelable() {
+		List<OrderStatus> cancelableStatus = List.of(OrderStatus.PENDING, OrderStatus.ACCEPT, OrderStatus.INSTRUCT);
+		
+		return cancelableStatus.stream()
+			.noneMatch(orderStatus::equals);
+	}
+	
+	public void cancel() {
+		if (isNotCancelable()) {
+			throw new BadRequestException(ErrorCode.ORDER_NOT_CANCELABLE);
+		}
+		
+		this.orderStatus = OrderStatus.CANCELED;
+		this.deletedDate = LocalDateTime.now();
+		
+		cancelOrderProducts();
+	}
+	
+	private void cancelOrderProducts() {
+		if (CollectionUtils.isEmpty(this.ordersProductRelations)) {
+			return;
+		}
+		
+		this.ordersProductRelations.forEach(OrdersProductRelationEntity::cancel);
+	}
+	
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		Class<?> oEffectiveClass =
+			o instanceof HibernateProxy ? ((HibernateProxy)o).getHibernateLazyInitializer().getPersistentClass() :
+				o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
+		OrderEntity that = (OrderEntity)o;
+		return getId() != null && Objects.equals(getId(), that.getId());
+	}
+	
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }
