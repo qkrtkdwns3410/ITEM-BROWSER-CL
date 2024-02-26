@@ -21,8 +21,10 @@ public enum ErrorCode {
 	CART_PRODUCT_INSERT_FAIL(HttpStatus.BAD_REQUEST, "CART_004", "Fail to insert Cart Product"),
 	CART_PRODUCT_UPDATE_FAIL(HttpStatus.BAD_REQUEST, "CART_005", "Fail to update Cart Product"),
 	CART_PRODUCT_DELETE_FAIL(HttpStatus.BAD_REQUEST, "CART_006", "Fail to delete Cart Product"),
-	CART_PRODUCT_QUANTITY_NOT_POSITIVE(HttpStatus.BAD_REQUEST, "CART_007",
-		"Quantity must be positive"),
+	CART_PRODUCT_QUANTITY_NOT_POSITIVE(HttpStatus.BAD_REQUEST, "CART_007", "Quantity must be positive"),
+	
+	//Cart Relation
+	CART_PRODUCT_RELATION_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_RELATION_001", "Not Found Cart Product Relation"),
 	
 	// Order
 	ORDER_DELETE_FAIL(HttpStatus.BAD_REQUEST, "ORDER_001", "Fail to delete Order"),
@@ -83,7 +85,8 @@ public enum ErrorCode {
 	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment"),
 	
 	//ShippingInfo
-	SHIPPING_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SHIPPING_INFO_001", "Not Found Shipping Info");
+	SHIPPING_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SHIPPING_INFO_001", "Not Found Shipping Info"),
+	;
 	
 	private final HttpStatus status;
 	private final String code;

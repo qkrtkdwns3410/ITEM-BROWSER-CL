@@ -1,4 +1,4 @@
-package com.psj.itembrowser.cart.service.impl;
+package com.psj.itembrowser.cart.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,6 @@ import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.cart.persistance.CartPersistence;
-import com.psj.itembrowser.cart.service.CartService;
 import com.psj.itembrowser.product.domain.vo.Product;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 

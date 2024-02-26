@@ -63,7 +63,7 @@ public class CartResponseDTO implements Serializable {
 		}
 		
 		return CartResponseDTO.builder()
-			.userId(entity.getUserId())
+			.userId(entity.getUserEmail())
 			.createdDate(entity.getCreatedDate())
 			.updatedDate(entity.getUpdatedDate())
 			.products(entity.getCartProductRelations()

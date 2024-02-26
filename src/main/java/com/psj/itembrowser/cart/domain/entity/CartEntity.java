@@ -30,17 +30,29 @@ public class CartEntity extends BaseDateTimeEntity {
 	@Column(name = "id", nullable = false)
 	private Long id;
 	
-	@Column(name = "user_id")
-	private String userId;
+	@Column(name = "user_email", nullable = false, unique = true)
+	private String userEmail;
 	
 	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.PERSIST)
 	private List<CartProductRelationEntity> cartProductRelations = new ArrayList<>();
 	
 	@Builder
-	private CartEntity(Long id, String userId, List<CartProductRelationEntity> cartProductRelations, LocalDateTime deletedDate) {
+	private CartEntity(Long id, String userEmail, List<CartProductRelationEntity> cartProductRelations, LocalDateTime deletedDate) {
 		this.id = id;
-		this.userId = userId;
+		this.userEmail = userEmail;
 		this.cartProductRelations = cartProductRelations == null ? new ArrayList<>() : cartProductRelations;
 		this.deletedDate = deletedDate;
+	}
+	
+	public void addCartProductRelation(CartProductRelationEntity cartProductRelation) {
+		if (cartProductRelations == null) {
+			cartProductRelations = new ArrayList<>();
+		}
+		
+		this.cartProductRelations.add(cartProductRelation);
+		
+		if (cartProductRelation.getCartEntity() != this) {
+			cartProductRelation.setCartEntity(this); // 반대편 엔티티에도 자신을 설정
+		}
 	}
 }

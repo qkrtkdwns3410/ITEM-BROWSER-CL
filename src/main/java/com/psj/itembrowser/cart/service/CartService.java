@@ -32,9 +32,9 @@ public class CartService {
 
 	private final CartPersistence cartPersistence;
 	private final CartMapper cartMapper;
-
-	public CartResponseDTO getCart(String userId) {
-		return cartPersistence.getCart(userId);
+	
+	public CartResponseDTO getCart(String userEmail) {
+		return cartPersistence.getCart(userEmail);
 	}
 
 	public CartResponseDTO getCart(Long cartId) {
