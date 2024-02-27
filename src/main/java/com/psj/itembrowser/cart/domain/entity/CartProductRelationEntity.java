@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
-import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -44,21 +43,15 @@ public class CartProductRelationEntity extends BaseDateTimeEntity {
 	@Column(name = "product_quantity")
 	private Long productQuantity;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRODUCT_ID", insertable = false, updatable = false, referencedColumnName = "ID")
-	private ProductEntity product;
-	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "CART_ID", insertable = false, updatable = false, referencedColumnName = "ID")
 	private CartEntity cartEntity;
 	
 	@Builder
-	private CartProductRelationEntity(Long cartId, Long productId, Long productQuantity, ProductEntity product, CartEntity cartEntity,
-		LocalDateTime deletedDate) {
+	private CartProductRelationEntity(Long cartId, Long productId, Long productQuantity, CartEntity cartEntity, LocalDateTime deletedDate) {
 		this.cartId = cartId;
 		this.productId = productId;
 		this.productQuantity = productQuantity;
-		this.product = product;
 		this.cartEntity = cartEntity;
 		this.deletedDate = deletedDate;
 	}
@@ -72,7 +65,6 @@ public class CartProductRelationEntity extends BaseDateTimeEntity {
 			.cartId(dto.getCartId())
 			.productId(dto.getProductId())
 			.productQuantity(dto.getProductQuantity())
-			.product(ProductEntity.from(dto.getProduct()))
 			.build();
 	}
 	

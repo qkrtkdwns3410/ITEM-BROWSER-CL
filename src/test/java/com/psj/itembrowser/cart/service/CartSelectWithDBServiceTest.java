@@ -76,7 +76,6 @@ class CartSelectWithDBServiceTest {
 		CartProductRelationEntity cartProductRelation = CartProductRelationEntity.builder()
 			.cartId(cart.getId())
 			.productId(product.getId())
-			.product(product)
 			.build();
 		
 		cart.addCartProductRelation(cartProductRelation);
@@ -150,7 +149,6 @@ class CartSelectWithDBServiceTest {
 		CartProductRelationEntity cartProductRelation = CartProductRelationEntity.builder()
 			.cartId(cart.getId())
 			.productId(product.getId())
-			.product(product)
 			.build();
 		
 		cart.addCartProductRelation(cartProductRelation);

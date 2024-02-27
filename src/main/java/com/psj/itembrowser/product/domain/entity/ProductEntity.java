@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
 import com.psj.itembrowser.product.domain.dto.request.ProductUpdateDTO;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
@@ -147,16 +146,13 @@ public class ProductEntity extends BaseDateTimeEntity {
 	private String returnCenterCode;
 	
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-	private List<CartProductRelationEntity> cartProductRelations;
-	
-	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<ProductImageEntity> productImages;
 	
 	@Builder
 	private ProductEntity(LocalDateTime deletedDate, Long id, String name, Integer category,
 		String detail, ProductStatus status, Integer quantity, Integer unitPrice, String sellerId, LocalDateTime sellStartDatetime,
 		LocalDateTime sellEndDatetime, String displayName, String brand, DeliveryFeeType deliveryFeeType, String deliveryMethod,
-		Integer deliveryDefaultFee, Integer freeShipOverAmount, String returnCenterCode, List<CartProductRelationEntity> cartProductRelations,
+		Integer deliveryDefaultFee, Integer freeShipOverAmount, String returnCenterCode,
 		List<ProductImageEntity> productImages) {
 		this.id = id;
 		this.name = name;
@@ -175,7 +171,6 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.cartProductRelations = cartProductRelations == null ? List.of() : cartProductRelations;
 		this.productImages = productImages == null ? List.of() : productImages;
 		super.deletedDate = deletedDate;
 	}
