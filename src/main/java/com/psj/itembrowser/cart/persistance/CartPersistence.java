@@ -9,7 +9,6 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
-import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -27,60 +26,50 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CartPersistence {
-
+	
 	private final CartMapper cartMapper;
 	private final CartRepository cartRepository;
-
-	//TODO 레포지터리 영역에 Optional .orElseThrow()를 사용하여 null 체크를 추가하도록해야합니다.
-
-	public CartResponseDTO getCart(@NonNull String userId) {
-		CartEntity cart = cartRepository.findByUserId(userId);
-
-		if (cart == null) {
-			throw new NotFoundException(CART_NOT_FOUND);
-		}
-
+	
+	public CartResponseDTO getCart(@NonNull String userEmail) {
+		CartEntity cart = cartRepository.findByUserEmail(userEmail).orElseThrow(() -> new NotFoundException(CART_NOT_FOUND));
+		
 		return CartResponseDTO.from(cart);
 	}
-
+	
 	public CartResponseDTO getCart(@NonNull Long cartId) {
-		Cart cart = cartMapper.getCart(cartId);
-
-		if (cart == null) {
-			throw new NotFoundException(CART_PRODUCT_NOT_FOUND);
-		}
-
+		CartEntity cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException(CART_NOT_FOUND));
+		
 		return CartResponseDTO.from(cart);
 	}
-
+	
 	public void insertCartProduct(@NonNull CartProductRequestDTO cartProductRequestDTO) {
 		boolean isNotInserted = !cartMapper.insertCartProduct(cartProductRequestDTO);
-
+		
 		if (isNotInserted) {
 			throw new DatabaseOperationException(CART_PRODUCT_INSERT_FAIL);
 		}
 	}
-
+	
 	public void modifyCartProduct(
 		@NonNull CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		boolean isNotModified = !cartMapper.updateCartProductRelation(cartProductUpdateRequestDTO);
-
+		
 		if (isNotModified) {
 			throw new DatabaseOperationException(CART_PRODUCT_UPDATE_FAIL);
 		}
 	}
-
+	
 	public void deleteCart(@NonNull CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {
 		boolean isNotDeleted = !cartMapper.deleteCartProductRelation(cartProductDeleteRequestDTO);
-
+		
 		if (isNotDeleted) {
 			throw new DatabaseOperationException(CART_PRODUCT_DELETE_FAIL);
 		}
 	}
-
+	
 	public void addCart(@NonNull String userId) {
 		boolean isNotAdded = !cartMapper.insertCart(userId);
-
+		
 		if (isNotAdded) {
 			throw new DatabaseOperationException(CART_INSERT_FAIL);
 		}

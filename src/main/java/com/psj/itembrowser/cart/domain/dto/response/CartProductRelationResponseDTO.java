@@ -56,7 +56,6 @@ public class CartProductRelationResponseDTO {
 			.cartId(entity.getCartId())
 			.productId(entity.getProductId())
 			.productQuantity(entity.getProductQuantity())
-			.product(ProductResponseDTO.from(entity.getProduct()))
 			.build();
 	}
 	

@@ -5,10 +5,6 @@ import static com.psj.itembrowser.order.domain.entity.QOrderEntity.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,15 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomOrderRepository {
 	
-	@PersistenceContext
-	private EntityManager em;
-	
-	private JPAQueryFactory qf;
-	
-	@PostConstruct
-	public void init() {
-		this.qf = new JPAQueryFactory(em);
-	}
+	private final JPAQueryFactory qf;
 	
 	public Page<OrderEntity> selectOrdersWithPagination(OrderPageRequestDTO dto, Pageable pageable, Boolean isDeleted) {
 		JPAQuery<OrderEntity> query = qf.selectFrom(orderEntity)

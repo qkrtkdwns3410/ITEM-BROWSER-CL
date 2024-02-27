@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.psj.itembrowser.config.TestQueryDslConfig;
+import com.psj.itembrowser.config.TestQdslConfig;
 import com.psj.itembrowser.security.common.config.audit.JpaAuditingConfiguration;
 
 /**
@@ -31,7 +31,7 @@ import com.psj.itembrowser.security.common.config.audit.JpaAuditingConfiguration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @AutoConfigureTestDatabase(replace = ANY)
-@Import({TestQueryDslConfig.class, JpaAuditingConfiguration.class})
+@Import({TestQdslConfig.class, JpaAuditingConfiguration.class})
 @DataJpaTest
 @ActiveProfiles("test")
 public @interface ServiceWithDBTest {
