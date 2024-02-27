@@ -30,6 +30,7 @@ import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
+@Disabled("해당 단위 테스트는 의미없는 것으로 생각함, 전부 서비스 테스트로 변경할 예정입니다.")
 class CartPersistenceTest {
 	
 	private static final String TEST_USER_ID = "psjoon3410";

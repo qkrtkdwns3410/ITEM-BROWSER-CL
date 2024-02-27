@@ -117,12 +117,86 @@ class CartSelectWithDBServiceTest {
 	
 	@Test
 	@DisplayName("사용자 이름 단건 조회 서비스 - 장바구니 생성 내역 자체가 없는 경우 -  NotFoundException 발생")
-	void When_getCart_Then_returnEmptyCartResponseDTO() {
+	void When_getCart_Expect_NotFoundException() {
 		//given
 		final String memberEmail = "akdjladjajsjadaj";
 		
 		//when
 		assertThatThrownBy(() -> cartService.getCart(memberEmail))
+			//then
+			.isInstanceOf(NotFoundException.class)
+			.hasMessage(ErrorCode.CART_NOT_FOUND.getMessage());
+	}
+	
+	@Test
+	@DisplayName("장바구니 ID 단건 조회 서비스 - 정상 처리")
+	void When_getCartById_Then_returnCartResponseDTO() {
+		//given
+		final String memberEmail = "qkrtkdwns3410@gmail.com";
+		
+		CartEntity cart = CartEntity.builder()
+			.userEmail(memberEmail)
+			.build();
+		
+		ProductEntity product = ProductEntity.builder()
+			.name("섬유유연제")
+			.unitPrice(1000)
+			.quantity(10)
+			.build();
+		
+		em.persist(product);
+		em.persist(cart);
+		
+		CartProductRelationEntity cartProductRelation = CartProductRelationEntity.builder()
+			.cartId(cart.getId())
+			.productId(product.getId())
+			.product(product)
+			.build();
+		
+		cart.addCartProductRelation(cartProductRelation);
+		
+		em.persist(cartProductRelation);
+		
+		em.flush();
+		
+		//when
+		CartResponseDTO actualCartResponseDTO = cartService.getCart(cart.getId());
+		
+		//then
+		assertThat(actualCartResponseDTO).as("CartResponseDTO는 null이 아니어야 한다")
+			.isNotNull();
+		
+		assertThat(actualCartResponseDTO.getProducts()).as("제품 목록은 null이 아니고 비어있지 않아야 한다")
+			.isNotNull()
+			.isNotEmpty();
+		
+		assertAll("CartResponseDTO 검증",
+			() -> assertThat(actualCartResponseDTO.getUserId())
+				.as("사용자 ID가 예상한 값과 일치해야 한다")
+				.isEqualTo(memberEmail),
+			
+			() -> assertThat(actualCartResponseDTO.getCreatedDate())
+				.as("생성 날짜가 NOW 이후여야 한다")
+				.isAfter(NOW),
+			
+			() -> assertThat(actualCartResponseDTO.getProducts().get(0).getProductId())
+				.as("첫 번째 제품의 ID가 예상한 값과 일치해야 한다")
+				.isEqualTo(product.getId()),
+			
+			() -> assertThat(actualCartResponseDTO.getProducts().get(0).getProductQuantity())
+				.as("첫 번째 제품의 수량이 예상한 값과 일치해야 한다")
+				.isEqualTo(cartProductRelation.getProductQuantity())
+		);
+	}
+	
+	@Test
+	@DisplayName("장바구니 ID 단건 조회 서비스 - 장바구니 생성 내역 자체가 없는 경우 -  NotFoundException 발생")
+	void When_getCartById_Expect_NotFoundException() {
+		//given
+		final Long cartId = 100L;
+		
+		//when
+		assertThatThrownBy(() -> cartService.getCart(cartId))
 			//then
 			.isInstanceOf(NotFoundException.class)
 			.hasMessage(ErrorCode.CART_NOT_FOUND.getMessage());

@@ -9,7 +9,6 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
-import com.psj.itembrowser.cart.domain.vo.Cart;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -38,11 +37,7 @@ public class CartPersistence {
 	}
 	
 	public CartResponseDTO getCart(@NonNull Long cartId) {
-		Cart cart = cartMapper.getCart(cartId);
-		
-		if (cart == null) {
-			throw new NotFoundException(CART_PRODUCT_NOT_FOUND);
-		}
+		CartEntity cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException(CART_NOT_FOUND));
 		
 		return CartResponseDTO.from(cart);
 	}
