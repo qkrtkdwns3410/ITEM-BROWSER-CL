@@ -84,7 +84,6 @@ public class CartProductRelationEntity extends BaseDateTimeEntity {
 		this.productQuantity += quantity;
 	}
 	
-	// 연관 관계 편의 메서드에서 사용할 수 있도록 setter 추가
 	public void setCartEntity(CartEntity cartEntity) {
 		this.cartEntity = cartEntity;
 		
