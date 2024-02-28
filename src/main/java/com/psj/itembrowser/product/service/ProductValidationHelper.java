@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
@@ -27,7 +28,8 @@ import lombok.extern.slf4j.Slf4j;
  * -----------------------------------------------------------
  * 2024-02-12        ipeac       최초 생성
  */
-@Component
+@Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class ProductValidationHelper {
