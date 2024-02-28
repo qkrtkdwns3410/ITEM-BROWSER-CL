@@ -13,10 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartProductDeleteRequestDTO {
 	@NotNull
-	Long cartId;
+	private Long cartId;
 	
 	@NotNull
-	Long productId;
+	private Long productId;
 	
 	@Builder
 	private CartProductDeleteRequestDTO(Long cartId, Long productId) {
