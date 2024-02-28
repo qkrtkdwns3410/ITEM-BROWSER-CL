@@ -6,6 +6,11 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        default_batch_fetch_size: 1000
   main:
     banner-mode: 'off'
   mvc:
