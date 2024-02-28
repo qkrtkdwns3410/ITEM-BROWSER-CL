@@ -3,6 +3,7 @@ package com.psj.itembrowser.product.persistence;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
@@ -108,5 +109,15 @@ public class ProductPersistence {
 	
 	public void softDeleteProduct(Long productId) {
 		productMapper.softDeleteProduct(productId);
+	}
+	
+	public List<ProductEntity> findWithPessimisticLockByIds(List<Long> orderProductsIds) {
+		List<ProductEntity> products = productRepository.findWithPessimisticLockByIdIn(orderProductsIds);
+		
+		if (CollectionUtils.isEmpty(products)) {
+			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+		
+		return products;
 	}
 }

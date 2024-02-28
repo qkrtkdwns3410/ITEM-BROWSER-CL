@@ -1,6 +1,8 @@
 package com.psj.itembrowser.order.service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +43,14 @@ public class OrderCalculationService {
 		BigDecimal totalDiscount = BigDecimal.ZERO;
 		long shippingFee = 0;
 		
-		for (OrdersProductRelationResponseDTO ordersProductRelationResponseDTO : orderCreateRequestDTO.getProducts()) {
-			ProductEntity foundProduct = productPersistence.findWithPessimisticLockById(ordersProductRelationResponseDTO.getProductId());
-			
+		List<Long> orderProductsIds = orderCreateRequestDTO.getProducts()
+			.stream()
+			.map(OrdersProductRelationResponseDTO::getProductId)
+			.collect(Collectors.toList());
+		
+		List<ProductEntity> foundProducts = productPersistence.findWithPessimisticLockByIds(orderProductsIds);
+		
+		for (ProductEntity foundProduct : foundProducts) {
 			BigDecimal productPrice = foundProduct.calculateTotalPrice();
 			
 			totalPrice = totalPrice.add(productPrice);
