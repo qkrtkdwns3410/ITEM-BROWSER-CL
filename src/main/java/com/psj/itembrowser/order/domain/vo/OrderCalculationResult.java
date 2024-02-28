@@ -1,7 +1,6 @@
 package com.psj.itembrowser.order.domain.vo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import com.psj.itembrowser.security.common.exception.ArgumentValidationExpception;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
@@ -25,16 +24,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public final class OrderCalculationResult implements Serializable {
-	private final BigDecimal totalPrice;
-	private final BigDecimal totalDiscount;
+	private final Long totalPrice;
+	private final Long totalDiscount;
 	private final Long shippingFee;
-	private final BigDecimal totalNetPrice;
+	private final Long totalNetPrice;
 	
 	@Builder
-	private OrderCalculationResult(BigDecimal totalPrice, BigDecimal totalDiscount, Long shippingFee, BigDecimal totalNetPrice) {
+	private OrderCalculationResult(Long totalPrice, Long totalDiscount, Long shippingFee, Long totalNetPrice) {
 		validateTotalPrice(totalPrice);
 		validateTotalDiscount(totalDiscount);
-		validateShippingFee(BigDecimal.valueOf(shippingFee));
+		validateShippingFee(shippingFee);
 		validateOrderTotal(totalNetPrice);
 		
 		this.totalPrice = totalPrice;
@@ -43,7 +42,7 @@ public final class OrderCalculationResult implements Serializable {
 		this.totalNetPrice = totalNetPrice;
 	}
 	
-	public static OrderCalculationResult of(BigDecimal totalPrice, BigDecimal totalDiscount, Long shippingFee, BigDecimal totalNetPrice) {
+	public static OrderCalculationResult of(Long totalPrice, Long totalDiscount, Long shippingFee, Long totalNetPrice) {
 		return OrderCalculationResult.builder()
 			.totalPrice(totalPrice)
 			.totalDiscount(totalDiscount)
@@ -52,26 +51,26 @@ public final class OrderCalculationResult implements Serializable {
 			.build();
 	}
 	
-	private void validateTotalPrice(BigDecimal totalPrice) {
-		if (totalPrice == null || totalPrice.compareTo(BigDecimal.ZERO) < 0) {
+	private void validateTotalPrice(Long totalPrice) {
+		if (totalPrice == null || totalPrice < 0) {
 			throw new ArgumentValidationExpception(ErrorCode.ORDER_VALIDATION_FAIL);
 		}
 	}
 	
-	private void validateTotalDiscount(BigDecimal totalDiscount) {
-		if (totalDiscount == null || totalDiscount.compareTo(BigDecimal.ZERO) < 0) {
+	private void validateTotalDiscount(Long totalDiscount) {
+		if (totalDiscount == null || totalDiscount < 0) {
 			throw new ArgumentValidationExpception(ErrorCode.ORDER_VALIDATION_FAIL);
 		}
 	}
 	
-	private void validateShippingFee(BigDecimal shippingFee) {
-		if (shippingFee == null || shippingFee.compareTo(BigDecimal.ZERO) < 0) {
+	private void validateShippingFee(Long shippingFee) {
+		if (shippingFee == null || shippingFee < 0) {
 			throw new ArgumentValidationExpception(ErrorCode.ORDER_VALIDATION_FAIL);
 		}
 	}
 	
-	private void validateOrderTotal(BigDecimal orderTotal) {
-		if (orderTotal == null || orderTotal.compareTo(BigDecimal.ZERO) < 0) {
+	private void validateOrderTotal(Long orderTotal) {
+		if (orderTotal == null || orderTotal < 0) {
 			throw new ArgumentValidationExpception(ErrorCode.ORDER_VALIDATION_FAIL);
 		}
 	}

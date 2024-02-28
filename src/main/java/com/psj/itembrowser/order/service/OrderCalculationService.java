@@ -39,8 +39,8 @@ public class OrderCalculationService {
 	public OrderCalculationResult calculateOrderDetails(@NonNull OrderCreateRequestDTO orderCreateRequestDTO, @NonNull MemberEntity member) {
 		validateOrderProduct(orderCreateRequestDTO);
 		
-		BigDecimal totalPrice = BigDecimal.ZERO;
-		BigDecimal totalDiscount = BigDecimal.ZERO;
+		long totalPrice = 0;
+		long totalDiscount = 0;
 		long shippingFee = 0;
 		
 		List<Long> orderProductsIds = orderCreateRequestDTO.getProducts()
@@ -51,18 +51,18 @@ public class OrderCalculationService {
 		List<ProductEntity> foundProducts = productPersistence.findWithPessimisticLockByIds(orderProductsIds);
 		
 		for (ProductEntity foundProduct : foundProducts) {
-			BigDecimal productPrice = foundProduct.calculateTotalPrice();
+			long productPrice = foundProduct.calculateTotalPrice();
 			
-			totalPrice = totalPrice.add(productPrice);
+			totalPrice += productPrice;
 			
 			BigDecimal discount = percentageDiscountService.calculateDiscount(foundProduct, member);
 			
-			totalDiscount = totalDiscount.add(discount);
+			totalDiscount += discount.longValue();
 		}
 		
 		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice, member).getFee();
 		
-		BigDecimal totalNetPrice = totalPrice.subtract(totalDiscount).add(BigDecimal.valueOf(shippingFee));
+		long totalNetPrice = totalPrice - totalDiscount + shippingFee;
 		
 		return OrderCalculationResult.of(totalPrice, totalDiscount, shippingFee, totalNetPrice);
 	}

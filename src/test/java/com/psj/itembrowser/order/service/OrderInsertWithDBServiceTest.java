@@ -3,7 +3,6 @@ package com.psj.itembrowser.order.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -155,10 +154,10 @@ public class OrderInsertWithDBServiceTest {
 	void When_AllSubServiceIsCorrectlyWork_Expect_200() {
 		// given
 		OrderCalculationResult orderResult = OrderCalculationResult.of(
-			BigDecimal.valueOf(1000),
-			BigDecimal.valueOf(100),
 			1000L,
-			BigDecimal.valueOf(1900)
+			100L,
+			1000L,
+			1900L
 		);
 		
 		given(orderCalculationService.calculateOrderDetails(orderCreateRequestDTO, member)).willReturn(orderResult);

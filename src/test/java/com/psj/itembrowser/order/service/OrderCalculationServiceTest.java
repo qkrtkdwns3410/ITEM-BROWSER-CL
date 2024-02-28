@@ -67,10 +67,10 @@ class OrderCalculationServiceTest {
 			.memberShipType(MemberShipType.WOW)
 			.build();
 		
-		BigDecimal expectedTotalPrice = BigDecimal.valueOf(20000);
-		BigDecimal expectedTotalDiscount = BigDecimal.valueOf(2000);
+		long expectedTotalPrice = 20000;
+		long expectedTotalDiscount = 2000;
 		long expectedShippingFee = 0;
-		BigDecimal expectedTotalNetPrice = BigDecimal.valueOf(18000);
+		long expectedTotalNetPrice = 18000;
 		
 		ProductEntity existProduct = ProductEntity.builder()
 			.unitPrice(1000)
@@ -115,10 +115,10 @@ class OrderCalculationServiceTest {
 			.memberShipType(MemberShipType.REGULAR)
 			.build();
 		
-		BigDecimal expectedTotalPrice = BigDecimal.valueOf(20000);
-		BigDecimal expectedTotalDiscount = BigDecimal.ZERO;
-		long expectedShippingFee = ShippingPolicy.DeliveryFee.DEFAULT.getFee();
-		BigDecimal expectedTotalNetPrice = BigDecimal.valueOf(23000);
+		long expectedTotalPrice = 20000;
+		long expectedTotalDiscount = 0;
+		long expectedShippingFee = 3000;
+		long expectedTotalNetPrice = 23000;
 		
 		ProductEntity existProduct = ProductEntity.builder()
 			.unitPrice(1000)

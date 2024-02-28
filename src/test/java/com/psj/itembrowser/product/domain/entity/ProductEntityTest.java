@@ -79,16 +79,16 @@ class ProductEntityTest {
 	@DisplayName("calculateTotalPrice unitPrice 와 quantity 가 INTEGER 범위는 넘는 연산의 경우 정상 처리")
 	void When_unitPriceAndQuantityIsMaxValue_Expect_Success() {
 		//given
-		BigDecimal expectedTotalPrice = BigDecimal.valueOf(Integer.MAX_VALUE).multiply(BigDecimal.valueOf(Integer.MAX_VALUE));
+		long expectedTotalPrice = (long)Integer.MAX_VALUE * Integer.MAX_VALUE;
 		
 		ReflectionTestUtils.setField(productEntity, "unitPrice", Integer.MAX_VALUE);
 		ReflectionTestUtils.setField(productEntity, "quantity", Integer.MAX_VALUE);
 		
 		//when
-		BigDecimal actualTotalPrice = productEntity.calculateTotalPrice();
+		long actualTotalPrice = productEntity.calculateTotalPrice();
 		
 		//then
-		assertThat(actualTotalPrice).isNotNull().isEqualTo(expectedTotalPrice);
+		assertThat(actualTotalPrice).isEqualTo(expectedTotalPrice);
 	}
 	
 	@Test
@@ -120,7 +120,7 @@ class ProductEntityTest {
 		BigDecimal actualDiscount = productEntity.calculateDiscount(requestQuantity, requestDiscountRate);
 		
 		//then
-		assertThat(actualDiscount).isNotNull().isEqualTo("5000.0");
+		assertThat(actualDiscount).isNotNull().isEqualTo("5000");
 	}
 	
 	@Test

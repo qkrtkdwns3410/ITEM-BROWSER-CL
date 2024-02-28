@@ -1,7 +1,6 @@
 package com.psj.itembrowser.shippingInfos.domain.vo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
@@ -34,11 +33,11 @@ public class ShippingPolicy implements Serializable {
 		this.freeShipOverAmount = freeShipOverAmount;
 	}
 	
-	public DeliveryFee calculateShippingFee(BigDecimal totalPrice, @NonNull MemberEntity member) {
+	public DeliveryFee calculateShippingFee(long totalPrice, @NonNull MemberEntity member) {
 		Objects.requireNonNull(deliveryDefaultFee, "deliveryDefaultFee must not be null");
 		Objects.requireNonNull(freeShipOverAmount, "freeShipOverAmount must not be null");
 		
-		if (totalPrice.compareTo(BigDecimal.valueOf(freeShipOverAmount)) > 0 || member.isWowMember()) {
+		if (this.freeShipOverAmount <= totalPrice || member.isWowMember()) {
 			return DeliveryFee.FREE;
 		}
 		return DeliveryFee.DEFAULT;

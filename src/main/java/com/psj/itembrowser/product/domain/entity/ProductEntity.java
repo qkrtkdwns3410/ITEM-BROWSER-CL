@@ -215,7 +215,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 		return requestedQuantity <= this.quantity;
 	}
 	
-	public BigDecimal calculateTotalPrice() {
+	public long calculateTotalPrice() {
 		Objects.requireNonNull(this.unitPrice, "unitPrice must not be null");
 		Objects.requireNonNull(this.quantity, "quantity must not be null");
 		
@@ -223,7 +223,7 @@ public class ProductEntity extends BaseDateTimeEntity {
 			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
 		}
 		
-		return BigDecimal.valueOf(this.unitPrice).multiply(BigDecimal.valueOf(this.quantity));
+		return (long)this.unitPrice * this.quantity;
 	}
 	
 	public BigDecimal calculateDiscount(int quantity, int discountRate) {
@@ -233,11 +233,12 @@ public class ProductEntity extends BaseDateTimeEntity {
 			throw new BadRequestException(ErrorCode.PRODUCT_VALIDATION_FAIL);
 		}
 		
-		BigDecimal unitPriceDecimal = BigDecimal.valueOf(this.unitPrice);
-		BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
-		BigDecimal discountRateDecimal = BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);
+		long totalAmount = (long)this.unitPrice * quantity;
 		
-		return unitPriceDecimal.multiply(quantityDecimal).multiply(discountRateDecimal);
+		// 나눗셈을 위해 BigDecimal 사용
+		return BigDecimal.valueOf(totalAmount)
+			.multiply(BigDecimal.valueOf(discountRate))
+			.divide(BigDecimal.valueOf(100), MathContext.DECIMAL128);
 	}
 	
 	public static ProductEntity from(ProductRequestDTO productRequestDTO) {
