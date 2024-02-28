@@ -1,6 +1,7 @@
 package com.psj.itembrowser.product.domain.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +80,7 @@ public class ProductResponseDTO {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.productImages = productImages == null ? List.of() : productImages;
+		this.productImages = productImages == null ? new ArrayList<>() : productImages;
 	}
 	
 	public static ProductResponseDTO from(Product product) {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.psj.itembrowser.config.annotation.ServiceWithDBTest;
+import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.mapper.ProductMapper;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
@@ -63,13 +64,13 @@ class ProductValidationHelperTest {
 		
 		em.persist(orderTargetProduct);
 		
-		ProductEntity orderRequestProduct = ProductEntity.builder()
-			.id(orderTargetProduct.getId())
-			.quantity(10)
+		OrdersProductRelationResponseDTO requestOrderDTO = OrdersProductRelationResponseDTO.builder()
+			.productId(orderTargetProduct.getId())
+			.productQuantity(5)
 			.build();
 		
 		//when & then
-		assertDoesNotThrow(() -> productValidationHelper.validateProduct(List.of(orderRequestProduct)),
+		assertDoesNotThrow(() -> productValidationHelper.validateProduct(List.of(requestOrderDTO)),
 			"상품 검증이 성공적으로 수행되어야 합니다.");
 	}
 	
@@ -91,13 +92,13 @@ class ProductValidationHelperTest {
 		
 		em.persist(orderTargetProduct);
 		
-		ProductEntity orderRequestProduct = ProductEntity.builder()
-			.id(orderTargetProduct.getId())
-			.quantity(10)
+		OrdersProductRelationResponseDTO requestOrderDTO = OrdersProductRelationResponseDTO.builder()
+			.productId(orderTargetProduct.getId())
+			.productQuantity(10)
 			.build();
 		
 		//when & then
-		assertThrows(BadRequestException.class, () -> productValidationHelper.validateProduct(List.of(orderRequestProduct)),
+		assertThrows(BadRequestException.class, () -> productValidationHelper.validateProduct(List.of(requestOrderDTO)),
 			ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH.getMessage());
 	}
 }

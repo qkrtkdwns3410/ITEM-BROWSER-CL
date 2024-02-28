@@ -1,6 +1,7 @@
 package com.psj.itembrowser.product.domain.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Min;
@@ -91,7 +92,7 @@ public class ProductUpdateDTO {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.multipartFiles = multipartFiles == null ? List.of() : multipartFiles;
-		this.deleteImageIds = deleteImageIds == null ? List.of() : deleteImageIds;
+		this.multipartFiles = multipartFiles == null ? new ArrayList<>() : multipartFiles;
+		this.deleteImageIds = deleteImageIds == null ? new ArrayList<>() : deleteImageIds;
 	}
 }

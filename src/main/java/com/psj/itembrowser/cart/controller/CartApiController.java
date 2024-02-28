@@ -42,15 +42,15 @@ import lombok.extern.slf4j.Slf4j;
 public class CartApiController {
 	private final CartService cartService;
 	
-	@GetMapping("/{userId}/carts")
+	@GetMapping("/{userId}")
 	public ResponseEntity<CartResponseDTO> getCart(@PathVariable String userId) {
 		CartResponseDTO cart = cartService.getCart(userId);
 		
 		return ResponseEntity.ok(cart);
 	}
 	
-	@PostMapping("/add")
-	public MessageDTO addCart(@RequestBody CartProductRequestDTO cartProductRequestDTO) {
+	@PostMapping("")
+	public MessageDTO addCart(@Valid @RequestBody CartProductRequestDTO cartProductRequestDTO) {
 		
 		cartService.addCartProduct(cartProductRequestDTO);
 		
@@ -61,8 +61,8 @@ public class CartApiController {
 		));
 	}
 	
-	@PutMapping("/update")
-	public MessageDTO modifyCart(@RequestBody CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
+	@PutMapping("")
+	public MessageDTO modifyCart(@Valid @RequestBody CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		cartService.modifyCartProduct(cartProductUpdateRequestDTO);
 		
 		return new MessageDTO(MessageFormat.format(
@@ -72,7 +72,7 @@ public class CartApiController {
 		));
 	}
 	
-	@DeleteMapping("/delete")
+	@DeleteMapping("")
 	public MessageDTO removeCart(@Valid @RequestBody CartProductDeleteRequestDTO cartProductDeleteRequestDTO) {
 		cartService.removeCart(cartProductDeleteRequestDTO);
 		

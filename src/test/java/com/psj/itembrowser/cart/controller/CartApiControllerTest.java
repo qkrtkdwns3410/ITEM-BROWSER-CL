@@ -98,7 +98,7 @@ class CartApiControllerTest {
 			mockMvc
 				.perform(
 					RestDocumentationRequestBuilders
-						.get(BASE_URL + "/{userId}/carts", USER_EMAIL)
+						.get(BASE_URL + "/{userId}", USER_EMAIL)
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.userId").value(cartResponseDTO.getUserId()))
@@ -146,7 +146,7 @@ class CartApiControllerTest {
 			// given + then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.get(BASE_URL + "/{userId}/carts", USER_EMAIL)
+					.get(BASE_URL + "/{userId}", USER_EMAIL)
 					.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.message").value(ErrorCode.CART_NOT_FOUND.getMessage()))
@@ -198,7 +198,7 @@ class CartApiControllerTest {
 			// given + then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.post(BASE_URL + "/add")
+					.post(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(mock))
 					.accept(MediaType.APPLICATION_JSON))
@@ -237,7 +237,7 @@ class CartApiControllerTest {
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.post(BASE_URL + "/add")
+					.post(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(mock))
 					.accept(MediaType.APPLICATION_JSON))
@@ -292,7 +292,7 @@ class CartApiControllerTest {
 			// given + then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.put(BASE_URL + "/update")
+					.put(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(mock))
 					.accept(MediaType.APPLICATION_JSON))
@@ -338,7 +338,7 @@ class CartApiControllerTest {
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.put(BASE_URL + "/update")
+					.put(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(dto))
 					.accept(MediaType.APPLICATION_JSON))
@@ -392,7 +392,7 @@ class CartApiControllerTest {
 			// given + then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.delete(BASE_URL + "/delete")
+					.delete(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON_VALUE)
 					.content(objectMapper.writeValueAsString(mock))
 					.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -429,7 +429,7 @@ class CartApiControllerTest {
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
-					.delete(BASE_URL + "/delete")
+					.delete(BASE_URL + "/")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(mock))
 					.accept(MediaType.APPLICATION_JSON))

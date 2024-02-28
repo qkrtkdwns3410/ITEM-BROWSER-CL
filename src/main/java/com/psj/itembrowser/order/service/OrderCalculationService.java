@@ -1,6 +1,8 @@
 package com.psj.itembrowser.order.service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,25 +39,30 @@ public class OrderCalculationService {
 	public OrderCalculationResult calculateOrderDetails(@NonNull OrderCreateRequestDTO orderCreateRequestDTO, @NonNull MemberEntity member) {
 		validateOrderProduct(orderCreateRequestDTO);
 		
-		BigDecimal totalPrice = BigDecimal.ZERO;
-		BigDecimal totalDiscount = BigDecimal.ZERO;
+		long totalPrice = 0;
+		long totalDiscount = 0;
 		long shippingFee = 0;
 		
-		for (OrdersProductRelationResponseDTO ordersProductRelationResponseDTO : orderCreateRequestDTO.getProducts()) {
-			ProductEntity foundProduct = productPersistence.findWithPessimisticLockById(ordersProductRelationResponseDTO.getProductId());
+		List<Long> orderProductsIds = orderCreateRequestDTO.getProducts()
+			.stream()
+			.map(OrdersProductRelationResponseDTO::getProductId)
+			.collect(Collectors.toList());
+		
+		List<ProductEntity> foundProducts = productPersistence.findWithPessimisticLockByIds(orderProductsIds);
+		
+		for (ProductEntity foundProduct : foundProducts) {
+			long productPrice = foundProduct.calculateTotalPrice();
 			
-			BigDecimal productPrice = foundProduct.calculateTotalPrice();
-			
-			totalPrice = totalPrice.add(productPrice);
+			totalPrice += productPrice;
 			
 			BigDecimal discount = percentageDiscountService.calculateDiscount(foundProduct, member);
 			
-			totalDiscount = totalDiscount.add(discount);
+			totalDiscount += discount.longValue();
 		}
 		
 		shippingFee = shippingPolicyService.getCurrentShippingPolicy().calculateShippingFee(totalPrice, member).getFee();
 		
-		BigDecimal totalNetPrice = totalPrice.subtract(totalDiscount).add(BigDecimal.valueOf(shippingFee));
+		long totalNetPrice = totalPrice - totalDiscount + shippingFee;
 		
 		return OrderCalculationResult.of(totalPrice, totalDiscount, shippingFee, totalNetPrice);
 	}

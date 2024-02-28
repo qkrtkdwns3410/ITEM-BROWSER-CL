@@ -12,14 +12,15 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartProductRequestDTO {
-	Long cartId;
 	
-	Long productId;
+	private Long cartId;
 	
-	String userId;
+	private Long productId;
+	
+	private String userId;
 	
 	@PositiveOrZero
-	long quantity;
+	private long quantity;
 	
 	@Builder
 	private CartProductRequestDTO(Long cartId, Long productId, String userId, long quantity) {

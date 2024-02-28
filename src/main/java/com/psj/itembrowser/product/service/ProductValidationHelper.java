@@ -1,9 +1,14 @@
 package com.psj.itembrowser.product.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.persistence.ProductPersistence;
 import com.psj.itembrowser.security.common.exception.BadRequestException;
@@ -23,23 +28,37 @@ import lombok.extern.slf4j.Slf4j;
  * -----------------------------------------------------------
  * 2024-02-12        ipeac       최초 생성
  */
-@Component
+@Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class ProductValidationHelper {
 	private final ProductPersistence productPersistence;
 	
-	public void validateProduct(List<ProductEntity> orderProducts) {
-		if (orderProducts == null || orderProducts.isEmpty()) {
+	public List<ProductEntity> validateProduct(List<OrdersProductRelationResponseDTO> orderRequestProducts) {
+		if (CollectionUtils.isEmpty(orderRequestProducts)) {
 			throw new BadRequestException(ErrorCode.PRODUCT_NOT_FOUND);
 		}
 		
-		orderProducts.forEach(orderProduct -> {
-			ProductEntity foundProduct = productPersistence.findWithPessimisticLockById(orderProduct.getId());
+		List<Long> orderIds = orderRequestProducts.stream()
+			.map(OrdersProductRelationResponseDTO::getProductId)
+			.collect(Collectors.toList());
+		
+		List<ProductEntity> foundProducts = productPersistence.findWithPessimisticLockByIds(orderIds);
+		
+		Map<Long, ProductEntity> productMap = foundProducts.stream()
+			.collect(Collectors.toMap(ProductEntity::getId, product -> product));
+		
+		for (OrdersProductRelationResponseDTO orderProduct : orderRequestProducts) {
+			ProductEntity product = productMap.get(orderProduct.getProductId());
 			
-			if (foundProduct.isEnoughStock(orderProduct) == false) {
+			int requestedQuantity = orderProduct.getProductQuantity();
+			
+			if (!product.checkStockAvailability(requestedQuantity)) {
 				throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH);
 			}
-		});
+		}
+		
+		return foundProducts;
 	}
 }
