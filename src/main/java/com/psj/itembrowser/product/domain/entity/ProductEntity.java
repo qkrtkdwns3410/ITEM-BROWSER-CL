@@ -208,16 +208,12 @@ public class ProductEntity extends BaseDateTimeEntity {
 	}
 	
 	// 상품 재고가 충분한지 확인하는 메서드
-	public boolean isEnoughStock(ProductEntity orderProduct) {
-		if (orderProduct == null) {
-			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
-		}
-		
-		if (orderProduct.quantity < 0) {
+	public boolean checkStockAvailability(int requestedQuantity) {
+		if (requestedQuantity < 0) {
 			throw new BadRequestException(ErrorCode.PRODUCT_QUANTITY_LESS_THAN_ZERO);
 		}
 		
-		return this.quantity >= orderProduct.getQuantity();
+		return requestedQuantity <= this.quantity;
 	}
 	
 	public BigDecimal calculateTotalPrice() {

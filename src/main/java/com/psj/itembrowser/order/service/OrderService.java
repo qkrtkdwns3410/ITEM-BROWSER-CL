@@ -1,7 +1,6 @@
 package com.psj.itembrowser.order.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
-import com.psj.itembrowser.order.domain.vo.OrdersProductRelationResponseDTO;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
@@ -94,12 +92,7 @@ public class OrderService {
 		}
 		
 		//해당 주문상품이 존재하는지 확인 && 각 상품에 대한 재고확인 수행
-		List<ProductEntity> orderProducts = orderCreateRequestDTO.getProducts().stream()
-			.map(OrdersProductRelationResponseDTO::getProductResponseDTO)
-			.map(ProductEntity::from)
-			.collect(Collectors.toList());
-		
-		productValidationHelper.validateProduct(orderProducts);
+		List<ProductEntity> foundProducts = productValidationHelper.validateProduct(orderCreateRequestDTO.getProducts());
 		
 		//주문 상품에 대한 가격, 수량, 할인, 배송비 등을 계산한다.
 		OrderCalculationResult orderCalculationResult = orderCalculationService.calculateOrderDetails(orderCreateRequestDTO, member);
@@ -120,7 +113,7 @@ public class OrderService {
 		OrderEntity savedOrder = orderRepository.save(order);
 		
 		//TODO 상품 재고 수량을 감소시킨다. - 락이 필요하다.
-		orderProducts.forEach(productService::decreaseStock);
+		foundProducts.forEach(productService::decreaseStock);
 		
 		//결제 히스토리를 DB에 기록한다.
 		//TODO 추후 필요
