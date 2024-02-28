@@ -1,11 +1,10 @@
 package com.psj.itembrowser.product.domain.vo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.validation.constraints.Positive;
 
 import com.psj.itembrowser.cart.domain.vo.CartProductRelation;
 import com.psj.itembrowser.product.domain.dto.request.ProductRequestDTO;
@@ -141,52 +140,25 @@ public class Product {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.cartProductRelations = cartProductRelations == null ? List.of() : cartProductRelations;
-		this.productImages = productImages == null ? List.of() : productImages;
+		this.cartProductRelations = cartProductRelations == null ? new ArrayList<>() : cartProductRelations;
+		this.productImages = productImages == null ? new ArrayList<>() : productImages;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
 		this.deletedDate = deletedDate;
 	}
 	
+	void addcartProductRelations(CartProductRelation cartProductRelation) {
+		if (cartProductRelations == null) {
+			cartProductRelations = new ArrayList<>();
+		}
+		
+		this.cartProductRelations.add(cartProductRelation);
+	}
+	
 	public void validateSellDates() {
-		if (this.sellStartDatetime != null && this.sellEndDatetime != null
-			&& this.sellEndDatetime.isBefore(this.sellStartDatetime)) {
-			throw new IllegalArgumentException(
-				"The sell start datetime must not be before the sell end datetime.");
+		if (this.sellStartDatetime != null && this.sellEndDatetime != null && this.sellEndDatetime.isBefore(this.sellStartDatetime)) {
+			throw new IllegalArgumentException("The sell start datetime must not be before the sell end datetime.");
 		}
-	}
-	
-	// 상품 재고를 줄이는 메서드
-	public void decreaseStock(@Positive int quantity) {
-		int restStock = this.quantity - quantity;
-		if (restStock < 0) {
-			throw new IllegalStateException("need more stock");
-		}
-		this.quantity = restStock;
-	}
-	
-	// 상품 재고를 늘리는 메서드
-	public void increaseStock(int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
-		}
-		this.quantity += quantity;
-	}
-	
-	// 상품 재고가 충분한지 확인하는 메서드
-	public boolean isEnoughStock(int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("quantity can not be less than 0");
-		}
-		return this.quantity >= quantity;
-	}
-	
-	public double calculateTotalPrice() {
-		return this.unitPrice * this.quantity;
-	}
-	
-	public double calculateDiscount(int quantity, int discountRate) {
-		return (this.unitPrice * quantity) * ((double)discountRate / 100);
 	}
 	
 	public static Product from(ProductResponseDTO productResponseDTO) {

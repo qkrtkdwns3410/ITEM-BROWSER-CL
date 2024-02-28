@@ -3,6 +3,7 @@ package com.psj.itembrowser.product.domain.entity;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -171,15 +172,13 @@ public class ProductEntity extends BaseDateTimeEntity {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.productImages = productImages == null ? List.of() : productImages;
+		this.productImages = productImages == null ? new ArrayList<>() : productImages;
 		super.deletedDate = deletedDate;
 	}
 	
 	public void validateSellDates() {
-		if (this.sellStartDatetime != null && this.sellEndDatetime != null
-			&& this.sellEndDatetime.isBefore(this.sellStartDatetime)) {
-			throw new IllegalArgumentException(
-				"The sell start datetime must not be before the sell end datetime.");
+		if (this.sellStartDatetime != null && this.sellEndDatetime != null && this.sellEndDatetime.isBefore(this.sellStartDatetime)) {
+			throw new IllegalArgumentException("The sell start datetime must not be before the sell end datetime.");
 		}
 	}
 	

@@ -47,6 +47,7 @@ class ProductEntityTest {
 		int requestQuantity = 15;
 		
 		assertThat(productEntity.checkStockAvailability(requestQuantity)).isFalse();
+		
 	}
 	
 	@Test

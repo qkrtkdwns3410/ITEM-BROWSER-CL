@@ -1,6 +1,7 @@
 package com.psj.itembrowser.product.domain.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.FutureOrPresent;
@@ -93,6 +94,6 @@ public class ProductRequestDTO {
 		this.deliveryDefaultFee = deliveryDefaultFee;
 		this.freeShipOverAmount = freeShipOverAmount;
 		this.returnCenterCode = returnCenterCode;
-		this.multipartFiles = multipartFiles == null ? List.of() : multipartFiles;
+		this.multipartFiles = multipartFiles == null ? new ArrayList<>() : multipartFiles;
 	}
 }
