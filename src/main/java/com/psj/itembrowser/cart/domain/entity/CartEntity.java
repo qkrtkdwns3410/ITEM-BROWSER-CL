@@ -3,6 +3,7 @@ package com.psj.itembrowser.cart.domain.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,12 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.proxy.HibernateProxy;
+
 import com.psj.itembrowser.security.common.BaseDateTimeEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Getter
 @Entity
@@ -54,5 +58,34 @@ public class CartEntity extends BaseDateTimeEntity {
 		if (cartProductRelation.getCartEntity() != this) {
 			cartProductRelation.setCartEntity(this); // 반대편 엔티티에도 자신을 설정
 		}
+	}
+	
+	public static CartEntity from(@NonNull String userEmail) {
+		return CartEntity.builder()
+			.userEmail(userEmail)
+			.build();
+	}
+	
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		Class<?> oEffectiveClass =
+			o instanceof HibernateProxy ? ((HibernateProxy)o).getHibernateLazyInitializer().getPersistentClass() :
+				o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
+		CartEntity entity = (CartEntity)o;
+		return getId() != null && Objects.equals(getId(), entity.getId());
+	}
+	
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }

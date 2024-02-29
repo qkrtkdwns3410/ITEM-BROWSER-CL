@@ -175,7 +175,7 @@ class CartPersistenceTest {
 			when(cartMapper.insertCart(TEST_USER_ID)).thenReturn(true);
 			
 			// when
-			cartPersistence.addCart(TEST_USER_ID);
+			cartPersistence.createCart(TEST_USER_ID);
 			
 			// then
 			verify(cartMapper, times(1)).insertCart(TEST_USER_ID);
@@ -188,7 +188,7 @@ class CartPersistenceTest {
 			when(cartMapper.insertCart(TEST_USER_ID)).thenReturn(false);
 			
 			// when - then
-			assertThatThrownBy(() -> cartPersistence.addCart(TEST_USER_ID))
+			assertThatThrownBy(() -> cartPersistence.createCart(TEST_USER_ID))
 				.isInstanceOf(DatabaseOperationException.class)
 				.hasMessage("Fail to add to Cart");
 			
@@ -199,7 +199,7 @@ class CartPersistenceTest {
 		@DisplayName("장바구니를 생성시 매개변수 NULL 값 불가능 검증")
 		void When_AddCart_Expect_IllegalArgumentException() {
 			// when - then
-			assertThrows(NullPointerException.class, () -> cartPersistence.addCart(null));
+			assertThrows(NullPointerException.class, () -> cartPersistence.createCart(null));
 		}
 	}
 	

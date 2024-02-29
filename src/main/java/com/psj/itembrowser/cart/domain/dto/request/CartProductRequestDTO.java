@@ -17,16 +17,16 @@ public class CartProductRequestDTO {
 	
 	private Long productId;
 	
-	private String userId;
+	private String email;
 	
 	@PositiveOrZero
 	private long quantity;
 	
 	@Builder
-	private CartProductRequestDTO(Long cartId, Long productId, String userId, long quantity) {
+	private CartProductRequestDTO(Long cartId, Long productId, String email, long quantity) {
 		this.cartId = cartId;
 		this.productId = productId;
-		this.userId = userId;
+		this.email = email;
 		this.quantity = quantity;
 	}
 }

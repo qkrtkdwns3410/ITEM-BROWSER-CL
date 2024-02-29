@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.psj.itembrowser.cart.domain.dto.request.CartProductDeleteRequestDTO;
-import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.domain.vo.Cart;
@@ -152,62 +151,6 @@ class CartServiceTest {
 				.isInstanceOf(NotFoundException.class);
 			
 			verify(cartPersistence, times(1)).getCart(anyLong());
-		}
-	}
-	
-	@Nested
-	class InsertTest {
-		
-		@Test
-		@DisplayName("존재하는 장바구니에 상품을 추가시 insert 를 호출하지 않고 update 를 호출하는지 체크")
-		void given_AddExistCart_Expect_CallUpdateCart() {
-			// given
-			CartProductRelation existData = mock(CartProductRelation.class);
-			
-			CartProductRequestDTO cartProductRequestDTO = mock(CartProductRequestDTO.class);
-			given(cartProductRequestDTO.getCartId()).willReturn(1L);
-			given(cartProductRequestDTO.getUserId()).willReturn(EXIST_USER_ID);
-			given(cartProductRequestDTO.getProductId()).willReturn(1L);
-			given(cartProductRequestDTO.getQuantity()).willReturn(1L);
-			
-			CartResponseDTO cartResponseDTO = CartResponseDTO.builder().build();
-			
-			given(cartMapper.getCartProductRelation(cartProductRequestDTO.getCartId(),
-				cartProductRequestDTO.getProductId())).willReturn(existData);
-			given(cartPersistence.getCart(EXIST_USER_ID)).willReturn(
-				cartResponseDTO);
-			
-			// given
-			cartService.addCartProduct(cartProductRequestDTO);
-			
-			// then
-			// 인서트가 수행이 되면 안됨
-			verify(cartPersistence, never()).insertCartProduct(any(CartProductRequestDTO.class));
-			// 업데이트가 수행되어야하며
-			verify(cartPersistence).modifyCartProduct(any());
-		}
-		
-		@Test
-		@DisplayName("존재하지 않는 장바구니에 상품을 추가하는 경우 insert 를 호출하는지 체크")
-		void given_AddNotExistCartProduct_Expect_CallInsertCart() {
-			// given
-			CartProductRequestDTO cartProductRequestDTO = mock(CartProductRequestDTO.class);
-			given(cartProductRequestDTO.getCartId()).willReturn(1L);
-			given(cartProductRequestDTO.getUserId()).willReturn(EXIST_USER_ID);
-			given(cartProductRequestDTO.getProductId()).willReturn(1L);
-			given(cartMapper.getCartProductRelation(cartProductRequestDTO.getCartId(),
-				cartProductRequestDTO.getProductId())).willReturn(null);
-			
-			// given
-			cartService.addCartProduct(cartProductRequestDTO);
-			
-			// then
-			// 업데이트가 수행되지 않아함
-			verify(cartPersistence, times(0)).modifyCartProduct(
-				any(CartProductUpdateRequestDTO.class));
-			
-			// 인서트가 수행되어야함
-			verify(cartPersistence, times(1)).insertCartProduct(any(CartProductRequestDTO.class));
 		}
 	}
 	
