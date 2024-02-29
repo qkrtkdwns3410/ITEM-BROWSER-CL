@@ -108,7 +108,6 @@ class CartInsertWithDBServiceTest {
 		CartEntity foundCart = cartRepository.findByUserEmail(member.getCredentials().getEmail()).get();
 		CartProductRelationEntity foundCartProduct = em.find(CartProductRelationEntity.class,
 			new CartProductRelationEntity.CartProductRelationEntityId(foundCart.getId(), 1L));
-		
 		assertThat(foundCart).isNotNull();
 		assertThat(foundCart.getUserEmail()).isEqualTo(member.getCredentials().getEmail());
 		assertThat(foundCartProduct.getProductQuantity()).isEqualTo(requestDTO.getQuantity());

@@ -63,7 +63,6 @@ public class CartService {
 	public void addCartProduct(MemberEntity member, CartProductRequestDTO requestDTO) {
 		validateMemberAuth(member, requestDTO);
 		
-		//존재하는 상품인지 검증
 		productValidationHelper.validateProduct(requestDTO.getProductId());
 		
 		CartResponseDTO cart = null;
