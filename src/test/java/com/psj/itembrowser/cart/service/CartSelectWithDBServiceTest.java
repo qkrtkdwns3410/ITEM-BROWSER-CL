@@ -21,6 +21,7 @@ import com.psj.itembrowser.cart.persistance.CartPersistence;
 import com.psj.itembrowser.cart.persistance.CartRepository;
 import com.psj.itembrowser.config.annotation.ServiceWithDBTest;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -44,6 +45,9 @@ class CartSelectWithDBServiceTest {
 	private CartProductRelationEntityRepository cartProductRelationEntityRepository;
 	
 	@Mock
+	private ProductValidationHelper productValidationHelper;
+	
+	@Mock
 	private CartMapper cartMapper;
 	
 	private CartPersistence cartPersistence;
@@ -55,7 +59,7 @@ class CartSelectWithDBServiceTest {
 	@BeforeEach
 	void setUp() {
 		cartPersistence = new CartPersistence(cartMapper, cartProductRelationEntityRepository, cartRepository);
-		cartService = new CartService(cartProductRelationEntityRepository, cartPersistence);
+		cartService = new CartService(em.getEntityManager(), cartProductRelationEntityRepository, cartPersistence, productValidationHelper);
 	}
 	
 	@Test

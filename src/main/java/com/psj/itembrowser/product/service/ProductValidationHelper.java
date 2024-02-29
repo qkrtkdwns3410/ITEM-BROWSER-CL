@@ -61,4 +61,8 @@ public class ProductValidationHelper {
 		
 		return foundProducts;
 	}
+	
+	public void validateProduct(Long productId) {
+		productPersistence.findProductByIdWithRepository(productId);
+	}
 }

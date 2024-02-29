@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +38,7 @@ public class CartEntity extends BaseDateTimeEntity {
 	@Column(name = "user_email", nullable = false, unique = true)
 	private String userEmail;
 	
-	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private List<CartProductRelationEntity> cartProductRelations = new ArrayList<>();
 	
 	@Builder

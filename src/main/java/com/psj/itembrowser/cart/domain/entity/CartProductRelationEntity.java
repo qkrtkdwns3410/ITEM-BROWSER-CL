@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,7 +45,7 @@ public class CartProductRelationEntity extends BaseDateTimeEntity {
 	@Column(name = "product_quantity")
 	private Long productQuantity;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CART_ID", insertable = false, updatable = false, referencedColumnName = "ID")
 	private CartEntity cartEntity;
 	

@@ -2,6 +2,8 @@ package com.psj.itembrowser.cart.service;
 
 import java.util.Objects;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntityRepository;
 import com.psj.itembrowser.cart.persistance.CartPersistence;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -34,9 +37,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CartService {
+	
+	private final EntityManager em;
+	
 	private final CartProductRelationEntityRepository cartProductRelationEntityRepository;
 	
 	private final CartPersistence cartPersistence;
+	
+	private final ProductValidationHelper productValidationHelper;
 	
 	public CartResponseDTO getCart(String userEmail) {
 		return cartPersistence.getCart(userEmail);
@@ -55,6 +63,9 @@ public class CartService {
 	public void addCartProduct(MemberEntity member, CartProductRequestDTO requestDTO) {
 		validateMemberAuth(member, requestDTO);
 		
+		//존재하는 상품인지 검증
+		productValidationHelper.validateProduct(requestDTO.getProductId());
+		
 		CartResponseDTO cart = null;
 		
 		try {
@@ -65,6 +76,7 @@ public class CartService {
 		
 		if (cart == null) {
 			cart = createCart(requestDTO.getEmail());
+			requestDTO.setCartId(cart.getCartId());
 		}
 		
 		CartProductRelationResponseDTO dto = null;

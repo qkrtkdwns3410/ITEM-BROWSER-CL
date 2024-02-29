@@ -3,8 +3,6 @@ package com.psj.itembrowser.cart.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +24,7 @@ import com.psj.itembrowser.member.domain.vo.Address;
 import com.psj.itembrowser.member.domain.vo.Credentials;
 import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Status;
+import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 
@@ -49,13 +48,14 @@ class CartInsertWithDBServiceTest {
 	private CartProductRelationEntityRepository cartProductRelationEntityRepository;
 	
 	@Mock
+	private ProductValidationHelper productValidationHelper;
+	
+	@Mock
 	private CartMapper cartMapper;
 	
 	private CartPersistence cartPersistence;
 	
 	private CartService cartService;
-	
-	private final static LocalDateTime NOW = LocalDateTime.now();
 	
 	private MemberEntity member;
 	private CartProductRequestDTO requestDTO;
@@ -63,7 +63,7 @@ class CartInsertWithDBServiceTest {
 	@BeforeEach
 	void setUp() {
 		cartPersistence = new CartPersistence(cartMapper, cartProductRelationEntityRepository, cartRepository);
-		cartService = new CartService(cartProductRelationEntityRepository, cartPersistence);
+		cartService = new CartService(em.getEntityManager(), cartProductRelationEntityRepository, cartPersistence, productValidationHelper);
 		
 		member = MemberEntity.builder()
 			.address(
@@ -105,20 +105,13 @@ class CartInsertWithDBServiceTest {
 		cartService.addCartProduct(member, requestDTO);
 		
 		//then
-		CartEntity foundCart = em.find(CartEntity.class, 1L);
+		CartEntity foundCart = cartRepository.findByUserEmail(member.getCredentials().getEmail()).get();
 		CartProductRelationEntity foundCartProduct = em.find(CartProductRelationEntity.class,
-			new CartProductRelationEntity.CartProductRelationEntityId(1L, 1L));
+			new CartProductRelationEntity.CartProductRelationEntityId(foundCart.getId(), 1L));
 		
 		assertThat(foundCart).isNotNull();
-		assertThat(foundCartProduct).isNotNull();
-		
-		assertAll(
-			() -> assertThat(foundCart.getUserEmail()).isEqualTo(member.getCredentials().getEmail()),
-			
-			() -> assertThat(foundCartProduct.getCartId()).isEqualTo(1L),
-			() -> assertThat(foundCartProduct.getProductId()).isEqualTo(1L),
-			() -> assertThat(foundCartProduct.getProductQuantity()).isEqualTo(1L)
-		);
+		assertThat(foundCart.getUserEmail()).isEqualTo(member.getCredentials().getEmail());
+		assertThat(foundCartProduct.getProductQuantity()).isEqualTo(requestDTO.getQuantity());
 	}
 	
 	@Test
@@ -165,13 +158,12 @@ class CartInsertWithDBServiceTest {
 			.userEmail(member.getCredentials().getEmail())
 			.build();
 		
-		em.persist(cart);
+		CartEntity savedCart = em.persist(cart);
 		
 		CartProductRelationEntity cartProductRelation = CartProductRelationEntity.builder()
-			.cartId(1L)
+			.cartId(savedCart.getId())
 			.productId(1L)
 			.productQuantity(1L)
-			.cartEntity(cart)
 			.build();
 		
 		em.persist(cartProductRelation);
@@ -181,14 +173,9 @@ class CartInsertWithDBServiceTest {
 		
 		//then
 		CartProductRelationEntity foundCartProduct = em.find(CartProductRelationEntity.class,
-			new CartProductRelationEntity.CartProductRelationEntityId(1L, 1L));
+			new CartProductRelationEntity.CartProductRelationEntityId(savedCart.getId(), 1L));
 		
 		assertThat(foundCartProduct).isNotNull();
-		
-		assertAll(
-			() -> assertThat(foundCartProduct.getCartId()).isEqualTo(1L),
-			() -> assertThat(foundCartProduct.getProductId()).isEqualTo(1L),
-			() -> assertThat(foundCartProduct.getProductQuantity()).isEqualTo(2L)
-		);
+		assertThat(foundCartProduct.getProductQuantity()).isEqualTo(2L);
 	}
 }

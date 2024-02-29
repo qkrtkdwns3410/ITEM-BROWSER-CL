@@ -120,4 +120,8 @@ public class ProductPersistence {
 		
 		return products;
 	}
+	
+	public ProductEntity findProductByIdWithRepository(Long productId) {
+		return productRepository.findById(productId).orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
 }
