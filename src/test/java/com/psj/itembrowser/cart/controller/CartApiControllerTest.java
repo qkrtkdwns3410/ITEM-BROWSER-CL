@@ -41,9 +41,13 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.service.CartService;
+import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
+import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 
 /**
  * packageName    : com.psj.itembrowser.cart.api fileName       : CartApiControllerTest author :
@@ -69,6 +73,9 @@ class CartApiControllerTest {
 	
 	@MockBean
 	private CartService cartService;
+	
+	@MockBean
+	private UserDetailsServiceImpl userDetailsService;
 	
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext,
@@ -116,6 +123,8 @@ class CartApiControllerTest {
 							parameterWithName("userId").description("조회할 사용자의 ID")
 						)
 						.responseFields(
+							fieldWithPath("cartId").description("장바구니 ID").optional()
+								.type(JsonFieldType.NUMBER),
 							fieldWithPath("userId").description("사용자 ID"),
 							fieldWithPath("createdDate").description("생성 일자"),
 							fieldWithPath("updatedDate").description("업데이트 일자"),
@@ -188,7 +197,7 @@ class CartApiControllerTest {
 				.cartId(1L)
 				.productId(1L)
 				.quantity(1)
-				.userId(USER_EMAIL)
+				.email(USER_EMAIL)
 				.build();
 		}
 		
@@ -196,6 +205,9 @@ class CartApiControllerTest {
 		@DisplayName("장바구니에 상품을 올바르게 삽입시, 정상 응답 테스트")
 		void given_CorrectInsertProductInCart_Expect_Success() throws Exception {
 			// given + then
+			given(userDetailsService.loadUserByJwt(any())).willReturn(
+				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
 					.post(BASE_URL + "/")
@@ -216,7 +228,7 @@ class CartApiControllerTest {
 							.requestFields(
 								fieldWithPath("cartId").description("장바구니 ID"),
 								fieldWithPath("productId").description("상품 ID"),
-								fieldWithPath("userId").description("사용자 ID"),
+								fieldWithPath("email").description("사용자 이메일"),
 								fieldWithPath("quantity").description("상품 수량")
 							)
 							.responseFields(
@@ -231,9 +243,12 @@ class CartApiControllerTest {
 		@DisplayName("장바구니에 상품을 잘못 삽입시, 오류 응답 테스트")
 		void given_IncorrectInsertProductInCart_Expect_Exception() throws Exception {
 			// given + then
+			given(userDetailsService.loadUserByJwt(any())).willReturn(
+				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
+			
 			doThrow(new DatabaseOperationException(CART_PRODUCT_INSERT_FAIL))
 				.when(cartService)
-				.addCartProduct(any(CartProductRequestDTO.class));
+				.addCartProduct(any(MemberEntity.class), any(CartProductRequestDTO.class));
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
@@ -254,7 +269,7 @@ class CartApiControllerTest {
 							.requestFields(
 								fieldWithPath("cartId").description("장바구니 ID"),
 								fieldWithPath("productId").description("상품 ID"),
-								fieldWithPath("userId").description("사용자 ID"),
+								fieldWithPath("email").description("사용자 ID"),
 								fieldWithPath("quantity").description("상품 수량")
 							)
 							.responseFields(

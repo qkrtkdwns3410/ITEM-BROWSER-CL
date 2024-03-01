@@ -15,11 +15,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
 import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
+import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntityRepository;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.cart.persistance.CartPersistence;
 import com.psj.itembrowser.cart.persistance.CartRepository;
 import com.psj.itembrowser.config.annotation.ServiceWithDBTest;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
+import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
@@ -39,6 +41,12 @@ class CartSelectWithDBServiceTest {
 	@Autowired
 	private CartRepository cartRepository;
 	
+	@Autowired
+	private CartProductRelationEntityRepository cartProductRelationEntityRepository;
+	
+	@Mock
+	private ProductValidationHelper productValidationHelper;
+	
 	@Mock
 	private CartMapper cartMapper;
 	
@@ -50,8 +58,8 @@ class CartSelectWithDBServiceTest {
 	
 	@BeforeEach
 	void setUp() {
-		cartPersistence = new CartPersistence(cartMapper, cartRepository);
-		cartService = new CartService(cartPersistence, cartMapper);
+		cartPersistence = new CartPersistence(cartMapper, cartProductRelationEntityRepository, cartRepository);
+		cartService = new CartService(em.getEntityManager(), cartProductRelationEntityRepository, cartPersistence, productValidationHelper);
 	}
 	
 	@Test

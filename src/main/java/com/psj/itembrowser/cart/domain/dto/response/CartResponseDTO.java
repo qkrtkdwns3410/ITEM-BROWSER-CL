@@ -25,6 +25,8 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartResponseDTO implements Serializable {
 	
+	Long cartId;
+	
 	String userId;
 	
 	LocalDateTime createdDate;
@@ -34,7 +36,9 @@ public class CartResponseDTO implements Serializable {
 	List<CartProductRelationResponseDTO> products = new ArrayList<>();
 	
 	@Builder
-	private CartResponseDTO(String userId, LocalDateTime createdDate, LocalDateTime updatedDate, List<CartProductRelationResponseDTO> products) {
+	private CartResponseDTO(Long cartId, String userId, LocalDateTime createdDate, LocalDateTime updatedDate,
+		List<CartProductRelationResponseDTO> products) {
+		this.cartId = cartId;
 		this.userId = userId;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
@@ -47,6 +51,7 @@ public class CartResponseDTO implements Serializable {
 		}
 		
 		return CartResponseDTO.builder()
+			.cartId(cart.getId())
 			.userId(cart.getUserId())
 			.createdDate(cart.getCreatedDate())
 			.updatedDate(cart.getUpdatedDate())
@@ -63,6 +68,7 @@ public class CartResponseDTO implements Serializable {
 		}
 		
 		return CartResponseDTO.builder()
+			.cartId(entity.getId())
 			.userId(entity.getUserEmail())
 			.createdDate(entity.getCreatedDate())
 			.updatedDate(entity.getUpdatedDate())

@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductDeleteRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
+import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.domain.entity.CartEntity;
+import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntity;
+import com.psj.itembrowser.cart.domain.entity.CartProductRelationEntityRepository;
 import com.psj.itembrowser.cart.mapper.CartMapper;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class CartPersistence {
 	
 	private final CartMapper cartMapper;
+	private final CartProductRelationEntityRepository cartProductRelationEntityRepository;
 	private final CartRepository cartRepository;
 	
 	public CartResponseDTO getCart(@NonNull String userEmail) {
@@ -50,8 +54,7 @@ public class CartPersistence {
 		}
 	}
 	
-	public void modifyCartProduct(
-		@NonNull CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
+	public void modifyCartProduct(@NonNull CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
 		boolean isNotModified = !cartMapper.updateCartProductRelation(cartProductUpdateRequestDTO);
 		
 		if (isNotModified) {
@@ -67,11 +70,22 @@ public class CartPersistence {
 		}
 	}
 	
-	public void addCart(@NonNull String userId) {
-		boolean isNotAdded = !cartMapper.insertCart(userId);
+	public CartResponseDTO createCart(@NonNull String userId) {
+		CartEntity saved = cartRepository.save(CartEntity.builder().userEmail(userId).build());
 		
-		if (isNotAdded) {
-			throw new DatabaseOperationException(CART_INSERT_FAIL);
-		}
+		return CartResponseDTO.from(saved);
+	}
+	
+	public CartProductRelationResponseDTO addCartProductRelation(@NonNull CartProductRequestDTO requestDTO) {
+		CartProductRelationEntity saved = cartProductRelationEntityRepository.save(CartProductRelationEntity.from(requestDTO));
+		
+		return CartProductRelationResponseDTO.from(saved);
+	}
+	
+	public CartProductRelationResponseDTO getCartProductRelation(@NonNull Long cartId, @NonNull Long productId) {
+		CartProductRelationEntity found = cartProductRelationEntityRepository.findByCartIdAndProductId(cartId, productId)
+			.orElseThrow(() -> new NotFoundException(CART_PRODUCT_NOT_FOUND));
+		
+		return CartProductRelationResponseDTO.from(found);
 	}
 }
