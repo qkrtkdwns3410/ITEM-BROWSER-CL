@@ -304,7 +304,11 @@ class CartApiControllerTest {
 		@Test
 		@DisplayName("장바구니 상품 수정 API -> 정상 응답 테스트")
 		void given_UpdateProductInCart_Expect_Success() throws Exception {
-			// given + then
+			// given
+			given(userDetailsService.loadUserByJwt(any())).willReturn(
+				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			
+			// then
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
 					.put(BASE_URL + "/")
@@ -345,6 +349,10 @@ class CartApiControllerTest {
 				.productId(1L)
 				.quantity(10)
 				.build();
+			
+			given(userDetailsService.loadUserByJwt(any())).willReturn(
+				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build())
+			);
 			
 			//when -  then
 			doThrow(new NotFoundException(CART_PRODUCT_UPDATE_FAIL))

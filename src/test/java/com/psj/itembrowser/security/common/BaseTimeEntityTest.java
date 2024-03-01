@@ -22,11 +22,12 @@ class BaseTimeEntityTest {
 	@Autowired
 	private TestEntityManager em;
 	
+	private static final LocalDateTime NOW = LocalDateTime.now();
+	
 	@Test
 	@DisplayName("생성일자, 수정일자가 정상적으로 생성되는지 확인한다.")
 	void When_CreatedDate_UpdatedDate_DeletedDate_Then_Success() {
 		// given
-		LocalDateTime now = LocalDateTime.now();
 		
 		MemberEntity member = MemberEntity.builder()
 			.address(
@@ -53,8 +54,8 @@ class BaseTimeEntityTest {
 		MemberEntity flushedMember = em.persistFlushFind(member);
 		
 		// then
-		assertThat(flushedMember.getCreatedDate()).isNotNull().isAfter(now);
-		assertThat(flushedMember.getUpdatedDate()).isNotNull().isAfter(now);
+		assertThat(flushedMember.getCreatedDate()).isNotNull().isAfter(NOW);
+		assertThat(flushedMember.getUpdatedDate()).isNotNull().isAfter(NOW);
 		assertThat(flushedMember.getDeletedDate()).isNull();
 	}
 }
