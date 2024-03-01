@@ -37,54 +37,60 @@ import java.text.MessageFormat;
 public class CartApiController {
     private final CartService cartService;
     private final UserDetailsServiceImpl userDetailsService;
-
+    
     @GetMapping("/{userId}")
     public ResponseEntity<CartResponseDTO> getCart(@PathVariable String userId) {
         CartResponseDTO cart = cartService.getCart(userId);
-
+        
         return ResponseEntity.ok(cart);
     }
-
+    
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER','ROLE_ADMIN')")
     @PostMapping("")
     public MessageDTO addCart(@Valid @RequestBody CartProductRequestDTO cartProductRequestDTO, @CurrentUser Jwt jwt) {
         log.info("addCart : {}", cartProductRequestDTO);
-
+        
         UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-
+        
         MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
-
+        
         cartService.addCartProduct(member, cartProductRequestDTO);
-
+        
         return new MessageDTO(MessageFormat.format(
                 "cart add affected : {0} / {1}",
                 cartProductRequestDTO.getCartId(),
                 cartProductRequestDTO.getProductId()
         ));
     }
-
+    
     @PutMapping("")
-    public MessageDTO modifyCart(@Valid @RequestBody CartProductUpdateRequestDTO cartProductUpdateRequestDTO) {
-        cartService.modifyCartProduct(cartProductUpdateRequestDTO);
-
+    public MessageDTO modifyCart(@Valid @RequestBody CartProductUpdateRequestDTO cartProductUpdateRequestDTO, @CurrentUser Jwt jwt) {
+        log.info("modifyCart : {}", cartProductUpdateRequestDTO);
+        
+        UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
+        
+        MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
+        
+        cartService.modifyCartProduct(cartProductUpdateRequestDTO, member);
+        
         return new MessageDTO(MessageFormat.format(
                 "cart update affected : {0} / {1}",
                 cartProductUpdateRequestDTO.getCartId(),
                 cartProductUpdateRequestDTO.getProductId()
         ));
     }
-
+    
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER','ROLE_ADMIN')")
     @DeleteMapping("")
     public MessageDTO removeCart(@Valid @RequestBody CartProductDeleteRequestDTO cartProductDeleteRequestDTO, @CurrentUser Jwt jwt) {
         log.info("removeCart : {}", cartProductDeleteRequestDTO);
-
+        
         UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-
+        
         MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
-
+        
         cartService.removeCartProduct(cartProductDeleteRequestDTO, member);
-
+        
         return new MessageDTO(MessageFormat.format(
                 "cart delete affected : {0} / {1}",
                 cartProductDeleteRequestDTO.getCartId(),

@@ -351,7 +351,7 @@ class CartApiControllerTest {
             //when -  then
             doThrow(new NotFoundException(CART_PRODUCT_UPDATE_FAIL))
                     .when(cartService)
-                    .modifyCartProduct(any(CartProductUpdateRequestDTO.class));
+                    .modifyCartProduct(any(CartProductUpdateRequestDTO.class), member);
 
             mockMvc
                     .perform(RestDocumentationRequestBuilders

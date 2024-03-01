@@ -160,7 +160,7 @@ class CartServiceTest {
             // given
             CartProductUpdateRequestDTO mock = mock(CartProductUpdateRequestDTO.class);
             // given
-            cartService.modifyCartProduct(mock);
+            cartService.modifyCartProduct(mock, member);
             // then
             verify(cartPersistence, times(1)).modifyCartProduct(
                     any(CartProductUpdateRequestDTO.class));
