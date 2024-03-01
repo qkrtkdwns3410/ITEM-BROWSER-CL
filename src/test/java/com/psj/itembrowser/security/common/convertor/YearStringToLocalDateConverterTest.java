@@ -54,7 +54,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString이 숫자가 아닐때 NFE 발생")
-	public void testConvertWhenNotNumberThenReturnNull() {
+	void testConvertWhenNotNumberThenReturnNull() {
 		String notNumberString = "abcd";
 		
 		assertThatThrownBy(() -> converter.convert(notNumberString))
