@@ -406,7 +406,10 @@ class CartApiControllerTest {
         @Test
         @DisplayName("장바구니에서 상품 삭제 API -> 정상 응답 테스트")
         void given_DeleteProductInCart_Expect_Success() throws Exception {
-            // given + then
+            // given
+            given(userDetailsService.loadUserByJwt(any())).willReturn(
+                    new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+            
             mockMvc
                     .perform(RestDocumentationRequestBuilders
                             .delete(BASE_URL + "/")
