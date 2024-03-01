@@ -34,13 +34,13 @@ public class AuthenticationService {
 		if (currentMember.hasRole(Role.ROLE_CUSTOMER)) {
 			log.info("authorizeOrders currentRole : {}", currentMember.getRole());
 			
-			orders.forEach(order -> {
+			for (OrderEntity order : orders) {
 				if (!Objects.equals(currentMember, order.getMember())) {
 					throw new BadRequestException(ErrorCode.ORDER_IS_NOT_MATCH_CURRENT_MEMBER);
 				}
 				
 				log.info("authorizeOrders currentMember is same with order member ==> passed");
-			});
+			}
 			
 			return;
 		}

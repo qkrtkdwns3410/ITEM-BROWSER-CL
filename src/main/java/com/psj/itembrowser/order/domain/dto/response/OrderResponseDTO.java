@@ -5,6 +5,7 @@ import static lombok.AccessLevel.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
@@ -90,9 +91,11 @@ public class OrderResponseDTO {
 		}
 		
 		if (!CollectionUtils.isEmpty(vo.getProducts())) {
-			vo.getProducts().stream()
+			List<OrdersProductRelationResponseDTO> dto = vo.getProducts().stream()
 				.map(OrdersProductRelationResponseDTO::from)
-				.forEach(orderResponseDTO.getOrdersProductRelations()::add);
+				.collect(Collectors.toList());
+			
+			orderResponseDTO.setOrdersProductRelations(dto);
 		}
 		
 		return orderResponseDTO;
@@ -126,9 +129,11 @@ public class OrderResponseDTO {
 		}
 		
 		if (!CollectionUtils.isEmpty(entity.getOrdersProductRelations())) {
-			entity.getOrdersProductRelations().stream()
+			List<OrdersProductRelationResponseDTO> dto = entity.getOrdersProductRelations().stream()
 				.map(OrdersProductRelationResponseDTO::from)
-				.forEach(orderResponseDTO.getOrdersProductRelations()::add);
+				.collect(Collectors.toList());
+			
+			orderResponseDTO.setOrdersProductRelations(dto);
 		}
 		
 		return orderResponseDTO;

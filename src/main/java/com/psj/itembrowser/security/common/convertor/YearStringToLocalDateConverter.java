@@ -6,9 +6,6 @@ import java.util.Objects;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.psj.itembrowser.security.common.exception.BadRequestException;
-import com.psj.itembrowser.security.common.exception.ErrorCode;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -20,21 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class YearStringToLocalDateConverter implements Converter<String, LocalDate> {
-
+	
 	@Override
 	public LocalDate convert(String source) {
 		log.info("YearStringToLocalDateConverter.convert source: {}", source);
-
-		if (Objects.nonNull(source) && source.length() != 4) {
+		
+		if (Objects.isNull(source) || source.length() != 4) {
 			return null;
 		}
-
-		if (!source.isEmpty()) {
-			int year = Integer.parseInt(source);
-
-			return LocalDate.of(year, 1, 1);
-		}
-
-		throw new BadRequestException(ErrorCode.INVALID_DATE_FORMAT);
+		
+		int year = Integer.parseInt(source);
+		
+		return LocalDate.of(year, 1, 1);
 	}
 }

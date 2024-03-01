@@ -21,27 +21,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FileServiceImpl implements FileService {
-
+	
 	private final ProductPersistence productPersistence;
 	private final FileStoreService fileStoreService;
-
+	
 	@Transactional(readOnly = false)
 	@Override
 	public void createProductImages(List<MultipartFile> files, Long productId) {
 		if (files != null && !files.isEmpty()) {
 			FileUtil.validateNumberOfImageFiles(files);
 			files.forEach(FileUtil::validateImageFile);
-
+			
 			List<ProductImage> productImages = files.stream()
 				.map(file -> {
 					Path savePath = fileStoreService.storeFile(file);
 					return ProductImage.from(file, productId, savePath);
 				}).collect(Collectors.toList());
-
+			
 			productPersistence.createProductImages(productImages);
 		}
 	}
-
+	
 	@Transactional(readOnly = false)
 	@Override
 	public void updateProductImages(ProductUpdateDTO productUpdateDTO, Long productId) {
@@ -49,33 +49,33 @@ public class FileServiceImpl implements FileService {
 		List<Long> deleteImageIds = productUpdateDTO.getDeleteImageIds();
 		List<ProductImage> productImagesByImageIds = productPersistence.findProductImagesByImageIds(
 			deleteImageIds);
-
+		
 		if (files != null && !files.isEmpty()) {
 			files.forEach(FileUtil::validateImageFile);
-
+			
 			List<ProductImage> productImages = files.stream()
 				.map(file -> {
 					Path savePath = fileStoreService.storeFile(file);
 					return ProductImage.from(file, productId, savePath);
 				}).collect(Collectors.toList());
-
+			
 			productPersistence.createProductImages(productImages);
 		}
-
+		
 		if (deleteImageIds != null && !deleteImageIds.isEmpty()) {
 			productImagesByImageIds.forEach(
 				productImage -> fileStoreService.deleteFilesInStorage(productImage.getFilePath()));
 			productPersistence.deleteProductImages(deleteImageIds);
 		}
 	}
-
+	
 	@Override
 	public void deleteProductImages(Long productId) {
 		List<ProductImage> productImages = productPersistence.findProductImagesByProductId(productId);
 		List<Long> deleteImageIds = productImages.stream()
 			.map(ProductImage::getId)
 			.collect(Collectors.toList());
-
+		
 		productImages.forEach(productImage -> fileStoreService.deleteFilesInStorage(productImage.getFilePath()));
 		productPersistence.deleteProductImages(deleteImageIds);
 	}
