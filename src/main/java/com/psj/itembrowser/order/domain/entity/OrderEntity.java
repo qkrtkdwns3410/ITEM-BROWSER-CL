@@ -165,7 +165,9 @@ public class OrderEntity extends BaseDateTimeEntity implements Cancelable {
 			return;
 		}
 		
-		this.ordersProductRelations.forEach(OrdersProductRelationEntity::cancel);
+		for (OrdersProductRelationEntity ordersProductRelation : this.ordersProductRelations) {
+			ordersProductRelation.cancel();
+		}
 	}
 	
 	@Override
