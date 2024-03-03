@@ -1,26 +1,55 @@
 package com.psj.itembrowser.member.domain.dto.request;
 
-import javax.validation.constraints.NotNull;
+import com.psj.itembrowser.member.domain.entity.MemberEntity;
+import com.psj.itembrowser.member.domain.vo.Role;
+import com.psj.itembrowser.security.common.exception.BadRequestException;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import javax.validation.constraints.NotNull;
 
 /**
  * DTO for {@link com.psj.itembrowser.member.domain.vo.Member}
  */
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberRequestDTO {
-	@NotNull(message = "memberId must be not null")
-	private final String memberId;
-	@NotNull(message = "password must be not null")
-	private final String password;
-	@NotNull
-	private final String firstName;
-	@NotNull
-	private final String lastName;
-	@NotNull
-	private final String email;
-	@NotNull
-	private final String phone;
+    
+    private String password;
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
+    @NotNull
+    private String email;
+    @NotNull
+    private String phone;
+    
+    private Role role;
+    
+    @Builder
+    private MemberRequestDTO(String password, String firstName, String lastName, String email, String phone, Role role) {
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+    }
+    
+    public static MemberRequestDTO from(MemberEntity entity) {
+        if (entity == null) {
+            throw new BadRequestException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        
+        return MemberRequestDTO.builder()
+                .password(entity.getCredentials().getPassword())
+                .firstName(entity.getName().getFirstName())
+                .lastName(entity.getName().getLastName())
+                .email(entity.getCredentials().getEmail())
+                .phone(entity.getPhoneNumber())
+                .role(entity.getRole())
+                .build();
+    }
 }

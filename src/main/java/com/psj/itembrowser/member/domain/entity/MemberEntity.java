@@ -119,7 +119,7 @@ public class MemberEntity extends BaseDateTimeEntity {
         this.shippingInfos = shippingInfos;
         this.deletedDate = deletedDate;
     }
-
+    
     public boolean isWowMember() {
         return this.memberShipType == MemberShipType.WOW;
     }
@@ -134,15 +134,6 @@ public class MemberEntity extends BaseDateTimeEntity {
 
     public boolean isAdmin() {
         return this.role == Role.ROLE_ADMIN;
-    }
-
-    public static MemberEntity from(MemberRequestDTO dto) {
-        MemberEntity member = new MemberEntity();
-        member.credentials = Credentials.builder()
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .build();
-        return member;
     }
 
     public static MemberEntity from(MemberResponseDTO dto) {
@@ -161,6 +152,19 @@ public class MemberEntity extends BaseDateTimeEntity {
                 .address(dto.getAddress())
                 .birthday(dto.getBirthday())
                 .lastLoginDate(dto.getLastLoginDate())
+                .build();
+    }
+    
+    public static MemberEntity from(MemberRequestDTO dto) {
+        if (dto == null) {
+            throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return MemberEntity.builder()
+                .credentials(Credentials.builder()
+                        .email(dto.getEmail())
+                        .password(dto.getPassword())
+                        .build())
                 .build();
     }
 

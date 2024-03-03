@@ -1,20 +1,15 @@
-package com.psj.itembrowser.order.domain.vo;
-
-import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+package com.psj.itembrowser.order.domain.dto.response;
 
 import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
+import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
+import lombok.*;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link OrdersProductRelation}
