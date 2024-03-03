@@ -18,15 +18,84 @@
 
 ---
 
-## API (수정예정)
+# API 엔드포인트 목록
 
-### 주요 기능
+## 장바구니 관련 엔드포인트 (CartApiController)
 
-- 상품 검색 및 필터링: 사용자는 다양한 기준으로 상품을 검색하고 필터링할 수 있습니다.
-- 상품 상세 정보: 각 상품에 대한 상세 정보를 제공하여 사용자의 구매 결정을 돕습니다.
-- 장바구니 및 결제 시스템: 사용자는 선택한 상품을 장바구니에 담고, 결제할 수 있습니다.
-- 회원가입 및 로그인: 사용자는 개인 계정을 생성하고 관리할 수 있습니다.
-- 주문 상태 확인: 사용자는 주문한 상품의 배송 상태를 실시간으로 확인할 수 있습니다.
+### 장바구니 조회
+- **GET** `/v1/api/cart/{userId}`
+    - 특정 사용자의 장바구니 정보를 조회합니다.
+    - `{userId}`는 사용자의 고유 식별자입니다.
+
+### 장바구니에 상품 추가
+- **POST** `/v1/api/cart`
+    - 장바구니에 새로운 상품을 추가합니다.
+
+### 장바구니 상품 수정
+- **PUT** `/v1/api/cart`
+    - 장바구니의 상품 수량을 수정합니다.
+
+### 장바구니 상품 삭제
+- **DELETE** `/v1/api/cart`
+    - 장바구니에서 특정 상품을 삭제합니다.
+
+## 회원 관련 엔드포인트 (MemberApiController)
+
+### 회원가입
+- **POST** `/v1/api/member/register`
+    - 새로운 회원을 등록합니다.
+
+## 주문 관련 엔드포인트 (OrderApiController)
+
+### 주문 조회
+- **GET** `/v1/api/orders/{orderId}`
+    - 특정 주문의 상세 정보를 조회합니다.
+    - `{orderId}`는 주문의 고유 식별자입니다.
+
+### 주문 생성
+- **POST** `/v1/api/orders`
+    - 새로운 주문을 생성합니다.
+
+### 사용자 주문 목록 조회
+- **GET** `/v1/api/orders/users/{userNumber}`
+    - 특정 사용자의 주문 목록을 조회합니다.
+    - `{userNumber}`는 사용자의 고유 번호입니다.
+
+### 주문 삭제
+- **DELETE** `/v1/api/orders/{orderId}`
+    - 특정 주문을 삭제합니다.
+    - `{orderId}`는 주문의 고유 식별자입니다.
+
+## 상품 관련 엔드포인트 (ProductApiController)
+
+### 상품 추가
+- **POST** `/v1/api/products`
+    - 새로운 상품을 추가합니다.
+
+### 상품 수정
+- **PUT** `/v1/api/products/{productId}`
+    - 기존 상품의 정보를 수정합니다.
+    - `{productId}`는 상품의 고유 식별자입니다.
+
+### 상품 삭제
+- **DELETE** `/v1/api/products/{productId}`
+    - 특정 상품을 삭제합니다.
+    - `{productId}`는 상품의 고유 식별자입니다.
+
+### 상품 상세 정보 조회
+- **GET** `/v1/api/products/{productId}`
+    - 특정 상품의 상세 정보를 조회합니다.
+    - `{productId}`는 상품의 고유 식별자입니다.
+
+## 로그인 관련 엔드포인트 (LoginApiController)
+
+### 로그인
+- **POST** `/login`
+    - 사용자 로그인을 처리합니다.
+
+### 토큰 갱신
+- **PUT** `/refresh-token`
+    - 사용자의 토큰을 갱신합니다.
 
 ---
 
@@ -42,4 +111,6 @@ JPA 개발일정: active, jpa001, 2024-02-20, 2024-03-05
 
 ```
 
-## 프로젝트 세팅 관련 - (임시)노션 참조
+## TEAM NOTION
+
+    [팀 노션 바로가기](https://iodized-bassoon-8e3.notion.site/5b24052881b34fd1ac8fbcf269ad3ba0?pvs=4)
