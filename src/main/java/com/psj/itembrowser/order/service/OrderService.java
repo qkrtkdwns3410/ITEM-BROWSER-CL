@@ -1,18 +1,8 @@
 package com.psj.itembrowser.order.service;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
+import com.psj.itembrowser.order.domain.dto.request.OrderExchageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
@@ -28,9 +18,17 @@ import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -121,5 +119,9 @@ public class OrderService {
 		//TODO 추후 필요
 		
 		return OrderResponseDTO.from(savedOrder);
+	}
+	
+	public OrderResponseDTO exchangeOrder(MemberEntity member, Long orderId, @Valid OrderExchageRequestDTO orderCreateRequestDTO) {
+		return null;
 	}
 }
