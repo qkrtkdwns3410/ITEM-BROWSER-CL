@@ -31,6 +31,7 @@ import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.CustomOrderRepository;
 import com.psj.itembrowser.order.repository.OrderRepository;
+import com.psj.itembrowser.order.repository.OrdersProductRelationRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
@@ -46,6 +47,9 @@ public class OrderDeleteWithDBServiceTest {
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private OrdersProductRelationRepository ordersProductRelationRepository;
 	
 	@Autowired
 	private MemberRepository memberRepository;
@@ -89,8 +93,10 @@ public class OrderDeleteWithDBServiceTest {
 	
 	@BeforeEach
 	void init() {
-		OrderPersistence orderPersistence = new OrderPersistence(orderMapper, orderRepository, customOrderRepository);
-		orderService = new OrderService(orderRepository, orderPersistence, orderCalculationService, authenticationService,
+		OrderPersistence orderPersistence = new OrderPersistence(orderMapper, orderRepository, customOrderRepository,
+			ordersProductRelationRepository);
+		orderService = new OrderService(ordersProductRelationRepository, orderRepository, orderPersistence, orderCalculationService,
+			authenticationService,
 			productValidationHelper, shppingInfoValidationService, paymentService, productService);
 	}
 	
