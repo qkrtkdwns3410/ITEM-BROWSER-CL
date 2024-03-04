@@ -68,10 +68,7 @@ public class CartService {
 			log.info(e.getMessage());
 		}
 		
-		if (cart == null) {
-			cart = createCart(requestDTO.getEmail());
-			requestDTO.setCartId(cart.getCartId());
-		}
+		cart = createCartIfEmpty(requestDTO, cart);
 		
 		CartProductRelationResponseDTO dto = null;
 		
@@ -91,6 +88,14 @@ public class CartService {
 		foundCartProduct.addProductQuantity(requestDTO.getQuantity());
 		
 		cartProductRelationEntityRepository.save(foundCartProduct);
+	}
+	
+	private CartResponseDTO createCartIfEmpty(CartProductRequestDTO requestDTO, CartResponseDTO cart) {
+		if (cart == null) {
+			cart = createCart(requestDTO.getEmail());
+			requestDTO.setCartId(cart.getCartId());
+		}
+		return cart;
 	}
 	
 	private static void validateMemberAuth(MemberEntity member, CartProductRequestDTO requestDTO) {

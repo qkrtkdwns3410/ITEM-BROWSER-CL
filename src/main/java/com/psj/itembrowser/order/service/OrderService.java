@@ -134,8 +134,6 @@ public class OrderService {
 		
 		List<ProductEntity> foundProducts = productValidationHelper.validateProduct(List.of(requestDTO));
 		
-		
-		
 		return null;
 	}
 }
