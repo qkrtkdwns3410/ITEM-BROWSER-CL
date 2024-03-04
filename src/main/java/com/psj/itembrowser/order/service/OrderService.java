@@ -1,14 +1,28 @@
 package com.psj.itembrowser.order.service;
 
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderExchageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
+import com.psj.itembrowser.order.domain.dto.request.OrdersProductRelationRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
+import com.psj.itembrowser.order.repository.OrdersProductRelationRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
@@ -18,23 +32,16 @@ import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.vo.ShippingInfo;
 import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderService {
+	private final OrdersProductRelationRepository ordersProductRelationRepository;
 	private final OrderRepository orderRepository;
 	
 	private final OrderPersistence orderPersistence;
@@ -89,39 +96,46 @@ public class OrderService {
 			throw new NotAuthorizedException(ErrorCode.NOT_ACTIVATED_MEMBER);
 		}
 		
-		//해당 주문상품이 존재하는지 확인 && 각 상품에 대한 재고확인 수행
 		List<ProductEntity> foundProducts = productValidationHelper.validateProduct(orderCreateRequestDTO.getProducts());
 		
-		//주문 상품에 대한 가격, 수량, 할인, 배송비 등을 계산한다.
 		OrderCalculationResult orderCalculationResult = orderCalculationService.calculateOrderDetails(orderCreateRequestDTO, member);
 		
-		//주문자의 배송지에 대한 검증 수행한다. -> 존재하는 배송지인지 확인한다.
 		ShippingInfo shippingInfo = ShippingInfo.from(orderCreateRequestDTO.getShippingInfo());
 		shippingInfoValidationService.validateAddress(shippingInfo);
 		
-		//결제 처리
 		//TODO 결제 추후 구현
 		paymentService.pay(orderCalculationResult);
 		
-		//주문 상태를 PENDING 으로 -> 결제상태 `결제완료` 처리한다.
 		OrderEntity order = OrderEntity.from(orderCreateRequestDTO, orderCalculationResult);
 		order.completePayment();
 		
-		//DB 주문추가
 		OrderEntity savedOrder = orderRepository.save(order);
 		
-		//TODO 상품 재고 수량을 감소시킨다. - 락이 필요하다.
 		for (ProductEntity foundProduct : foundProducts) {
 			productService.decreaseStock(foundProduct);
 		}
 		
-		//결제 히스토리를 DB에 기록한다.
-		//TODO 추후 필요
+		//TODO 추후 필요 - 결제 히스토리를 DB에 기록한다.
 		
 		return OrderResponseDTO.from(savedOrder);
 	}
 	
-	public OrderResponseDTO exchangeOrder(MemberEntity member, Long orderId, @Valid OrderExchageRequestDTO orderCreateRequestDTO) {
+	public OrderResponseDTO requestExchangeOrder(MemberEntity member, @Valid OrderExchageRequestDTO orderCreateRequestDTO) {
+		//취소 가능한 주문인 것
+		OrderEntity order = orderPersistence.findOrderById(orderCreateRequestDTO.getExchangeOrderId());
+		order.isExchangeable();
+		
+		//재고 확인 수행 & 존재하는 상품인지 체크
+		OrdersProductRelationEntity foundOrderProduct = orderPersistence.findOrderProductWithPessimisticLock(
+			orderCreateRequestDTO.getExchangeOrderId(),
+			orderCreateRequestDTO.getExchangeOrderProductId()
+		);
+		OrdersProductRelationRequestDTO requestDTO = OrdersProductRelationRequestDTO.from(foundOrderProduct);
+		
+		List<ProductEntity> foundProducts = productValidationHelper.validateProduct(List.of(requestDTO));
+		
+		
+		
 		return null;
 	}
 }

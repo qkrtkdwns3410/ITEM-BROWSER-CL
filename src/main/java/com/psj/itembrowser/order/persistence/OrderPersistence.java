@@ -10,10 +10,11 @@ import org.springframework.stereotype.Component;
 import com.psj.itembrowser.order.domain.dto.request.OrderDeleteRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
-import com.psj.itembrowser.order.domain.vo.Order;
+import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.repository.CustomOrderRepository;
 import com.psj.itembrowser.order.repository.OrderRepository;
+import com.psj.itembrowser.order.repository.OrdersProductRelationRepository;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class OrderPersistence {
 	private final OrderMapper orderMapper;
 	private final OrderRepository orderRepository;
 	private final CustomOrderRepository customOrderRepository;
+	private final OrdersProductRelationRepository ordersProductRelationRepository;
 	
 	public void removeOrder(long id) {
 		OrderDeleteRequestDTO deleteOrderRequestDTO = OrderDeleteRequestDTO.builder()
@@ -43,16 +45,6 @@ public class OrderPersistence {
 	
 	public void removeOrderProducts(long orderId) {
 		orderMapper.deleteSoftlyOrderProducts(orderId);
-	}
-	
-	public Order findOrderStatusForUpdate(long orderId) {
-		Order findOrder = orderMapper.selectOrderWithPessimissticLock(orderId);
-		
-		if (findOrder == null) {
-			throw new NotFoundException(ORDER_NOT_FOUND);
-		}
-		
-		return findOrder;
 	}
 	
 	public OrderEntity findOrderById(long id) {
@@ -85,5 +77,10 @@ public class OrderPersistence {
 		}
 		
 		return foundOrders;
+	}
+	
+	public OrdersProductRelationEntity findOrderProductWithPessimisticLock(long groupId, long productId) {
+		return ordersProductRelationRepository.findWithPessimisticLockByGroupIdAndProductId(groupId, productId)
+			.orElseThrow(() -> new NotFoundException(ORDER_PRODUCTS_EMPTY));
 	}
 }

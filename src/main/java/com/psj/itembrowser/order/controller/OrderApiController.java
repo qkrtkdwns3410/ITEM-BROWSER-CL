@@ -1,5 +1,25 @@
 package com.psj.itembrowser.order.controller;
 
+import static java.text.MessageFormat.*;
+
+import java.net.URI;
+
+import javax.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.psj.itembrowser.member.annotation.CurrentUser;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
@@ -11,20 +31,9 @@ import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.service.OrderService;
 import com.psj.itembrowser.security.common.message.MessageDTO;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-
-import static java.text.MessageFormat.format;
 
 @RestController
 @Slf4j
@@ -74,8 +83,8 @@ public class OrderApiController {
         return ResponseEntity.created(location).build();
     }
     
-    @PostMapping("/v1/api/orders/{orderId}/exchange")
-    public ResponseEntity<OrderResponseDTO> exchangeOrder(
+    @PostMapping("/v1/api/orders/{orderId}/exchange-request")
+    public ResponseEntity<OrderResponseDTO> requestExchangeOrder(
             @PathVariable Long orderId,
             @Valid @RequestBody OrderExchageRequestDTO orderExchageRequestDTO,
             @CurrentUser Jwt jwt
@@ -86,7 +95,7 @@ public class OrderApiController {
         
         MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
         
-        OrderResponseDTO exchangedOrder = orderService.exchangeOrder(member, orderId, orderExchageRequestDTO);
+        OrderResponseDTO exchangedOrder = orderService.requestExchangeOrder(member, orderId, orderExchageRequestDTO);
         
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
