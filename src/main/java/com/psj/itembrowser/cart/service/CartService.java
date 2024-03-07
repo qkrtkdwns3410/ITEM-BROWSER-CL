@@ -60,42 +60,42 @@ public class CartService {
 		
 		productValidationHelper.validateProduct(requestDTO.getProductId());
 		
-		CartResponseDTO cart = null;
+		CartResponseDTO cart = getOrCreateCart(requestDTO.getEmail());
+		requestDTO.setCartId(cart.getCartId());
 		
-		try {
-			cart = getCart(requestDTO.getEmail());
-		} catch (NotFoundException e) {
-			log.info(e.getMessage());
-		}
+		CartProductRelationResponseDTO existingProduct = findExistingProduct(cart.getCartId(), requestDTO.getProductId());
 		
-		cart = createCartIfEmpty(requestDTO, cart);
-		
-		CartProductRelationResponseDTO dto = null;
-		
-		try {
-			dto = cartPersistence.getCartProductRelation(cart.getCartId(), requestDTO.getProductId());
-		} catch (NotFoundException e) {
-			log.info(e.getMessage());
-		}
-		
-		if (dto == null) {
+		if (existingProduct == null) {
 			cartPersistence.addCartProductRelation(requestDTO);
 			return;
 		}
 		
-		CartProductRelationEntity foundCartProduct = CartProductRelationEntity.from(dto);
+		updateExistingProductQuantity(existingProduct, requestDTO.getQuantity());
 		
-		foundCartProduct.addProductQuantity(requestDTO.getQuantity());
-		
-		cartProductRelationEntityRepository.save(foundCartProduct);
 	}
 	
-	private CartResponseDTO createCartIfEmpty(CartProductRequestDTO requestDTO, CartResponseDTO cart) {
-		if (cart == null) {
-			cart = createCart(requestDTO.getEmail());
-			requestDTO.setCartId(cart.getCartId());
+	private CartResponseDTO getOrCreateCart(String userEmail) {
+		try {
+			return getCart(userEmail);
+		} catch (NotFoundException e) {
+			log.info("Creating new cart for user: {}", userEmail);
+			return createCart(userEmail);
 		}
-		return cart;
+	}
+	
+	private CartProductRelationResponseDTO findExistingProduct(Long cartId, Long productId) {
+		try {
+			return cartPersistence.getCartProductRelation(cartId, productId);
+		} catch (NotFoundException e) {
+			log.info("Product not found in cart, adding new one.");
+			return null;
+		}
+	}
+	
+	private void updateExistingProductQuantity(CartProductRelationResponseDTO existingProduct, long quantityToAdd) {
+		CartProductRelationEntity foundCartProduct = CartProductRelationEntity.from(existingProduct);
+		foundCartProduct.addProductQuantity(quantityToAdd);
+		cartProductRelationEntityRepository.save(foundCartProduct);
 	}
 	
 	private static void validateMemberAuth(MemberEntity member, CartProductRequestDTO requestDTO) {
