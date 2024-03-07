@@ -13,16 +13,22 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderExchageRequestDTO {
 	private Long exchangeOrderId;
+	
 	private Long exchangeOrderProductId;
+	
 	private String exchangeReason;
+	
+	private Integer exchangeQuantity;
 	
 	private LocalDateTime exchangeRequestDate;
 	
 	@Builder
-	private OrderExchageRequestDTO(Long exchangeOrderId, Long exchangeOrderProductId, String exchangeReason, LocalDateTime exchangeRequestDate) {
+	private OrderExchageRequestDTO(Long exchangeOrderId, Long exchangeOrderProductId, String exchangeReason, Integer exchangeQuantity,
+		LocalDateTime exchangeRequestDate) {
 		this.exchangeOrderId = exchangeOrderId;
 		this.exchangeOrderProductId = exchangeOrderProductId;
 		this.exchangeReason = exchangeReason;
 		this.exchangeRequestDate = exchangeRequestDate;
+		this.exchangeQuantity = exchangeQuantity;
 	}
 }

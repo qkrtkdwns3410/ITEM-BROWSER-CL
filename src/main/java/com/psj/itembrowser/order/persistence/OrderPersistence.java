@@ -6,6 +6,7 @@ import static com.psj.itembrowser.security.common.exception.ErrorCode.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.psj.itembrowser.order.domain.dto.request.OrderDeleteRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
  * ----------------------------------------------------------- 2023-11-09        ipeac       최초 생성
  */
 @Component
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderPersistence {
 	
@@ -34,6 +36,7 @@ public class OrderPersistence {
 	private final CustomOrderRepository customOrderRepository;
 	private final OrdersProductRelationRepository ordersProductRelationRepository;
 	
+	@Transactional(readOnly = false)
 	public void removeOrder(long id) {
 		OrderDeleteRequestDTO deleteOrderRequestDTO = OrderDeleteRequestDTO.builder()
 			.id(id)
@@ -43,6 +46,7 @@ public class OrderPersistence {
 		orderMapper.deleteSoftly(deleteOrderRequestDTO);
 	}
 	
+	@Transactional(readOnly = false)
 	public void removeOrderProducts(long orderId) {
 		orderMapper.deleteSoftlyOrderProducts(orderId);
 	}

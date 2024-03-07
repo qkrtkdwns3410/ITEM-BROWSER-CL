@@ -193,6 +193,12 @@ public class OrderEntity extends BaseDateTimeEntity implements Cancelable {
 		}
 	}
 	
+	public void requestExchange() {
+		isExchangeable();
+		
+		this.orderStatus = OrderStatus.EXCHANGE_REQUEST;
+	}
+	
 	@Override
 	public final boolean equals(Object o) {
 		if (this == o)

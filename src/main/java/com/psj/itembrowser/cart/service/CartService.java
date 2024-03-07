@@ -71,7 +71,6 @@ public class CartService {
 		}
 		
 		updateExistingProductQuantity(existingProduct, requestDTO.getQuantity());
-		
 	}
 	
 	private CartResponseDTO getOrCreateCart(String userEmail) {

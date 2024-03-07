@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.psj.itembrowser.member.annotation.CurrentUser;
 import com.psj.itembrowser.member.context.UserContext;
+import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -88,9 +89,9 @@ public class OrderApiController {
 	) {
 		log.info("exchangeOrder orderId : {}", orderId);
 		
-		MemberEntity member = MemberEntity.from(UserContext.getCurrentMember());
+		MemberResponseDTO currentMember = UserContext.getCurrentMember();
 		
-		OrderResponseDTO exchangedOrder = orderService.requestExchangeOrder(member, orderExchageRequestDTO);
+		OrderResponseDTO exchangedOrder = orderService.requestExchangeOrder(currentMember, orderExchageRequestDTO);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 			.path("/{id}")

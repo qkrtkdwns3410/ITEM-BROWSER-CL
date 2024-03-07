@@ -1,15 +1,21 @@
 package com.psj.itembrowser.order.domain.dto.request;
 
+import java.time.LocalDateTime;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+
 import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.domain.vo.OrdersProductRelation;
 import com.psj.itembrowser.product.domain.dto.response.ProductResponseDTO;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
-import lombok.*;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO for {@link OrdersProductRelation}
@@ -20,16 +26,17 @@ import java.time.LocalDateTime;
 public class OrdersProductRelationRequestDTO {
 	
 	@NotNull
-	Long groupId;
+	private Long groupId;
 	
 	@NotNull
-	Long productId;
+	private Long productId;
 	
-	ProductResponseDTO productResponseDTO;
+	private ProductResponseDTO productResponseDTO;
 	
 	@NotNull
 	@PositiveOrZero
-	Integer productQuantity;
+	private Integer productQuantity;
+	
 	
 	LocalDateTime createdDate;
 	LocalDateTime updatedDate;

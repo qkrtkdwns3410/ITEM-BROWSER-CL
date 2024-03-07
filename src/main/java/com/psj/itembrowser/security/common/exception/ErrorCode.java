@@ -43,6 +43,7 @@ public enum ErrorCode {
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),
 	INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "COMMON_002", "Invalid Date Format"),
+	INVALID_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_003", "Invalid Request"),
 	
 	// Member
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_001", "Not Found Member"),

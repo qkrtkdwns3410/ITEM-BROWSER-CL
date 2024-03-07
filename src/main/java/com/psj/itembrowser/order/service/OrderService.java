@@ -11,18 +11,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderExchageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrderPageRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrdersProductRelationRequestDTO;
 import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
+import com.psj.itembrowser.order.domain.entity.ExchangeOrderEntity;
+import com.psj.itembrowser.order.domain.entity.ExchangeOrderEntityRepository;
 import com.psj.itembrowser.order.domain.entity.OrderEntity;
 import com.psj.itembrowser.order.domain.entity.OrdersProductRelationEntity;
 import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.OrderRepository;
-import com.psj.itembrowser.order.repository.OrdersProductRelationRepository;
 import com.psj.itembrowser.payment.service.PaymentService;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
@@ -41,8 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderService {
-	private final OrdersProductRelationRepository ordersProductRelationRepository;
 	private final OrderRepository orderRepository;
+	private final ExchangeOrderEntityRepository exchangeOrderEntityRepository;
 	
 	private final OrderPersistence orderPersistence;
 	private final OrderCalculationService orderCalculationService;
@@ -120,7 +122,8 @@ public class OrderService {
 		return OrderResponseDTO.from(savedOrder);
 	}
 	
-	public OrderResponseDTO requestExchangeOrder(MemberEntity member, @Valid OrderExchageRequestDTO orderCreateRequestDTO) {
+	@Transactional(readOnly = false, timeout = 5)
+	public OrderResponseDTO requestExchangeOrder(MemberResponseDTO member, @Valid OrderExchageRequestDTO orderCreateRequestDTO) {
 		//취소 가능한 주문인 것
 		OrderEntity order = orderPersistence.findOrderById(orderCreateRequestDTO.getExchangeOrderId());
 		order.isExchangeable();
@@ -130,10 +133,18 @@ public class OrderService {
 			orderCreateRequestDTO.getExchangeOrderId(),
 			orderCreateRequestDTO.getExchangeOrderProductId()
 		);
+		
 		OrdersProductRelationRequestDTO requestDTO = OrdersProductRelationRequestDTO.from(foundOrderProduct);
 		
-		List<ProductEntity> foundProducts = productValidationHelper.validateProduct(List.of(requestDTO));
+		//상품 재고 체크수행
+		productValidationHelper.validateProduct(List.of(requestDTO));
 		
-		return null;
+		//주문을 교환 신청 상태로 변경
+		order.requestExchange();
+		
+		//DB 에 교환 기록을 남긴다.
+		exchangeOrderEntityRepository.save(ExchangeOrderEntity.from(orderCreateRequestDTO));
+		
+		return OrderResponseDTO.from(order);
 	}
 }
