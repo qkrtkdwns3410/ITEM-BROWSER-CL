@@ -20,6 +20,9 @@
 
 # API 엔드포인트 목록
 
+## 스웨거 URL
+/docs/swagger
+
 ## 장바구니 관련 엔드포인트 (CartApiController)
 
 ### 장바구니 조회
