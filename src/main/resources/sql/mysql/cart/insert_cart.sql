@@ -1,6 +1,6 @@
 -- insert_cart.sql
 INSERT INTO CART ( ID
-                 , USER_ID
+                 , USER_EMAIL
                  , CREATED_DATE
                  , UPDATED_DATE)
 VALUES ( 1

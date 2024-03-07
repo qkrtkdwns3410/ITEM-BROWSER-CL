@@ -1,5 +1,8 @@
 package com.psj.itembrowser.member.context;
 
+import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
+import com.psj.itembrowser.security.common.exception.ErrorCode;
+import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,20 @@ public class UserContext {
 		}
 		
 		return current;
+	}
+	
+	public static MemberResponseDTO getCurrentMember() {
+		log.info("UserContext getCurrentMember");
+		
+		UserDetailsServiceImpl.CustomUserDetails current = currentUser.get();
+		
+		if (current == null) {
+			log.error("UserContext is null");
+			
+			throw new NotAuthorizedException(ErrorCode.CREDENTIALS_NOT_FOUND);
+		}
+		
+		return current.getMemberResponseDTO();
 	}
 	
 	public static void setCurrentUser(UserDetailsServiceImpl.CustomUserDetails user) {

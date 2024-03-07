@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.psj.itembrowser.member.annotation.CurrentUser;
+import com.psj.itembrowser.member.context.UserContext;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
 import com.psj.itembrowser.member.domain.vo.Member;
 import com.psj.itembrowser.member.domain.vo.Role;
@@ -52,9 +53,7 @@ public class OrderApiController {
 	) {
 		log.info("getOrders orderId : {}", orderId);
 		
-		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-		
-		Member member = Member.from(customUserDetails.getMemberResponseDTO());
+		Member member = Member.from(UserContext.getCurrentMember());
 		
 		OrderResponseDTO dto = getOrderResponseBasedOnRole(member, orderId);
 		
@@ -69,9 +68,7 @@ public class OrderApiController {
 	) {
 		log.info("createOrder orderCreateRequestDTO : {}", orderCreateRequestDTO);
 		
-		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-		
-		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
+		MemberEntity member = MemberEntity.from(UserContext.getCurrentMember());
 		
 		OrderResponseDTO createdOrder = orderService.createOrder(member, orderCreateRequestDTO);
 		
@@ -91,9 +88,7 @@ public class OrderApiController {
 	) {
 		log.info("exchangeOrder orderId : {}", orderId);
 		
-		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-		
-		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
+		MemberEntity member = MemberEntity.from(UserContext.getCurrentMember());
 		
 		OrderResponseDTO exchangedOrder = orderService.requestExchangeOrder(member, orderExchageRequestDTO);
 		
@@ -113,9 +108,7 @@ public class OrderApiController {
 	) {
 		log.info("getOrders userNumber : {}", userNumber);
 		
-		UserDetailsServiceImpl.CustomUserDetails customUserDetails = userDetailsService.loadUserByJwt(jwt);
-		
-		MemberEntity member = MemberEntity.from(customUserDetails.getMemberResponseDTO());
+		MemberEntity member = MemberEntity.from(UserContext.getCurrentMember());
 		
 		Page<OrderResponseDTO> orderResponseDTOPage = getOrdersResponseBasedOnRole(member, orderPageRequestDTO);
 		
