@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
  * 2024-03-07        ipeac       최초 생성
  */
 @Entity
-@Table(name = "exchange_order")
+@Table(name = "orders_exchange")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ExchangeOrderEntity extends BaseDateTimeEntity {
