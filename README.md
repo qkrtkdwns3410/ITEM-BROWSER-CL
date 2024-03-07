@@ -16,7 +16,9 @@
 - Test: JUnit5
 - API 문서: Swagger3 + Spring RestDocs
 
----
+## Guide
+1. docker-compose.yml 실행
+2. boorun
 
 # API 엔드포인트 목록
 
