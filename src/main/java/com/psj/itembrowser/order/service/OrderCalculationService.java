@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +35,7 @@ public class OrderCalculationService {
     private final PercentageDiscountService percentageDiscountService;
     private final ShippingPolicyService shippingPolicyService;
     
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public OrderCalculationResult calculateOrderDetails(@NonNull OrderCreateRequestDTO orderCreateRequestDTO, @NonNull MemberEntity member) {
         validateOrderProduct(orderCreateRequestDTO);
         

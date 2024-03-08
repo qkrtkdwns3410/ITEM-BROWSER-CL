@@ -1,10 +1,5 @@
 package com.psj.itembrowser.product.persistence;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
 import com.psj.itembrowser.product.domain.dto.request.ProductQuantityUpdateRequestDTO;
 import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.domain.vo.Product;
@@ -13,8 +8,11 @@ import com.psj.itembrowser.product.mapper.ProductMapper;
 import com.psj.itembrowser.product.repository.ProductRepository;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * packageName    : com.psj.itembrowser.product.domain.persistence fileName       :
@@ -29,10 +27,6 @@ public class ProductPersistence {
 	private final ProductMapper productMapper;
 	private final ProductRepository productRepository;
 	
-	public ProductEntity findWithPessimisticLockById(Long productId) {
-		return productRepository.findWithPessimisticLockById(productId).orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
-	}
-	
 	public Product findProductById(Long productId) {
 		Product productById = productMapper.findProductById(productId);
 		
@@ -41,16 +35,6 @@ public class ProductPersistence {
 		}
 		
 		return productById;
-	}
-	
-	public List<Product> findProductsByIds(List<Long> productIds) {
-		List<Product> productsByIds = productMapper.findProductsByIds(productIds);
-		
-		if (productsByIds == null || productsByIds.isEmpty()) {
-			throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
-		}
-		
-		return productsByIds;
 	}
 	
 	public Product findProductStatusForUpdate(Long productId) {
