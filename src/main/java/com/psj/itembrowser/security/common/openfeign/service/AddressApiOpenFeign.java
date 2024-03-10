@@ -17,7 +17,7 @@ import com.psj.itembrowser.security.common.openfeign.dto.AddressResponseDto;
  * -----------------------------------------------------------
  * 2024-02-13        ipeac       최초 생성
  */
-@FeignClient(name = "AddressApiOpenFeign", url = "${juso.url}")
+@FeignClient(name = "AddressApiOpenFeign", url = "${juso.url}", configuration = AddressApiOpenFeignConfig.class)
 public interface AddressApiOpenFeign {
 
 	@GetMapping
