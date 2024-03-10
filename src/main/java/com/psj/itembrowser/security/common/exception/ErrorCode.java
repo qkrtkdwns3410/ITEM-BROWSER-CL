@@ -38,10 +38,12 @@ public enum ErrorCode {
 	ORDER_CALCULATION_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_007",
 		"Not Found Order Calculation Result"),
 	ORDER_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "ORDER_008", "Order Validation Error"),
+	ORDER_NOT_EXCHANGEABLE(HttpStatus.BAD_REQUEST, "ORDER_009", "Order is not exchangeable"),
 	
 	// common
 	COMMON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "Internal Server Error"),
 	INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "COMMON_002", "Invalid Date Format"),
+	INVALID_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_003", "Invalid Request"),
 	
 	// Member
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_001", "Not Found Member"),
@@ -85,8 +87,7 @@ public enum ErrorCode {
 	ALREADY_COMPLETE_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_001", "Already complete payment"),
 	
 	//ShippingInfo
-	SHIPPING_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SHIPPING_INFO_001", "Not Found Shipping Info"),
-	;
+	SHIPPING_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SHIPPING_INFO_001", "Not Found Shipping Info");
 	
 	private final HttpStatus status;
 	private final String code;

@@ -9,10 +9,7 @@ import com.psj.itembrowser.member.domain.vo.Name;
 import com.psj.itembrowser.member.domain.vo.Status;
 import com.psj.itembrowser.order.domain.dto.request.OrderCreateRequestDTO;
 import com.psj.itembrowser.order.domain.dto.request.OrdersProductRelationRequestDTO;
-import com.psj.itembrowser.order.domain.dto.response.OrderResponseDTO;
 import com.psj.itembrowser.order.domain.entity.ExchangeOrderEntityRepository;
-import com.psj.itembrowser.order.domain.vo.OrderCalculationResult;
-import com.psj.itembrowser.order.domain.vo.OrderStatus;
 import com.psj.itembrowser.order.mapper.OrderMapper;
 import com.psj.itembrowser.order.persistence.OrderPersistence;
 import com.psj.itembrowser.order.repository.CustomOrderRepository;
@@ -24,30 +21,20 @@ import com.psj.itembrowser.product.domain.entity.ProductEntity;
 import com.psj.itembrowser.product.service.ProductService;
 import com.psj.itembrowser.product.service.ProductValidationHelper;
 import com.psj.itembrowser.security.auth.service.impl.AuthenticationService;
-import com.psj.itembrowser.security.common.exception.BadRequestException;
-import com.psj.itembrowser.security.common.exception.ErrorCode;
-import com.psj.itembrowser.security.common.exception.NotAuthorizedException;
 import com.psj.itembrowser.shippingInfos.domain.dto.request.ShippingInfoRequestDTO;
 import com.psj.itembrowser.shippingInfos.domain.entity.ShippingInfoEntity;
 import com.psj.itembrowser.shippingInfos.service.ShppingInfoValidationService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.*;
-
 @ServiceWithDBTest
-public class OrderInsertWithDBServiceTest {
+public class OrderExchangeWithDBServiceTest {
     
     @Autowired
     private OrderRepository orderRepository;
@@ -152,106 +139,5 @@ public class OrderInsertWithDBServiceTest {
                 .products(List.of(ordersProductRelationResponseDTO))
                 .shippingInfo(ShippingInfoRequestDTO.from(shippingInfo))
                 .build();
-    }
-    
-    @Test
-    @DisplayName("주문 생성 - 모든 하위 서비스가 정상적으로 동작하는 경우 - 주문 생성 성공")
-    void When_AllSubServiceIsCorrectlyWork_Expect_200() {
-        // given
-        OrderCalculationResult orderResult = OrderCalculationResult.of(
-                1000L,
-                100L,
-                1000L,
-                1900L
-        );
-        
-        given(orderCalculationService.calculateOrderDetails(orderCreateRequestDTO, member)).willReturn(orderResult);
-        
-        // when
-        OrderResponseDTO actualOrderResponseDTO = orderService.createOrder(member, orderCreateRequestDTO);
-        
-        // then
-        assertThat(actualOrderResponseDTO).isNotNull();
-        assertThat(actualOrderResponseDTO.getMember().getCredentials().getEmail()).isNotNull().isEqualTo(member.getCredentials().getEmail());
-        
-        assertThat(actualOrderResponseDTO.getOrdersProductRelations()).isNotNull().isNotEmpty();
-        
-        assertThat(actualOrderResponseDTO.getOrderStatus()).isNotNull().isEqualTo(OrderStatus.PENDING);
-        assertThat(actualOrderResponseDTO.getShippingInfoId()).isNotNull().isEqualTo(shippingInfo.getId());
-        
-        assertThat(actualOrderResponseDTO.getPaidDate()).isNotNull().isAfter(NOW);
-        assertThat(actualOrderResponseDTO.getCreatedDate()).isNotNull().isAfter(NOW);
-        assertThat(actualOrderResponseDTO.getUpdatedDate()).isNotNull().isAfter(NOW);
-        assertThat(actualOrderResponseDTO.getDeletedDate()).isNull();
-    }
-    
-    @Test
-    @DisplayName("주문 생성시 회원이 비활성화 상태인 경우 - 주문 생성 실패")
-    void When_MemberIsNotActivated_Expect_400() {
-        // given
-        ReflectionTestUtils.setField(member, "status", Status.DISABLED);
-        
-        ProductEntity product = ProductEntity.builder().build();
-        
-        em.persist(product);
-        
-        ShippingInfoEntity shippingInfo = ShippingInfoEntity.builder()
-                .memberNo(member.getMemberNo())
-                .build();
-        
-        em.persist(shippingInfo);
-        
-        OrdersProductRelationRequestDTO ordersProductRelationResponseDTO = OrdersProductRelationRequestDTO.builder()
-                .groupId(1L)
-                .productId(1L)
-                .productQuantity(1)
-                .productResponseDTO(ProductResponseDTO.from(product))
-                .build();
-        
-        OrderCreateRequestDTO dto = OrderCreateRequestDTO.builder()
-                .member(MemberRequestDTO.from(member))
-                .products(List.of(ordersProductRelationResponseDTO))
-                .shippingInfo(ShippingInfoRequestDTO.from(shippingInfo))
-                .build();
-        
-        // when
-        assertThatThrownBy(() -> orderService.createOrder(member, dto))
-                // then
-                .isInstanceOf(NotAuthorizedException.class)
-                .hasMessage(ErrorCode.NOT_ACTIVATED_MEMBER.getMessage());
-    }
-    
-    @Test
-    @DisplayName("주문 생성중에 주문상품 재고에 대한 검증이 실패하는 경우")
-    void When_ProductValidationFailed_Expect_400() {
-        // given
-        doThrow(new BadRequestException(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH))
-                .when(productValidationHelper).validateProduct(anyList());
-        
-        // when
-        assertThatThrownBy(() -> orderService.createOrder(member, orderCreateRequestDTO))
-                // then
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH.getMessage());
-    }
-    
-    @Test
-    @DisplayName("주문 생성시 주문한 상품이 없는 경우")
-    void When_NoProduct_Expect_400() {
-        // given
-        OrderCreateRequestDTO dto = OrderCreateRequestDTO.builder()
-                .member(MemberRequestDTO.from(member))
-                .products(List.of())
-                .shippingInfo(ShippingInfoRequestDTO.from(shippingInfo))
-                .build();
-        
-        doThrow(new BadRequestException(ErrorCode.PRODUCT_NOT_FOUND))
-                .when(productValidationHelper).validateProduct(anyList());
-        
-        // when
-        assertThatThrownBy(() -> orderService.createOrder(member, dto))
-                // then
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(ErrorCode.PRODUCT_NOT_FOUND.getMessage());
     }
 }

@@ -24,7 +24,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString 정상 변환")
-	void test1() {
+	void When_ValidYearString_Then_ReturnLocalDate() {
 		String validYearString = "2024";
 		
 		LocalDate result = converter.convert(validYearString);
@@ -34,7 +34,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString이 4자리가 아닐 때 null 반환")
-	void test2() {
+	void When_InvalidYearString_Then_ReturnNull() {
 		String invalidYearString = "20222";
 		
 		LocalDate result = converter.convert(invalidYearString);
@@ -44,7 +44,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString이 빈 문자일때 null 반환")
-	void testConvertWhenEmptyStringThenReturnNull() {
+	void When_EmptyYearString_Then_ReturnNull() {
 		String emptyString = "";
 		
 		LocalDate result = converter.convert(emptyString);
@@ -54,7 +54,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString이 숫자가 아닐때 NFE 발생")
-	void testConvertWhenNotNumberThenReturnNull() {
+	void When_NotNumberString_Then_ThrowNFE() {
 		String notNumberString = "abcd";
 		
 		assertThatThrownBy(() -> converter.convert(notNumberString))
@@ -63,7 +63,7 @@ class YearStringToLocalDateConverterTest {
 	
 	@Test
 	@DisplayName("yearString이 null일때 null 반환")
-	void testConvertWhenNullThenReturnNull() {
+	void When_NullString_Then_ReturnNull() {
 		String nullString = null;
 		
 		LocalDate result = converter.convert(nullString);

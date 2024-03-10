@@ -41,9 +41,9 @@ import com.psj.itembrowser.cart.domain.dto.request.CartProductUpdateRequestDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartProductRelationResponseDTO;
 import com.psj.itembrowser.cart.domain.dto.response.CartResponseDTO;
 import com.psj.itembrowser.cart.service.CartService;
+import com.psj.itembrowser.member.context.UserContext;
 import com.psj.itembrowser.member.domain.dto.response.MemberResponseDTO;
 import com.psj.itembrowser.member.domain.entity.MemberEntity;
-import com.psj.itembrowser.member.domain.vo.Role;
 import com.psj.itembrowser.security.common.exception.DatabaseOperationException;
 import com.psj.itembrowser.security.common.exception.ErrorCode;
 import com.psj.itembrowser.security.common.exception.NotFoundException;
@@ -205,8 +205,7 @@ class CartApiControllerTest {
 		@DisplayName("장바구니에 상품을 올바르게 삽입시, 정상 응답 테스트")
 		void given_CorrectInsertProductInCart_Expect_Success() throws Exception {
 			// given + then
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
@@ -243,8 +242,7 @@ class CartApiControllerTest {
 		@DisplayName("장바구니에 상품을 잘못 삽입시, 오류 응답 테스트")
 		void given_IncorrectInsertProductInCart_Expect_Exception() throws Exception {
 			// given + then
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			doThrow(new DatabaseOperationException(CART_PRODUCT_INSERT_FAIL))
 				.when(cartService)
@@ -305,8 +303,7 @@ class CartApiControllerTest {
 		@DisplayName("장바구니 상품 수정 API -> 정상 응답 테스트")
 		void given_UpdateProductInCart_Expect_Success() throws Exception {
 			// given
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			// then
 			mockMvc
@@ -350,9 +347,7 @@ class CartApiControllerTest {
 				.quantity(10)
 				.build();
 			
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build())
-			);
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			//when -  then
 			doThrow(new NotFoundException(CART_PRODUCT_UPDATE_FAIL))
@@ -413,8 +408,7 @@ class CartApiControllerTest {
 		@DisplayName("장바구니에서 상품 삭제 API -> 정상 응답 테스트")
 		void given_DeleteProductInCart_Expect_Success() throws Exception {
 			// given
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			mockMvc
 				.perform(RestDocumentationRequestBuilders
@@ -449,8 +443,7 @@ class CartApiControllerTest {
 		@DisplayName("장바구니 상품 삭제 API -> 장바구니 상품이 존재하지 않을 경우 오류 발생")
 		void given_DeleteProductInCart_Expect_Exception() throws Exception {
 			// given + then
-			given(userDetailsService.loadUserByJwt(any())).willReturn(
-				new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().role(Role.ROLE_CUSTOMER).build()));
+			UserContext.setCurrentUser(new UserDetailsServiceImpl.CustomUserDetails(MemberResponseDTO.builder().build()));
 			
 			doThrow(new NotFoundException(CART_PRODUCT_DELETE_FAIL))
 				.when(cartService)

@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.psj.itembrowser.member.context.UserContext;
 import com.psj.itembrowser.security.common.config.jwt.JwtProvider;
 import com.psj.itembrowser.security.service.impl.UserDetailsServiceImpl;
 
@@ -61,9 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, details.getAuthorities());
 
 				SecurityContext context = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
-
+				
 				context.setAuthentication(authentication);
-
+				
+				UserContext.setCurrentUser(details);
 			} catch (JwtException e) {
 				request.setAttribute("exception", e.getMessage());
 			}

@@ -1,4 +1,4 @@
-package com.psj.itembrowser.security.common.config;
+package com.psj.itembrowser.security.common.config.openfeign;
 
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignFormatterRegistrar;

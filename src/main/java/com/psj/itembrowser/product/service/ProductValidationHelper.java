@@ -46,7 +46,7 @@ public class ProductValidationHelper {
         List<ProductEntity> foundProducts = productPersistence.findWithPessimisticLockByIds(orderIds);
         
         Map<Long, ProductEntity> productMap = foundProducts.stream()
-                .collect(Collectors.toMap(ProductEntity::getId, product -> product));
+                .collect(Collectors.toUnmodifiableMap(ProductEntity::getId, product -> product, (p1, p2) -> p1));
         
         for (OrdersProductRelationRequestDTO orderProduct : orderRequestProducts) {
             ProductEntity product = productMap.get(orderProduct.getProductId());

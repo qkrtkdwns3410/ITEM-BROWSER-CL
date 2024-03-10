@@ -95,7 +95,7 @@ class CartUpdateWithDBServiceTest {
 	
 	@Test
 	@DisplayName("장바구니 수정 성공 케이스")
-	void test1() {
+	void When_ModifyCartProduct_Then_Success() {
 		// given
 		CartEntity cart = CartEntity.builder()
 			.userEmail(member.getCredentials().getEmail())
@@ -136,7 +136,7 @@ class CartUpdateWithDBServiceTest {
 	
 	@Test
 	@DisplayName("장바구니 수정 실패 케이스 - 장바구니에 해당 상품이 없는 경우")
-	void test2() {
+	void When_ModifyCartProduct_Then_Fail() {
 		// given
 		CartEntity cart = CartEntity.builder()
 			.userEmail(member.getCredentials().getEmail())

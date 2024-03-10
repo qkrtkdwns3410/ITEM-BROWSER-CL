@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -79,17 +77,7 @@ public class JwtProvider {
 		return Objects.requireNonNull(expiresAt)
 			.isBefore(Instant.now());
 	}
-
-	public Authentication getAuthentication(String token) {
-		String email = extractUserEmail(token);
-
-		UserDetailsServiceImpl.CustomUserDetails currentUserDetails = (UserDetailsServiceImpl.CustomUserDetails)userDetailsService.loadUserByUsername(
-			email);
-
-		return new UsernamePasswordAuthenticationToken(currentUserDetails.getMemberResponseDTO(), token,
-			currentUserDetails.getAuthorities());
-	}
-
+	
 	public Jwt decodeJwt(String token) {
 		return jwtDecoder.decode(token);
 	}
