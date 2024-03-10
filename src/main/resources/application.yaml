@@ -97,3 +97,15 @@ decorator:
   datasource:
     p6spy:
       enable-logging: false
+
+resilience4j.circuitbreaker:
+  instances:
+    parkingClientCircuitBreaker:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      waitDurationInOpenState: 10s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
